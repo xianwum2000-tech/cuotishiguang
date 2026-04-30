@@ -1,0 +1,18 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "错题拾光"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "错题拾光",
+		"navigationBarBackgroundColor": "#FEF9F0",
+		"backgroundColor": "#FEF9F0"
+	},
+	"uniIdRouter": {}
+}
