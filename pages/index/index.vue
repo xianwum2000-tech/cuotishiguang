@@ -472,6 +472,21 @@
 				</view>
 			</view>
 
+			<view v-if="screen === 'formulas'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<text class="back-arrow" @click="showHome">← 返回</text>
+					<text class="brand-title small-brand">公式手册</text>
+					<text></text>
+				</view>
+				<view class="page-content formulas-content">
+					<view class="formulas-placeholder soft-card">
+						<text class="formulas-placeholder-icon">∑</text>
+						<text class="formulas-placeholder-title">考研数学公式</text>
+						<text class="formulas-placeholder-sub">公式内容即将上线</text>
+					</view>
+				</view>
+			</view>
+
 			<view v-if="screen === 'stats'" class="screen screen-lilac">
 				<view class="topbar compact-topbar">
 					<view class="brand-row">
@@ -660,7 +675,7 @@
 				</view>
 			</view>
 
-			<view v-if="screen !== 'today' && screen !== 'review'" class="bottom-nav">
+			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
@@ -668,6 +683,10 @@
 <view :class="libraryNavClass" @click="showLibrary">
 					<text class="nav-icon">▱</text>
 					<text class="nav-label">错题</text>
+				</view>
+				<view :class="screen === 'formulas' ? 'nav-item nav-active' : 'nav-item'" @click="showFormulas">
+					<text class="nav-icon">∑</text>
+					<text class="nav-label">公式</text>
 				</view>
 				<view :class="screen === 'stats' ? 'nav-item nav-active' : 'nav-item'" @click="showStats">
 					<text class="nav-icon">◎</text>
@@ -962,6 +981,9 @@
 			showStats() {
 				this.refreshData()
 				this.screen = 'stats'
+			},
+			showFormulas() {
+				this.screen = 'formulas'
 			},
 			showProfile() {
 				this.refreshData()
@@ -2976,5 +2998,38 @@
 		font-size: 10px;
 		line-height: 12px;
 		font-weight: 800;
+	}
+
+	.formulas-content {
+		padding-top: 20px;
+	}
+
+	.formulas-placeholder {
+		border-radius: 22px;
+		padding: 48px 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.formulas-placeholder-icon {
+		font-size: 56px;
+		font-weight: 900;
+		color: #E87B35;
+		margin-bottom: 16px;
+	}
+
+	.formulas-placeholder-title {
+		font-size: 20px;
+		font-weight: 900;
+		color: #4A3728;
+		line-height: 28px;
+		margin-bottom: 6px;
+	}
+
+	.formulas-placeholder-sub {
+		font-size: 14px;
+		color: #998B7A;
+		font-weight: 600;
 	}
 </style>
