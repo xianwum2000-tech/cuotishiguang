@@ -1,0 +1,9 @@
+{
+  "versionName": "1.0.3",
+  "versionCode": 103,
+  "packageName": "com.cuotishiguang.app",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.0.3/cuotishiguang-1.0.3.apk",
+  "changelog": "统计页底部新增版本检查和更新卡片；版本号升级至 1.0.3。",
+  "force": false,
+  "publishedAt": "2026-05-05"
+}

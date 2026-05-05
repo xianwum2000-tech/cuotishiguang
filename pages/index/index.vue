@@ -562,6 +562,26 @@
 							<text class="momentum-sub">任务会累计，但优先级会帮你先做最该复习的。</text>
 						</view>
 					</view>
+
+					<view class="insight-card soft-card version-card">
+						<text class="section-title">版本更新</text>
+						<text class="profile-line">当前版本 {{ appVersion.name }}（{{ appVersion.code }}）</text>
+						<text class="profile-line version-source">更新源：{{ updateSourceText }}</text>
+						<view v-if="latestVersion.versionCode > appVersion.code" class="version-update-hint">
+							<text class="version-new-label">发现新版 {{ latestVersion.versionName }}</text>
+							<text class="version-changelog">{{ latestVersion.changelog || '暂无更新说明' }}</text>
+							<view class="secondary-button" @click="installLatestVersion(latestVersion)" v-if="!updateDownloading">
+								<text>下载并安装</text>
+							</view>
+							<view v-if="updateDownloading" class="download-status">
+								<view class="progress-track"><view class="progress-fill" :style="updateProgressStyle"></view></view>
+								<text class="download-percent">{{ updateProgress }}%</text>
+							</view>
+						</view>
+						<view class="secondary-button" @click="checkAppUpdate(false)" v-if="!updateDownloading && latestVersion.versionCode <= appVersion.code">
+							<text>{{ updateChecking ? '检查中...' : '检查更新' }}</text>
+						</view>
+					</view>
 				</view>
 			</view>
 
@@ -2749,6 +2769,53 @@
 		line-height: 18px;
 		font-weight: 700;
 		color: #FFFFFF;
+	}
+
+	.version-card {
+		margin-top: 14px;
+	}
+
+	.version-source {
+		color: #998B7A;
+		font-size: 12px;
+		margin-bottom: 8px;
+	}
+
+	.version-update-hint {
+		background-color: #FFF8F0;
+		border-radius: 16px;
+		padding: 14px;
+		margin-top: 10px;
+		border: 1px solid #F1E2D8;
+	}
+
+	.version-new-label {
+		display: block;
+		font-size: 15px;
+		font-weight: 800;
+		color: #E87B35;
+		margin-bottom: 6px;
+	}
+
+	.version-changelog {
+		display: block;
+		font-size: 13px;
+		line-height: 18px;
+		color: #6750A4;
+		margin-bottom: 6px;
+	}
+
+	.download-status {
+		margin-top: 8px;
+	}
+
+	.download-percent {
+		display: block;
+		font-size: 13px;
+		font-weight: 800;
+		color: #6750A4;
+		margin-top: 6px;
+		text-align: center;
 	}
 
 	.profile-card {

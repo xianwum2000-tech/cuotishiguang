@@ -4,7 +4,8 @@
       "Bash(git *)",
       "Bash(gh auth *)",
       "Bash(gh *)",
-      "Bash(C:/Program Files/GitHub CLI/gh auth *)"
+      "Bash(C:/Program Files/GitHub CLI/gh auth *)",
+      "Bash(C:/Program Files/GitHub CLI/gh repo *)"
     ]
   }
 }
