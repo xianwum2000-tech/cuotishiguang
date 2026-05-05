@@ -660,7 +660,7 @@
 				</view>
 			</view>
 
-			<view v-if="screen !== 'review'" class="bottom-nav">
+			<view v-if="screen !== 'today' && screen !== 'review'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
