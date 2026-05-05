@@ -1,9 +1,9 @@
 {
-  "versionName": "1.0.6",
-  "versionCode": 106,
+  "versionName": "1.0.7",
+  "versionCode": 107,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.0.6/cuotishiguang-1.0.6.apk",
-  "changelog": "首页名句每日轮换功能；应用中心新增公式/定理入口；新增/复习页面无导航栏沉浸式体验；修复拍照权限；交互细节全面优化。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.0.7/cuotishiguang-1.0.7.apk",
+  "changelog": "全局返回栈支持（页面返回键/实体返回键统一）；导航栏白名单模式（仅首页/错题/应用/用户显示）；首页整体下移优化；设置页返回用户页；UI细节优化。",
   "force": false,
   "publishedAt": "2026-05-05"
 }

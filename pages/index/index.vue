@@ -77,7 +77,7 @@
 
 			<view v-if="screen === 'add'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="showLibrary">← 返回</text>
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
 				</view>
 
 				<view class="page-content add-content">
@@ -184,7 +184,7 @@
 
 			<view v-if="screen === 'today'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="showHome">← 返回</text>
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
 				</view>
 
 				<view class="page-content today-content">
@@ -398,7 +398,7 @@
 			<view v-if="screen === 'detail'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<view class="brand-row">
-						<view class="back-button" @click="showLibrary"><text>‹</text></view>
+						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
 						<text class="brand-title small-brand">错题详情</text>
 					</view>
 					<text class="gear small-gear" @click="archiveActiveDetail">归档</text>
@@ -487,7 +487,7 @@
 
 			<view v-if="screen === 'formulas'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="showApps">← 返回</text>
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
 					<text class="brand-title small-brand">公式手册</text>
 					<text></text>
 				</view>
@@ -502,7 +502,7 @@
 
 			<view v-if="screen === 'theorems'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="showApps">← 返回</text>
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
 					<text class="brand-title small-brand">定理合集</text>
 					<text></text>
 				</view>
@@ -647,7 +647,7 @@
 			<view v-if="screen === 'quotes-settings'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<view class="brand-row">
-						<view class="back-button" @click="showHome"><text>‹</text></view>
+						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
 						<text class="brand-title small-brand">名句设置</text>
 					</view>
 					<text class="gear small-gear" @click="saveQuoteSettings">保存</text>
@@ -675,7 +675,7 @@
 			<view v-if="screen === 'settings'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<view class="brand-row">
-						<view class="back-button" @click="showHome"><text>‹</text></view>
+						<view class="back-button" @click="showStats"><text>‹</text></view>
 						<text class="brand-title small-brand">首页设置</text>
 					</view>
 					<text class="gear small-gear" @click="saveHomeSettings">保存</text>
@@ -734,7 +734,7 @@
 				</view>
 			</view>
 
-			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas' && screen !== 'theorems' && screen !== 'add' && screen !== 'quotes-settings'" class="bottom-nav">
+			<view v-if="screen === 'home' || screen === 'library' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
@@ -827,6 +827,8 @@
 		data() {
 			return {
 				screen: 'home',
+					screenHistory: [],
+					lastBackTime: 0,
 				mistakes: [],
 				records: [],
 				appVersion: getUpdateRuntimeInfo().current,
@@ -990,11 +992,38 @@
 		onLoad() {
 			this.refreshData()
 			this.migrateStoredImages()
-			setTimeout(() => {
-				this.checkAppUpdate(true)
+			var self = this
+			if (typeof plus !== 'undefined' && plus.key) {
+				plus.key.addEventListener('backbutton', function() {
+					self.handleBackPress()
+				})
+			}
+			setTimeout(function() {
+				self.checkAppUpdate(true)
 			}, 1500)
 		},
 		methods: {
+			navigateTo(newScreen) {
+				if (this.screen && this.screen !== newScreen) {
+					this.screenHistory.push(this.screen)
+				}
+				this.screen = newScreen
+			},
+			handleBackPress() {
+				if (this.screenHistory.length > 0) {
+					this.screen = this.screenHistory.pop()
+					return
+				}
+				var now = Date.now()
+				if (now - this.lastBackTime < 2000) {
+					if (typeof plus !== 'undefined' && plus.runtime) {
+						plus.runtime.quit()
+					}
+				} else {
+					this.lastBackTime = now
+					this.toast('再按一次退出应用')
+				}
+			},
 			refreshData() {
 				this.mistakes = getMistakes()
 				this.records = getReviewRecords()
@@ -1035,39 +1064,43 @@
 			},
 			showHome() {
 				this.refreshData()
+				this.screenHistory = []
 				this.screen = 'home'
 			},
 			showAdd() {
-				this.screen = 'add'
+				this.navigateTo('add')
 			},
 			showToday() {
 				this.refreshData()
-				this.screen = 'today'
+				this.navigateTo('today')
 			},
 			showLibrary() {
 				this.refreshData()
+				this.screenHistory = []
 				this.screen = 'library'
 			},
 			showStats() {
 				this.refreshData()
+				this.screenHistory = []
 				this.screen = 'stats'
 			},
 			showApps() {
+				this.screenHistory = []
 				this.screen = 'apps'
 			},
 			showFormulas() {
-				this.screen = 'formulas'
+				this.navigateTo('formulas')
 			},
 			showTheorems() {
-				this.screen = 'theorems'
+				this.navigateTo('theorems')
 			},
 			showProfile() {
 				this.refreshData()
-				this.screen = 'profile'
+				this.navigateTo('profile')
 			},
 			showQuotesSettings() {
 				this.quoteSettingsForm = JSON.parse(JSON.stringify(this.quotesData))
-				this.screen = 'quotes-settings'
+				this.navigateTo('quotes-settings')
 			},
 			addQuote() {
 				this.quoteSettingsForm.quotes.push('')
@@ -1087,7 +1120,7 @@
 				saveQuotes(data)
 				this.quotesData = data
 				this.toast('名句设置已保存')
-				this.showHome()
+				this.handleBackPress()
 			},
 			showSettings() {
 				this.preferences = getPreferences()
@@ -1097,7 +1130,7 @@
 					homeAvatar: this.preferences.homeAvatar,
 					statsName: this.preferences.statsName
 				}
-				this.screen = 'settings'
+				this.navigateTo('settings')
 			},
 			saveHomeSettings() {
 				const homeTitle = this.settingsForm.homeTitle.trim()
@@ -1115,13 +1148,13 @@
 					statsName
 				})
 				this.toast('首页文案已保存')
-				this.screen = 'home'
+				this.handleBackPress()
 			},
 			resetHomeSettings() {
 				this.settingsForm = createDefaultPreferences()
 				this.preferences = savePreferences(this.settingsForm)
 				this.toast('已恢复默认')
-				this.screen = 'home'
+				this.handleBackPress()
 			},
 			async checkAppUpdate(silent) {
 				if (this.updateChecking || this.updateDownloading) return
@@ -1280,7 +1313,7 @@
 				this.answerVisible = false
 				this.reviewQuestionImageBroken = false
 				this.reviewAnswerImageBroken = false
-				this.screen = 'review'
+				this.navigateTo('review')
 			},
 			revealAnswer() {
 				this.answerVisible = true
@@ -1308,6 +1341,9 @@
 					this.answerVisible = false
 					this.reviewQuestionImageBroken = false
 					this.reviewAnswerImageBroken = false
+					if (this.screenHistory.length > 0 && this.screenHistory[this.screenHistory.length - 1] === 'today') {
+						this.screenHistory.pop()
+					}
 					this.screen = 'today'
 				}
 			},
@@ -1315,7 +1351,7 @@
 				this.refreshData()
 				this.activeDetail = this.mistakes.find((mistake) => mistake.id === item.id) || item
 				this.hasActiveDetail = true
-				this.screen = 'detail'
+				this.navigateTo('detail')
 			},
 			replaceDetailImage(field) {
 				if (!this.hasActiveDetail) return
@@ -1352,7 +1388,7 @@
 				this.activeDetail = createEmptyMistake()
 				this.hasActiveDetail = false
 				this.toast('已归档')
-				this.screen = 'library'
+				this.handleBackPress()
 			},
 			buildDistribution(field) {
 				const map = {}
@@ -1484,8 +1520,8 @@
 
 	.topbar {
 		width: 100%;
-		height: 66px;
-		padding: 15px 20px 10px;
+		height: 96px;
+		padding: 45px 20px 10px;
 		background-color: #FEF9F0;
 		display: flex;
 		flex-direction: row;
@@ -1567,7 +1603,7 @@
 	}
 
 	.home-content {
-		padding-top: 20px;
+		padding-top: 10px;
 	}
 
 	.greeting-block {

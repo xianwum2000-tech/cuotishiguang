@@ -2,8 +2,8 @@
     "name" : "错题拾光",
     "appid" : "__UNI__9F74044",
     "description" : "",
-    "versionName" : "1.0.6",
-    "versionCode" : "106",
+    "versionName" : "1.0.7",
+    "versionCode" : "107",
     /* 快应用特有相关 */
     "quickapp" : {},
     /* 小程序特有相关 */
@@ -54,10 +54,22 @@
                     "<uses-permission android:name=\"android.permission.INSTALL_PACKAGES\"/>",
                     "<uses-permission android:name=\"android.permission.REQUEST_INSTALL_PACKAGES\"/>"
                 ],
-                "features" : [
-                    "<uses-feature android:name=\"android.hardware.camera\"/>"
-                ]
+                "features" : [ "<uses-feature android:name=\"android.hardware.camera\"/>" ]
+            },
+            "icons" : {
+                "ios" : {
+                    "iphone" : {
+                        "spotlight@3x" : ""
+                    }
+                }
             }
+        },
+        "modules" : {
+            "Barcode" : {},
+            "Fingerprint" : {},
+            "VideoPlayer" : {},
+            "SecureNetwork" : {},
+            "Camera" : {}
         }
     }
 }
