@@ -477,6 +477,10 @@
 							<text class="app-icon-emoji">∑</text>
 							<text class="app-icon-label">公式手册</text>
 						</view>
+						<view class="app-icon-card" @click="showTheorems">
+							<text class="app-icon-emoji">◈</text>
+							<text class="app-icon-label">定理合集</text>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -492,6 +496,21 @@
 						<text class="formulas-placeholder-icon">∑</text>
 						<text class="formulas-placeholder-title">考研数学公式</text>
 						<text class="formulas-placeholder-sub">公式内容即将上线</text>
+					</view>
+				</view>
+			</view>
+
+			<view v-if="screen === 'theorems'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<text class="back-arrow" @click="showApps">← 返回</text>
+					<text class="brand-title small-brand">定理合集</text>
+					<text></text>
+				</view>
+				<view class="page-content formulas-content">
+					<view class="formulas-placeholder soft-card">
+						<text class="formulas-placeholder-icon">◈</text>
+						<text class="formulas-placeholder-title">考研数学定理</text>
+						<text class="formulas-placeholder-sub">定理内容即将上线</text>
 					</view>
 				</view>
 			</view>
@@ -684,7 +703,7 @@
 				</view>
 			</view>
 
-			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas' && screen !== 'add'" class="bottom-nav">
+			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas' && screen !== 'theorems' && screen !== 'add'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
@@ -693,7 +712,7 @@
 					<text class="nav-icon">▱</text>
 					<text class="nav-label">错题</text>
 				</view>
-				<view :class="screen === 'apps' || screen === 'formulas' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
+				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
 					<text class="nav-icon">◇</text>
 					<text class="nav-label">应用</text>
 				</view>
@@ -996,6 +1015,9 @@
 			},
 			showFormulas() {
 				this.screen = 'formulas'
+			},
+			showTheorems() {
+				this.screen = 'theorems'
 			},
 			showProfile() {
 				this.refreshData()
