@@ -1014,14 +1014,8 @@
 					this.screen = this.screenHistory.pop()
 					return
 				}
-				var now = Date.now()
-				if (now - this.lastBackTime < 2000) {
-					if (typeof plus !== 'undefined' && plus.runtime) {
-						plus.runtime.quit()
-					}
-				} else {
-					this.lastBackTime = now
-					this.toast('再按一次退出应用')
+				if (typeof plus !== 'undefined' && plus.runtime) {
+					plus.runtime.quit()
 				}
 			},
 			refreshData() {
@@ -1530,8 +1524,8 @@
 	}
 
 	.compact-topbar {
-		height: 64px;
-		padding-top: 12px;
+		height: 94px;
+		padding-top: 42px;
 	}
 
 	.brand-row {
