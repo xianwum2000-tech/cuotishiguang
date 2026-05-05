@@ -472,9 +472,23 @@
 				</view>
 			</view>
 
+			<view v-if="screen === 'apps'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<text class="brand-title small-brand">应用中心</text>
+				</view>
+				<view class="page-content apps-content">
+					<view class="apps-grid">
+						<view class="app-icon-card" @click="showFormulas">
+							<text class="app-icon-emoji">∑</text>
+							<text class="app-icon-label">公式手册</text>
+						</view>
+					</view>
+				</view>
+			</view>
+
 			<view v-if="screen === 'formulas'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="showHome">← 返回</text>
+					<text class="back-arrow" @click="showApps">← 返回</text>
 					<text class="brand-title small-brand">公式手册</text>
 					<text></text>
 				</view>
@@ -684,9 +698,9 @@
 					<text class="nav-icon">▱</text>
 					<text class="nav-label">错题</text>
 				</view>
-				<view :class="screen === 'formulas' ? 'nav-item nav-active' : 'nav-item'" @click="showFormulas">
-					<text class="nav-icon">∑</text>
-					<text class="nav-label">公式</text>
+				<view :class="screen === 'apps' || screen === 'formulas' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
+					<text class="nav-icon">◇</text>
+					<text class="nav-label">应用</text>
 				</view>
 				<view :class="screen === 'stats' ? 'nav-item nav-active' : 'nav-item'" @click="showStats">
 					<text class="nav-icon">◎</text>
@@ -981,6 +995,9 @@
 			showStats() {
 				this.refreshData()
 				this.screen = 'stats'
+			},
+			showApps() {
+				this.screen = 'apps'
 			},
 			showFormulas() {
 				this.screen = 'formulas'
@@ -2998,6 +3015,45 @@
 		font-size: 10px;
 		line-height: 12px;
 		font-weight: 800;
+	}
+
+	.apps-content {
+		padding-top: 16px;
+	}
+
+	.apps-grid {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.app-icon-card {
+		width: 72px;
+		height: 86px;
+		border-radius: 18px;
+		background-color: #FFF8F0;
+		border: 1px solid #F1E2D8;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-right: 14px;
+		margin-bottom: 14px;
+	}
+
+	.app-icon-emoji {
+		font-size: 28px;
+		font-weight: 900;
+		color: #E87B35;
+		line-height: 32px;
+		margin-bottom: 4px;
+	}
+
+	.app-icon-label {
+		font-size: 11px;
+		font-weight: 700;
+		color: #6750A4;
+		line-height: 14px;
 	}
 
 	.formulas-content {
