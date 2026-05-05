@@ -660,7 +660,7 @@
 				</view>
 			</view>
 
-			<view class="bottom-nav">
+			<view v-if="screen !== 'review'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
@@ -2933,12 +2933,12 @@
 		transform: translateX(-50%);
 		width: 100%;
 		max-width: 393px;
-		min-height: 88px;
-		padding: 10px 16px 16px;
-		border-top-left-radius: 38px;
-		border-top-right-radius: 38px;
+		min-height: 62px;
+		padding: 8px 24px 10px;
+		border-top-left-radius: 24px;
+		border-top-right-radius: 24px;
 		background-color: #FEF9F0;
-		box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.05);
+		box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.04);
 		display: flex;
 		flex-direction: row;
 		align-items: center;
@@ -2947,11 +2947,11 @@
 	}
 
 	.nav-item {
-		min-width: 58px;
-		height: 52px;
+		min-width: 44px;
+		height: 40px;
 		border-radius: 999px;
-		padding-left: 10px;
-		padding-right: 10px;
+		padding-left: 8px;
+		padding-right: 8px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -2960,21 +2960,21 @@
 	}
 
 	.nav-active {
-		min-width: 68px;
+		min-width: 52px;
 		background-color: #FFEDD5;
 		color: #9A3412;
 	}
 
 	.nav-icon {
-		font-size: 18px;
-		line-height: 18px;
+		font-size: 15px;
+		line-height: 15px;
 		font-weight: 800;
 	}
 
 	.nav-label {
-		margin-top: 4px;
-		font-size: 11px;
-		line-height: 13px;
+		margin-top: 2px;
+		font-size: 10px;
+		line-height: 12px;
 		font-weight: 800;
 	}
 </style>
