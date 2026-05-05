@@ -5,6 +5,17 @@ const MISTAKES_KEY = 'mistake_scheduler_mistakes_v1'
 const RECORDS_KEY = 'mistake_scheduler_review_records_v1'
 const PREFERENCES_KEY = 'mistake_scheduler_preferences_v1'
 
+const QUOTES_KEY = 'mistake_scheduler_quotes_v1'
+
+const DEFAULT_QUOTES = {
+	quotes: [
+		'准备好提升你的技能了吗？',
+		'每一次复习，都是对未来的投资。',
+		'数学不是看会的，是算会的。'
+	],
+	quoteDays: 1
+}
+
 const DEFAULT_PREFERENCES = {
 	homeTitle: '复习达人',
 	greetingTitle: '早上好，小明',
@@ -166,4 +177,14 @@ export function completeReview(questionId, result, reviewedAt = new Date()) {
 
 export function archiveMistake(id) {
 	return updateMistake(id, { isArchived: true })
+}
+
+export function getQuotes() {
+	return readObject(QUOTES_KEY, DEFAULT_QUOTES)
+}
+
+export function saveQuotes(data) {
+	const next = { ...DEFAULT_QUOTES, ...data }
+	uni.setStorageSync(QUOTES_KEY, next)
+	return next
 }

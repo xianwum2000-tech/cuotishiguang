@@ -14,7 +14,7 @@
 				<view class="page-content home-content">
 					<view class="greeting-block">
 						<text class="home-title">{{ preferences.greetingTitle }}</text>
-						<text class="home-subtitle">准备好提升你的技能了吗？</text>
+						<text class="home-subtitle">{{ currentQuote }}</text>
 					</view>
 
 					<view class="status-grid">
@@ -644,6 +644,34 @@
 				</view>
 			</view>
 
+			<view v-if="screen === 'quotes-settings'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<view class="brand-row">
+						<view class="back-button" @click="showHome"><text>‹</text></view>
+						<text class="brand-title small-brand">名句设置</text>
+					</view>
+					<text class="gear small-gear" @click="saveQuoteSettings">保存</text>
+				</view>
+				<view class="page-content settings-content">
+					<view class="page-heading">
+						<text class="page-title">每日名句轮换</text>
+						<text class="page-subtitle">设置首页问候语每天轮换的句子。</text>
+					</view>
+					<view class="settings-card soft-card">
+						<text class="field-label">轮换间隔（天）</text>
+						<input class="settings-input" v-model="quoteSettingsForm.quoteDays" type="number" placeholder="1" />
+						<text class="field-label field-space">名句列表</text>
+						<view v-for="(quote, index) in quoteSettingsForm.quotes" :key="index" class="quote-line">
+							<input class="quote-input" v-model="quoteSettingsForm.quotes[index]" />
+							<text class="quote-delete" @click="removeQuote(index)">×</text>
+						</view>
+						<view class="secondary-button" @click="addQuote">
+							<text>＋ 添加名句</text>
+						</view>
+					</view>
+				</view>
+			</view>
+
 			<view v-if="screen === 'settings'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<view class="brand-row">
@@ -690,12 +718,15 @@
 							<text class="brand-title preview-brand">{{ previewHomeTitle }}</text>
 						</view>
 						<text class="home-title preview-greeting">{{ previewGreetingTitle }}</text>
-						<text class="home-subtitle">准备好提升你的技能了吗？</text>
+						<text class="home-subtitle">{{ currentQuote }}</text>
 						<text class="preview-stats-title">{{ previewStatsName }}的学习洞察</text>
 					</view>
 
 					<view class="save-button" @click="saveHomeSettings">
 						<text>保存设置</text>
+					</view>
+					<view class="secondary-button" @click="showQuotesSettings">
+						<text>名句设置</text>
 					</view>
 					<view class="secondary-button" @click="resetHomeSettings">
 						<text>恢复默认</text>
@@ -703,7 +734,7 @@
 				</view>
 			</view>
 
-			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas' && screen !== 'theorems' && screen !== 'add'" class="bottom-nav">
+			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas' && screen !== 'theorems' && screen !== 'add' && screen !== 'quotes-settings'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
@@ -741,8 +772,10 @@
 		createMistake,
 		getMistakes,
 		getPreferences,
+		getQuotes,
 		getReviewRecords,
 		savePreferences,
+		saveQuotes,
 		updateMistake
 	} from '@/utils/storage.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
@@ -810,6 +843,8 @@
 					force: false
 				},
 				preferences: createDefaultPreferences(),
+				quotesData: getQuotes(),
+				quoteSettingsForm: getQuotes(),
 				settingsForm: createDefaultPreferences(),
 				activeReview: createEmptyMistake(),
 				activeDetail: createEmptyMistake(),
@@ -834,6 +869,13 @@
 		computed: {
 			currentDate() {
 				return todayKey()
+			},
+			currentQuote() {
+				const data = this.quotesData
+				if (!data.quotes || data.quotes.length === 0) return ''
+				const days = Math.abs(data.quoteDays || 1)
+				const idx = Math.floor(new Date().getTime() / (days * 86400000)) % data.quotes.length
+				return data.quotes[idx]
 			},
 			activeMistakes() {
 				return this.mistakes.filter((item) => !item.isArchived)
@@ -1022,6 +1064,30 @@
 			showProfile() {
 				this.refreshData()
 				this.screen = 'profile'
+			},
+			showQuotesSettings() {
+				this.quoteSettingsForm = JSON.parse(JSON.stringify(this.quotesData))
+				this.screen = 'quotes-settings'
+			},
+			addQuote() {
+				this.quoteSettingsForm.quotes.push('')
+			},
+			removeQuote(index) {
+				if (this.quoteSettingsForm.quotes.length <= 1) return
+				this.quoteSettingsForm.quotes.splice(index, 1)
+			},
+			saveQuoteSettings() {
+				const days = Math.max(1, parseInt(this.quoteSettingsForm.quoteDays) || 1)
+				const quotes = this.quoteSettingsForm.quotes.filter(q => q.trim())
+				if (quotes.length === 0) {
+					this.toast('至少保留一条名句')
+					return
+				}
+				const data = { quoteDays: days, quotes }
+				saveQuotes(data)
+				this.quotesData = data
+				this.toast('名句设置已保存')
+				this.showHome()
 			},
 			showSettings() {
 				this.preferences = getPreferences()
@@ -3071,6 +3137,38 @@
 		font-weight: 700;
 		color: #6750A4;
 		line-height: 14px;
+	}
+
+	.quote-line {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+
+	.quote-input {
+		flex: 1;
+		height: 44px;
+		border-radius: 14px;
+		border: 1px solid #F1E2D8;
+		background-color: #FFF8F0;
+		padding: 0 14px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #4A3728;
+	}
+
+	.quote-delete {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background-color: #FEE2E2;
+		color: #DC2626;
+		font-size: 18px;
+		font-weight: 800;
+		line-height: 36px;
+		text-align: center;
+		margin-left: 10px;
 	}
 
 	.formulas-content {
