@@ -77,12 +77,7 @@
 
 			<view v-if="screen === 'add'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="avatar small-avatar">
-							<image class="avatar-img" src="/static/stitch_assets/avatar-add.jpg" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title small-brand">ReviewMaster</text>
-					</view>
+					<text class="back-arrow" @click="showLibrary">← 返回</text>
 				</view>
 
 				<view class="page-content add-content">
@@ -689,7 +684,7 @@
 				</view>
 			</view>
 
-			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas'" class="bottom-nav">
+			<view v-if="screen !== 'today' && screen !== 'review' && screen !== 'formulas' && screen !== 'add'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
