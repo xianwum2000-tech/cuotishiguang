@@ -35,10 +35,10 @@
             },
             "icons" : {
                 "android" : {
-                    "hdpi" : "",
-                    "xhdpi" : "",
-                    "xxhdpi" : "",
-                    "xxxhdpi" : ""
+                    "hdpi" : "tubiao.png",
+                    "xhdpi" : "tubiao.png",
+                    "xxhdpi" : "tubiao.png",
+                    "xxxhdpi" : "tubiao.png"
                 }
             }
         }
