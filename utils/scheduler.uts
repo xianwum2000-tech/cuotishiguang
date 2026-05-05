@@ -1,0 +1,155 @@
+import { addDays, compareDateKeys, daysBetween, todayKey } from './date.uts'
+import { InitialSchedule, Mistake, ReviewSchedule } from './models.uts'
+
+type ReviewResults = {
+	WRONG: string
+	FUZZY: string
+	KNOWN: string
+}
+
+type ReviewStages = {
+	NEW: string
+	PASS1: string
+	PASS2: string
+	PASS3: string
+}
+
+export const REVIEW_RESULTS = {
+	WRONG: 'wrong',
+	FUZZY: 'fuzzy',
+	KNOWN: 'known'
+} as ReviewResults
+
+export const REVIEW_STAGES = {
+	NEW: 'new',
+	PASS1: 'pass1',
+	PASS2: 'pass2',
+	PASS3: 'pass3'
+} as ReviewStages
+
+const INTERVAL_NEW = 2
+const INTERVAL_PASS1 = 5
+const INTERVAL_PASS2 = 10
+const INTERVAL_PASS3 = 20
+
+function getStageInterval(stage: string): number {
+	if (stage === REVIEW_STAGES.PASS1) return INTERVAL_PASS1
+	if (stage === REVIEW_STAGES.PASS2) return INTERVAL_PASS2
+	if (stage === REVIEW_STAGES.PASS3) return INTERVAL_PASS3
+	return INTERVAL_NEW
+}
+
+function valueOrMax(value: string): string {
+	if (value.length === 0) return '9999-12-31'
+	return value
+}
+
+export function createInitialSchedule(createdAt: any = new Date()): InitialSchedule {
+	return {
+		reviewStage: REVIEW_STAGES.NEW,
+		nextReviewDate: addDays(createdAt, INTERVAL_NEW)
+	} as InitialSchedule
+}
+
+export function calculateNextReview(stageBefore: string, result: string, reviewedAt: any = new Date()): ReviewSchedule {
+	let currentStage = REVIEW_STAGES.NEW
+	if (stageBefore.length > 0) {
+		currentStage = stageBefore
+	}
+
+	let stageAfter = REVIEW_STAGES.NEW
+	let intervalDays = INTERVAL_NEW
+
+	if (result === REVIEW_RESULTS.KNOWN) {
+		if (currentStage === REVIEW_STAGES.NEW) {
+			stageAfter = REVIEW_STAGES.PASS1
+		} else if (currentStage === REVIEW_STAGES.PASS1) {
+			stageAfter = REVIEW_STAGES.PASS2
+		} else {
+			stageAfter = REVIEW_STAGES.PASS3
+		}
+		intervalDays = getStageInterval(stageAfter)
+	}
+
+	if (result === REVIEW_RESULTS.FUZZY) {
+		if (currentStage === REVIEW_STAGES.NEW) {
+			stageAfter = REVIEW_STAGES.NEW
+			intervalDays = INTERVAL_NEW
+		} else {
+			stageAfter = REVIEW_STAGES.PASS1
+			intervalDays = INTERVAL_PASS1
+		}
+	}
+
+	return {
+		stageAfter,
+		intervalDays,
+		nextReviewDate: addDays(reviewedAt, intervalDays)
+	} as ReviewSchedule
+}
+
+export function isDue(mistake: Mistake, currentDate: string = todayKey()): boolean {
+	return !mistake.isArchived && mistake.nextReviewDate.length > 0 && compareDateKeys(mistake.nextReviewDate, currentDate) <= 0
+}
+
+export function isOverdue(mistake: Mistake, currentDate: string = todayKey()): boolean {
+	return !mistake.isArchived && mistake.nextReviewDate.length > 0 && compareDateKeys(mistake.nextReviewDate, currentDate) < 0
+}
+
+export function getOverdueDays(mistake: Mistake, currentDate: string = todayKey()): number {
+	if (mistake.nextReviewDate.length === 0) return 0
+	return Math.max(0, daysBetween(currentDate, mistake.nextReviewDate))
+}
+
+export function sortMistakesByPriority(mistakes: Mistake[], currentDate: string = todayKey()): Mistake[] {
+	const result = mistakes.slice()
+	result.sort((left: Mistake, right: Mistake): number => {
+		const overdueDiff = getOverdueDays(right, currentDate) - getOverdueDays(left, currentDate)
+		if (overdueDiff !== 0) return overdueDiff
+
+		const wrongDiff = right.totalWrongCount - left.totalWrongCount
+		if (wrongDiff !== 0) return wrongDiff
+
+		const dateDiff = compareDateKeys(valueOrMax(left.nextReviewDate), valueOrMax(right.nextReviewDate))
+		if (dateDiff !== 0) return dateDiff
+
+		return compareDateKeys(valueOrMax(left.createdAt), valueOrMax(right.createdAt))
+	})
+	return result
+}
+
+export function getDueMistakes(mistakes: Mistake[], currentDate: string = todayKey()): Mistake[] {
+	const due: Mistake[] = []
+	for (let index = 0; index < mistakes.length; index++) {
+		const mistake = mistakes[index]
+		if (isDue(mistake, currentDate)) {
+			due.push(mistake)
+		}
+	}
+	return sortMistakesByPriority(due, currentDate)
+}
+
+export function getOverdueMistakes(mistakes: Mistake[], currentDate: string = todayKey()): Mistake[] {
+	const overdue: Mistake[] = []
+	for (let index = 0; index < mistakes.length; index++) {
+		const mistake = mistakes[index]
+		if (isOverdue(mistake, currentDate)) {
+			overdue.push(mistake)
+		}
+	}
+	return sortMistakesByPriority(overdue, currentDate)
+}
+
+export function getStageLabel(stage: string): string {
+	if (stage === REVIEW_STAGES.PASS1) return '第1轮'
+	if (stage === REVIEW_STAGES.PASS2) return '第2轮'
+	if (stage === REVIEW_STAGES.PASS3) return '稳定复习'
+	return '新错题'
+}
+
+export function getResultLabel(result: string): string {
+	if (result === REVIEW_RESULTS.WRONG) return '不会'
+	if (result === REVIEW_RESULTS.FUZZY) return '模糊'
+	if (result === REVIEW_RESULTS.KNOWN) return '会了'
+	return '未复习'
+}

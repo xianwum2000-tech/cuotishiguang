@@ -1,0 +1,265 @@
+import { calculateNextReview, createInitialSchedule, REVIEW_RESULTS } from './scheduler.uts'
+import { todayKey } from './date.uts'
+import {
+	createDefaultPreferences,
+	createEmptyMistake,
+	createEmptyReviewOutput,
+	Mistake,
+	MistakeForm,
+	Preferences,
+	ReviewOutput,
+	ReviewRecord
+} from './models.uts'
+
+const MISTAKES_KEY = 'mistake_scheduler_mistakes_v1'
+const RECORDS_KEY = 'mistake_scheduler_review_records_v1'
+const PREFERENCES_KEY = 'mistake_scheduler_preferences_v1'
+
+function createId(prefix: string): string {
+	return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 100000)}`
+}
+
+function parseMistakeList(raw: any): Mistake[] {
+	if (raw == null) return [] as Mistake[]
+	try {
+		if (typeof raw === 'string') {
+			const source = raw as string
+			if (source.length === 0) return [] as Mistake[]
+			const parsed = JSON.parse<Mistake[]>(source)
+			if (parsed == null) return [] as Mistake[]
+			return parsed
+		}
+		const text = JSON.stringify(raw)
+		if (text == null) return [] as Mistake[]
+		const parsed = JSON.parse<Mistake[]>(text)
+		if (parsed == null) return [] as Mistake[]
+		return parsed
+	} catch (error) {
+		return [] as Mistake[]
+	}
+}
+
+function parseRecordList(raw: any): ReviewRecord[] {
+	if (raw == null) return [] as ReviewRecord[]
+	try {
+		if (typeof raw === 'string') {
+			const source = raw as string
+			if (source.length === 0) return [] as ReviewRecord[]
+			const parsed = JSON.parse<ReviewRecord[]>(source)
+			if (parsed == null) return [] as ReviewRecord[]
+			return parsed
+		}
+		const text = JSON.stringify(raw)
+		if (text == null) return [] as ReviewRecord[]
+		const parsed = JSON.parse<ReviewRecord[]>(text)
+		if (parsed == null) return [] as ReviewRecord[]
+		return parsed
+	} catch (error) {
+		return [] as ReviewRecord[]
+	}
+}
+
+function parsePreferences(raw: any): Preferences {
+	const defaults = createDefaultPreferences()
+	if (raw == null) return defaults
+
+	try {
+		let parsed = defaults
+		if (typeof raw === 'string') {
+			const source = raw as string
+			if (source.length === 0) return defaults
+			const result = JSON.parse<Preferences>(source)
+			if (result == null) return defaults
+			parsed = result
+		} else {
+			const text = JSON.stringify(raw)
+			if (text == null) return defaults
+			const result = JSON.parse<Preferences>(text)
+			if (result == null) return defaults
+			parsed = result
+		}
+
+		if (parsed.homeTitle.length === 0) parsed.homeTitle = defaults.homeTitle
+		if (parsed.greetingTitle.length === 0) parsed.greetingTitle = defaults.greetingTitle
+		if (parsed.homeAvatar.length === 0) parsed.homeAvatar = defaults.homeAvatar
+		if (parsed.statsName.length === 0) parsed.statsName = defaults.statsName
+		return parsed
+	} catch (error) {
+		return defaults
+	}
+}
+
+export function getMistakes(): Mistake[] {
+	const raw = uni.getStorageSync(MISTAKES_KEY)
+	if (raw == null) return [] as Mistake[]
+	return parseMistakeList(raw)
+}
+
+export function saveMistakes(mistakes: Mistake[]): void {
+	uni.setStorageSync(MISTAKES_KEY, mistakes)
+}
+
+export function getReviewRecords(): ReviewRecord[] {
+	const raw = uni.getStorageSync(RECORDS_KEY)
+	if (raw == null) return [] as ReviewRecord[]
+	return parseRecordList(raw)
+}
+
+export function saveReviewRecords(records: ReviewRecord[]): void {
+	uni.setStorageSync(RECORDS_KEY, records)
+}
+
+export function getPreferences(): Preferences {
+	const raw = uni.getStorageSync(PREFERENCES_KEY)
+	if (raw == null) return createDefaultPreferences()
+	return parsePreferences(raw)
+}
+
+export function savePreferences(preferences: Preferences): Preferences {
+	const defaults = createDefaultPreferences()
+	const next = {
+		homeTitle: preferences.homeTitle.length > 0 ? preferences.homeTitle : defaults.homeTitle,
+		greetingTitle: preferences.greetingTitle.length > 0 ? preferences.greetingTitle : defaults.greetingTitle,
+		homeAvatar: preferences.homeAvatar.length > 0 ? preferences.homeAvatar : defaults.homeAvatar,
+		statsName: preferences.statsName.length > 0 ? preferences.statsName : defaults.statsName
+	} as Preferences
+	uni.setStorageSync(PREFERENCES_KEY, next)
+	return next
+}
+
+export function createMistake(payload: MistakeForm): Mistake {
+	const now = new Date().toISOString()
+	const schedule = createInitialSchedule(now)
+	const mistake = {
+		id: createId('mistake'),
+		questionImage: payload.questionImage,
+		answerImage: payload.answerImage,
+		subject: payload.subject,
+		chapter: payload.chapter,
+		errorType: payload.errorType,
+		difficulty: payload.difficulty.length > 0 ? payload.difficulty : '中等',
+		note: payload.note,
+		createdAt: now,
+		updatedAt: now,
+		reviewStage: schedule.reviewStage,
+		nextReviewDate: schedule.nextReviewDate,
+		totalReviewCount: 0,
+		totalWrongCount: 0,
+		lastReviewResult: '',
+		isArchived: false
+	} as Mistake
+
+	const mistakes = getMistakes()
+	mistakes.unshift(mistake)
+	saveMistakes(mistakes)
+	return mistake
+}
+
+export function getMistakeById(id: string): Mistake {
+	const mistakes = getMistakes()
+	for (let index = 0; index < mistakes.length; index++) {
+		const mistake = mistakes[index]
+		if (mistake.id === id) return mistake
+	}
+	return createEmptyMistake()
+}
+
+export function completeReview(questionId: string, result: string, reviewedAt: any = new Date()): ReviewOutput {
+	const mistakes = getMistakes()
+	let index = -1
+	for (let cursor = 0; cursor < mistakes.length; cursor++) {
+		if (mistakes[cursor].id === questionId) {
+			index = cursor
+			break
+		}
+	}
+
+	if (index < 0) {
+		return createEmptyReviewOutput()
+	}
+
+	const mistake = mistakes[index]
+	let stageBefore = 'new'
+	if (mistake.reviewStage.length > 0) {
+		stageBefore = mistake.reviewStage
+	} else {
+		stageBefore = 'new'
+	}
+
+	const schedule = calculateNextReview(stageBefore, result, reviewedAt)
+	const now = new Date().toISOString()
+	let wrongIncrement = 0
+	if (result === REVIEW_RESULTS.WRONG) wrongIncrement = 1
+
+	const updatedMistake = {
+		id: mistake.id,
+		questionImage: mistake.questionImage,
+		answerImage: mistake.answerImage,
+		subject: mistake.subject,
+		chapter: mistake.chapter,
+		errorType: mistake.errorType,
+		difficulty: mistake.difficulty,
+		note: mistake.note,
+		createdAt: mistake.createdAt,
+		updatedAt: now,
+		reviewStage: schedule.stageAfter,
+		nextReviewDate: schedule.nextReviewDate,
+		totalReviewCount: mistake.totalReviewCount + 1,
+		totalWrongCount: mistake.totalWrongCount + wrongIncrement,
+		lastReviewResult: result,
+		isArchived: mistake.isArchived
+	} as Mistake
+
+	mistakes.splice(index, 1, updatedMistake)
+	saveMistakes(mistakes)
+
+	const record = {
+		id: createId('record'),
+		questionId,
+		reviewDate: todayKey(),
+		result,
+		stageBefore,
+		stageAfter: schedule.stageAfter,
+		nextReviewDate: schedule.nextReviewDate
+	} as ReviewRecord
+	const records = getReviewRecords()
+	records.unshift(record)
+	saveReviewRecords(records)
+
+	return {
+		success: true,
+		mistake: updatedMistake,
+		record
+	} as ReviewOutput
+}
+
+export function archiveMistake(id: string): Mistake {
+	const mistakes = getMistakes()
+	for (let index = 0; index < mistakes.length; index++) {
+		const mistake = mistakes[index]
+		if (mistake.id === id) {
+			const updated = {
+				id: mistake.id,
+				questionImage: mistake.questionImage,
+				answerImage: mistake.answerImage,
+				subject: mistake.subject,
+				chapter: mistake.chapter,
+				errorType: mistake.errorType,
+				difficulty: mistake.difficulty,
+				note: mistake.note,
+				createdAt: mistake.createdAt,
+				updatedAt: new Date().toISOString(),
+				reviewStage: mistake.reviewStage,
+				nextReviewDate: mistake.nextReviewDate,
+				totalReviewCount: mistake.totalReviewCount,
+				totalWrongCount: mistake.totalWrongCount,
+				lastReviewResult: mistake.lastReviewResult,
+				isArchived: true
+			} as Mistake
+			mistakes.splice(index, 1, updated)
+			saveMistakes(mistakes)
+			return updated
+		}
+	}
+	return createEmptyMistake()
+}

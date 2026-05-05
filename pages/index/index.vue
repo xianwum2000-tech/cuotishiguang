@@ -94,7 +94,16 @@
 					</view>
 
 					<view class="upload-box" @click="chooseQuestionImage">
-						<image v-if="form.questionImage.length > 0" class="upload-preview" :src="form.questionImage" mode="aspectFill"></image>
+						<image
+							v-if="form.questionImage.length > 0"
+							class="upload-preview"
+							:src="form.questionImage"
+							mode="aspectFill"
+							@click.stop="previewSingleImage(form.questionImage)"
+						></image>
+						<view v-if="form.questionImage.length > 0" class="upload-change" @click.stop="chooseQuestionImage">
+							<text>更换</text>
+						</view>
 						<view v-if="form.questionImage.length === 0" class="upload-placeholder">
 							<view class="upload-icon"><text>▣</text></view>
 							<text class="upload-title">上传题目图</text>
@@ -103,7 +112,16 @@
 					</view>
 
 					<view class="upload-box" @click="chooseAnswerImage">
-						<image v-if="form.answerImage.length > 0" class="upload-preview" :src="form.answerImage" mode="aspectFill"></image>
+						<image
+							v-if="form.answerImage.length > 0"
+							class="upload-preview"
+							:src="form.answerImage"
+							mode="aspectFill"
+							@click.stop="previewSingleImage(form.answerImage)"
+						></image>
+						<view v-if="form.answerImage.length > 0" class="upload-change" @click.stop="chooseAnswerImage">
+							<text>更换</text>
+						</view>
 						<view v-if="form.answerImage.length === 0" class="upload-placeholder">
 							<view class="upload-icon"><text>▤</text></view>
 							<text class="upload-title">上传答案图</text>
@@ -263,7 +281,16 @@
 							<text class="tag-purple">题目</text>
 							<text class="muted">{{ activeReview.subject }} · {{ activeReview.chapter }}</text>
 						</view>
-						<image class="review-image" :src="activeReview.questionImage" mode="aspectFill"></image>
+						<image
+							class="review-image"
+							:src="activeReview.questionImage"
+							mode="aspectFill"
+							@click="previewReviewImage(activeReview.questionImage)"
+							@error="handleImageError('题目图片', 'questionImage')"
+						></image>
+						<view v-if="reviewQuestionImageBroken" class="image-repair-action" @click="showDetail(activeReview)">
+							<text>图片失效，去详情更换</text>
+						</view>
 						<text class="question-text">{{ activeReview.errorType }}｜{{ activeReview.difficulty }}</text>
 						<text v-if="activeReview.note.length > 0" class="review-note">{{ activeReview.note }}</text>
 					</view>
@@ -276,7 +303,16 @@
 						<view class="review-meta">
 							<text class="tag-grey">正确答案</text>
 						</view>
-						<image class="answer-image" :src="activeReview.answerImage" mode="aspectFill"></image>
+						<image
+							class="answer-image"
+							:src="activeReview.answerImage"
+							mode="aspectFill"
+							@click="previewReviewImage(activeReview.answerImage)"
+							@error="handleImageError('答案图片', 'answerImage')"
+						></image>
+						<view v-if="reviewAnswerImageBroken" class="image-repair-action" @click="showDetail(activeReview)">
+							<text>图片失效，去详情更换</text>
+						</view>
 						<view class="answer-note">
 							<text class="answer-text">确认自己的思路后，再选择本次复习结果。</text>
 						</view>
@@ -361,7 +397,12 @@
 						@click="showDetail(item)"
 					>
 						<view class="mistake-image-wrap">
-							<image class="mistake-image" :src="item.questionImage" mode="aspectFill"></image>
+							<image
+								class="mistake-image"
+								:src="item.questionImage"
+								mode="aspectFill"
+								@click.stop="previewMistakeImages(item, item.questionImage)"
+							></image>
 							<view class="due-pill"><text>{{ formatDueText(item) }}</text></view>
 						</view>
 						<view class="mistake-copy">
@@ -391,12 +432,40 @@
 
 					<view class="detail-card soft-card">
 						<text class="field-label">题目图片</text>
-						<image class="detail-image" :src="activeDetail.questionImage" mode="aspectFill"></image>
+						<image
+							class="detail-image"
+							:src="activeDetail.questionImage"
+							mode="aspectFill"
+							@click="previewMistakeImages(activeDetail, activeDetail.questionImage)"
+							@error="handleImageError('题目图片', 'questionImage')"
+						></image>
+						<view class="detail-image-actions">
+							<view class="detail-image-action" @click="previewMistakeImages(activeDetail, activeDetail.questionImage)">
+								<text>放大查看</text>
+							</view>
+							<view class="detail-image-action muted-action" @click="replaceDetailImage('questionImage')">
+								<text>更换图片</text>
+							</view>
+						</view>
 					</view>
 
 					<view class="detail-card soft-card">
 						<text class="field-label">答案图片</text>
-						<image class="detail-image" :src="activeDetail.answerImage" mode="aspectFill"></image>
+						<image
+							class="detail-image"
+							:src="activeDetail.answerImage"
+							mode="aspectFill"
+							@click="previewMistakeImages(activeDetail, activeDetail.answerImage)"
+							@error="handleImageError('答案图片', 'answerImage')"
+						></image>
+						<view class="detail-image-actions">
+							<view class="detail-image-action" @click="previewMistakeImages(activeDetail, activeDetail.answerImage)">
+								<text>放大查看</text>
+							</view>
+							<view class="detail-image-action muted-action" @click="replaceDetailImage('answerImage')">
+								<text>更换图片</text>
+							</view>
+						</view>
 					</view>
 
 					<view class="detail-card soft-card">
@@ -511,6 +580,23 @@
 						<text class="page-title">本地错题调度器</text>
 						<text class="page-subtitle">离线可用 · 无账号 · 无题库 · 无 AI 识别</text>
 					</view>
+
+					<view class="profile-card soft-card">
+						<text class="page-title">版本管理</text>
+						<text class="page-subtitle">当前版本 {{ appVersion.name }}（{{ appVersion.code }}）</text>
+						<text class="profile-line">包名：{{ appVersion.packageName }}</text>
+						<text class="profile-line">更新源：{{ updateSourceText }}</text>
+						<view v-if="latestVersion.versionCode > 0" class="update-note">
+							<text>发现新版 {{ latestVersion.versionName }}：{{ latestVersion.changelog || '暂无更新说明' }}</text>
+						</view>
+						<view v-if="updateDownloading" class="update-progress">
+							<view class="update-progress-fill" :style="updateProgressStyle"></view>
+						</view>
+						<text v-if="updateDownloading" class="profile-line">正在下载 {{ updateProgress }}%</text>
+						<view class="secondary-button" @click="checkAppUpdate(false)">
+							<text>{{ updateChecking ? '检查中...' : '检查更新' }}</text>
+						</view>
+					</view>
 				</view>
 			</view>
 
@@ -596,7 +682,7 @@
 </template>
 
 <script>
-	import { addDays, daysBetween, todayKey } from '@/utils/date.uts'
+	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
 		getOverdueMistakes,
@@ -604,7 +690,7 @@
 		getStageLabel,
 		getOverdueDays,
 		sortMistakesByPriority
-	} from '@/utils/scheduler.uts'
+	} from '@/utils/scheduler.js'
 	import {
 		archiveMistake,
 		completeReview,
@@ -612,26 +698,73 @@
 		getMistakes,
 		getPreferences,
 		getReviewRecords,
-		savePreferences
-	} from '@/utils/storage.uts'
-	import {
-		createDefaultForm,
-		createDefaultPreferences,
-		createEmptyMistake,
-		DistributionItem,
-		Mistake,
-		MistakeForm,
-		Preferences,
-		ReviewRecord,
-		WeeklyBar
-	} from '@/utils/models.uts'
+		savePreferences,
+		updateMistake
+	} from '@/utils/storage.js'
+	import { persistImageFile, previewImages } from '@/utils/file.js'
+	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/updater.js'
+
+	function createDefaultPreferences() {
+		return {
+			homeTitle: '复习达人',
+			greetingTitle: '早上好，小明',
+			homeAvatar: '/static/stitch_assets/avatar-home.jpg',
+			statsName: '小明'
+		}
+	}
+
+	function createDefaultForm() {
+		return {
+			questionImage: '',
+			answerImage: '',
+			subject: '高数',
+			chapter: '极限',
+			errorType: '思路错',
+			difficulty: '中等',
+			note: ''
+		}
+	}
+
+	function createEmptyMistake() {
+		return {
+			id: '',
+			questionImage: '',
+			answerImage: '',
+			subject: '',
+			chapter: '',
+			errorType: '',
+			difficulty: '',
+			note: '',
+			createdAt: '',
+			updatedAt: '',
+			reviewStage: 'new',
+			nextReviewDate: '',
+			totalReviewCount: 0,
+			totalWrongCount: 0,
+			lastReviewResult: '',
+			isArchived: false
+		}
+	}
 
 	export default {
 		data() {
 			return {
 				screen: 'home',
-				mistakes: [] as Mistake[],
-				records: [] as ReviewRecord[],
+				mistakes: [],
+				records: [],
+				appVersion: getUpdateRuntimeInfo().current,
+				updateConfigured: getUpdateRuntimeInfo().configured,
+				updateManifestUrl: getUpdateRuntimeInfo().manifestUrl,
+				updateChecking: false,
+				updateDownloading: false,
+				updateProgress: 0,
+				latestVersion: {
+					versionName: '',
+					versionCode: 0,
+					apkUrl: '',
+					changelog: '',
+					force: false
+				},
 				preferences: createDefaultPreferences(),
 				settingsForm: createDefaultPreferences(),
 				activeReview: createEmptyMistake(),
@@ -639,371 +772,462 @@
 				hasActiveReview: false,
 				hasActiveDetail: false,
 				answerVisible: false,
+				reviewQuestionImageBroken: false,
+				reviewAnswerImageBroken: false,
 				todaySubject: '全部',
 				todayChapter: '全部',
 				librarySubject: '全部',
 				libraryError: '全部',
 				libraryKeyword: '',
-				subjectOptions: ['高数', '线代', '概率'] as string[],
-				errorTypeOptions: ['思路错', '计算错', '公式忘记', '审题失误'] as string[],
-				difficultyOptions: ['简单', '中等', '偏难'] as string[],
+				imageSaving: false,
+				imageMigrationDone: false,
+				subjectOptions: ['高数', '线代', '概率'],
+				errorTypeOptions: ['思路错', '计算错', '公式忘记', '审题失误'],
+				difficultyOptions: ['简单', '中等', '偏难'],
 				form: createDefaultForm()
 			}
 		},
 		computed: {
-			currentDate(): string {
+			currentDate() {
 				return todayKey()
 			},
-			activeMistakes(): Mistake[] {
-				const list: Mistake[] = []
-				for (let index = 0; index < this.mistakes.length; index++) {
-					const item = this.mistakes[index]
-					if (!item.isArchived) {
-						list.push(item)
-					}
-				}
-				return list
+			activeMistakes() {
+				return this.mistakes.filter((item) => !item.isArchived)
 			},
-			totalCount(): number {
+			totalCount() {
 				return this.activeMistakes.length
 			},
-			dueList(): Mistake[] {
+			dueList() {
 				return getDueMistakes(this.activeMistakes, this.currentDate)
 			},
-			dueCount(): number {
+			dueCount() {
 				return this.dueList.length
 			},
-			overdueCount(): number {
+			overdueCount() {
 				return getOverdueMistakes(this.activeMistakes, this.currentDate).length
 			},
-			masteredCount(): number {
-				let count = 0
-				for (let index = 0; index < this.activeMistakes.length; index++) {
-					const item = this.activeMistakes[index]
-					if (item.reviewStage === 'pass3' && item.lastReviewResult === 'known') {
-						count++
-					}
-				}
-				return count
+			masteredCount() {
+				return this.activeMistakes.filter((item) => item.reviewStage === 'pass3' && item.lastReviewResult === 'known').length
 			},
-			priorityList(): Mistake[] {
-				const list: Mistake[] = []
-				for (let index = 0; index < this.dueList.length && index < 3; index++) {
-					list.push(this.dueList[index])
-				}
-				return list
+			priorityList() {
+				return this.dueList.slice(0, 3)
 			},
-			chaptersForForm(): string[] {
+			chaptersForForm() {
 				return this.getChaptersForSubject(this.form.subject)
 			},
-			filterSubjects(): string[] {
-				const list = ['全部'] as string[]
-				return list.concat(this.subjectOptions)
+			filterSubjects() {
+				return ['全部'].concat(this.subjectOptions)
 			},
-			filterChapters(): string[] {
-				const names = ['全部'] as string[]
-				for (let index = 0; index < this.activeMistakes.length; index++) {
-					const chapter = this.activeMistakes[index].chapter
-					if (chapter.length > 0 && names.indexOf(chapter) < 0) {
-						names.push(chapter)
-					}
-				}
+			filterChapters() {
+				const names = ['全部']
+				this.activeMistakes.forEach((item) => {
+					if (item.chapter && names.indexOf(item.chapter) < 0) names.push(item.chapter)
+				})
 				return names
 			},
-			filterErrors(): string[] {
-				const list = ['全部'] as string[]
-				return list.concat(this.errorTypeOptions)
+			filterErrors() {
+				return ['全部'].concat(this.errorTypeOptions)
 			},
-			filteredTodayList(): Mistake[] {
-				const list: Mistake[] = []
-				for (let index = 0; index < this.dueList.length; index++) {
-					const item = this.dueList[index]
+			filteredTodayList() {
+				return this.dueList.filter((item) => {
 					const subjectMatch = this.todaySubject === '全部' || item.subject === this.todaySubject
 					const chapterMatch = this.todayChapter === '全部' || item.chapter === this.todayChapter
-					if (subjectMatch && chapterMatch) {
-						list.push(item)
-					}
-				}
-				return list
+					return subjectMatch && chapterMatch
+				})
 			},
-			libraryList(): Mistake[] {
+			libraryList() {
 				const keyword = this.libraryKeyword.trim()
-				const filtered: Mistake[] = []
-				for (let index = 0; index < this.activeMistakes.length; index++) {
-					const item = this.activeMistakes[index]
+				const filtered = this.activeMistakes.filter((item) => {
 					const subjectMatch = this.librarySubject === '全部' || item.subject === this.librarySubject
 					const errorMatch = this.libraryError === '全部' || item.errorType === this.libraryError
-					const note = item.note
+					const note = item.note || ''
 					const keywordMatch =
 						keyword.length === 0 ||
 						item.chapter.indexOf(keyword) >= 0 ||
 						item.errorType.indexOf(keyword) >= 0 ||
 						note.indexOf(keyword) >= 0
-					if (subjectMatch && errorMatch && keywordMatch) {
-						filtered.push(item)
-					}
-				}
+					return subjectMatch && errorMatch && keywordMatch
+				})
 				return sortMistakesByPriority(filtered, this.currentDate)
 			},
-			detailRecords(): ReviewRecord[] {
-				const list: ReviewRecord[] = []
-				if (this.hasActiveDetail === false) return list
-				for (let index = 0; index < this.records.length; index++) {
-					const record = this.records[index]
-					if (record.questionId === this.activeDetail.id) {
-						list.push(record)
-					}
-				}
-				return list
+			detailRecords() {
+				if (!this.hasActiveDetail) return []
+				return this.records.filter((record) => record.questionId === this.activeDetail.id)
 			},
-			weeklyBars(): WeeklyBar[] {
-				const bars: WeeklyBar[] = []
-				const labels = ['一', '二', '三', '四', '五', '六', '日'] as string[]
+			weeklyBars() {
+				const bars = []
+				const labels = ['一', '二', '三', '四', '五', '六', '日']
 				for (let index = 6; index >= 0; index--) {
 					const date = addDays(this.currentDate, -index)
-					let count = 0
-					for (let recordIndex = 0; recordIndex < this.records.length; recordIndex++) {
-						if (this.records[recordIndex].reviewDate === date) {
-							count++
-						}
-					}
+					const count = this.records.filter((record) => record.reviewDate === date).length
 					const day = new Date(date).getDay()
-					const labelIndex = day === 0 ? 6 : day - 1
 					bars.push({
 						date,
 						count,
-						label: labels[labelIndex],
+						label: labels[day === 0 ? 6 : day - 1],
 						height: Math.max(8, Math.min(96, count * 18))
-					} as WeeklyBar)
+					})
 				}
 				return bars
 			},
-			chapterStats(): DistributionItem[] {
-				return this.buildChapterDistribution()
+			chapterStats() {
+				return this.buildDistribution('chapter')
 			},
-			errorStats(): DistributionItem[] {
-				return this.buildErrorDistribution()
+			errorStats() {
+				return this.buildDistribution('errorType')
 			},
-			previewHomeTitle(): string {
-				return this.settingsForm.homeTitle.length > 0 ? this.settingsForm.homeTitle : '复习达人'
+			previewHomeTitle() {
+				return this.settingsForm.homeTitle || '复习达人'
 			},
-			previewGreetingTitle(): string {
-				return this.settingsForm.greetingTitle.length > 0 ? this.settingsForm.greetingTitle : '早上好，小明'
+			previewGreetingTitle() {
+				return this.settingsForm.greetingTitle || '早上好，小明'
 			},
-			previewStatsName(): string {
-				return this.settingsForm.statsName.length > 0 ? this.settingsForm.statsName : '小明'
+			previewStatsName() {
+				return this.settingsForm.statsName || '小明'
 			},
-			homeNavClass(): string {
+			updateSourceText() {
+				return this.updateConfigured ? 'GitHub Releases' : '未配置 GitHub 仓库'
+			},
+			updateProgressStyle() {
+				return 'width: ' + this.updateProgress + '%'
+			},
+			homeNavClass() {
 				return this.screen === 'home' || this.screen === 'settings' ? 'nav-item nav-active' : 'nav-item'
 			},
-			reviewNavClass(): string {
+			reviewNavClass() {
 				return this.screen === 'today' || this.screen === 'review' ? 'nav-item nav-active' : 'nav-item'
 			},
-			libraryNavClass(): string {
+			libraryNavClass() {
 				return this.screen === 'library' || this.screen === 'detail' || this.screen === 'add' ? 'nav-item nav-active' : 'nav-item'
 			}
 		},
 		onLoad() {
 			this.refreshData()
+			this.migrateStoredImages()
+			setTimeout(() => {
+				this.checkAppUpdate(true)
+			}, 1500)
 		},
 		methods: {
-			refreshData(): void {
+			refreshData() {
 				this.mistakes = getMistakes()
 				this.records = getReviewRecords()
 				this.preferences = getPreferences()
+				const runtimeInfo = getUpdateRuntimeInfo()
+				this.appVersion = runtimeInfo.current
+				this.updateConfigured = runtimeInfo.configured
+				this.updateManifestUrl = runtimeInfo.manifestUrl
 			},
-			showHome(): void {
+			async migrateStoredImages() {
+				if (this.imageMigrationDone) return
+				this.imageMigrationDone = true
+				let hasChanged = false
+
+				for (let index = 0; index < this.mistakes.length; index++) {
+					const item = this.mistakes[index]
+					const question = await persistImageFile(item.questionImage)
+					const answer = await persistImageFile(item.answerImage)
+					const patch = {}
+					if (question.changed) patch.questionImage = question.path
+					if (answer.changed) patch.answerImage = answer.path
+					if (Object.keys(patch).length > 0) {
+						updateMistake(item.id, patch)
+						hasChanged = true
+					}
+				}
+
+				const avatar = await persistImageFile(this.preferences.homeAvatar)
+				if (avatar.changed) {
+					this.preferences = savePreferences({
+						...this.preferences,
+						homeAvatar: avatar.path
+					})
+					hasChanged = true
+				}
+
+				if (hasChanged) this.refreshData()
+			},
+			showHome() {
 				this.refreshData()
 				this.screen = 'home'
 			},
-			showAdd(): void {
+			showAdd() {
 				this.screen = 'add'
 			},
-			showToday(): void {
+			showToday() {
 				this.refreshData()
 				this.screen = 'today'
 			},
-			showLibrary(): void {
+			showLibrary() {
 				this.refreshData()
 				this.screen = 'library'
 			},
-			showStats(): void {
+			showStats() {
 				this.refreshData()
 				this.screen = 'stats'
 			},
-			showProfile(): void {
+			showProfile() {
+				this.refreshData()
 				this.screen = 'profile'
 			},
-			showSettings(): void {
+			showSettings() {
 				this.preferences = getPreferences()
 				this.settingsForm = {
 					homeTitle: this.preferences.homeTitle,
 					greetingTitle: this.preferences.greetingTitle,
 					homeAvatar: this.preferences.homeAvatar,
 					statsName: this.preferences.statsName
-				} as Preferences
+				}
 				this.screen = 'settings'
 			},
-			saveHomeSettings(): void {
+			saveHomeSettings() {
 				const homeTitle = this.settingsForm.homeTitle.trim()
 				const greetingTitle = this.settingsForm.greetingTitle.trim()
 				const statsName = this.settingsForm.statsName.trim()
-				if (homeTitle.length === 0 || greetingTitle.length === 0 || statsName.length === 0) {
+				if (!homeTitle || !greetingTitle || !statsName) {
 					this.toast('标题、问候语和统计页姓名不能为空')
 					return
 				}
-
 				const defaults = createDefaultPreferences()
 				this.preferences = savePreferences({
 					homeTitle,
 					greetingTitle,
-					homeAvatar: this.settingsForm.homeAvatar.length > 0 ? this.settingsForm.homeAvatar : defaults.homeAvatar,
+					homeAvatar: this.settingsForm.homeAvatar || defaults.homeAvatar,
 					statsName
-				} as Preferences)
+				})
 				this.toast('首页文案已保存')
 				this.screen = 'home'
 			},
-			resetHomeSettings(): void {
+			resetHomeSettings() {
 				this.settingsForm = createDefaultPreferences()
 				this.preferences = savePreferences(this.settingsForm)
 				this.toast('已恢复默认')
 				this.screen = 'home'
 			},
-			getChaptersForSubject(subject: string): string[] {
-				if (subject === '线代') return ['行列式', '矩阵', '向量', '线性方程组', '特征值'] as string[]
-				if (subject === '概率') return ['随机事件', '随机变量', '数字特征', '大数定律', '参数估计'] as string[]
-				return ['极限', '导数', '积分', '级数', '多元函数'] as string[]
+			async checkAppUpdate(silent) {
+				if (this.updateChecking || this.updateDownloading) return
+				this.updateChecking = true
+				const result = await checkForUpdate()
+				this.updateChecking = false
+				this.appVersion = result.current || this.appVersion
+
+				if (!result.ok) {
+					if (!silent) this.toast(this.updateErrorText(result.reason))
+					return
+				}
+
+				if (!result.hasUpdate) {
+					this.latestVersion = {
+						versionName: '',
+						versionCode: 0,
+						apkUrl: '',
+						changelog: '',
+						force: false
+					}
+					if (!silent) this.toast('当前已是最新版本')
+					return
+				}
+
+				this.latestVersion = result.remote
+				this.showUpdateDialog(result.remote)
 			},
-			selectFormSubject(subject: string): void {
+			updateErrorText(reason) {
+				if (reason === 'not-configured') return '还未配置 GitHub Releases 更新地址'
+				if (reason === 'bad-manifest') return '更新配置格式不正确'
+				if (reason === 'package-mismatch') return '更新包名不一致，已阻止安装'
+				if (reason === 'network') return '检查更新失败，请稍后重试'
+				return '检查更新失败'
+			},
+			showUpdateDialog(remote) {
+				const content = remote.changelog || '检测到新版本，是否立即下载安装？'
+				uni.showModal({
+					title: '发现新版本 ' + remote.versionName,
+					content,
+					confirmText: '立即更新',
+					cancelText: '稍后',
+					showCancel: !remote.force,
+					success: (res) => {
+						if (res.confirm) this.installLatestVersion(remote)
+					}
+				})
+			},
+			async installLatestVersion(remote) {
+				this.updateDownloading = true
+				this.updateProgress = 0
+				try {
+					await downloadAndInstallApk(remote, (progress) => {
+						this.updateProgress = Math.max(0, Math.min(100, progress))
+					})
+					this.updateDownloading = false
+					this.toast('已调起安装，请按提示覆盖安装')
+				} catch (error) {
+					this.updateDownloading = false
+					this.toast('下载或安装失败，请稍后重试')
+				}
+			},
+			getChaptersForSubject(subject) {
+				if (subject === '线代') return ['行列式', '矩阵', '向量', '线性方程组', '特征值']
+				if (subject === '概率') return ['随机事件', '随机变量', '数字特征', '大数定律', '参数估计']
+				return ['极限', '导数', '积分', '级数', '多元函数']
+			},
+			selectFormSubject(subject) {
 				this.form.subject = subject
 				this.form.chapter = this.getChaptersForSubject(subject)[0]
 			},
-			setFormChapter(chapter: string): void {
+			setFormChapter(chapter) {
 				this.form.chapter = chapter
 			},
-			setFormError(errorType: string): void {
+			setFormError(errorType) {
 				this.form.errorType = errorType
 			},
-			setFormDifficulty(difficulty: string): void {
+			setFormDifficulty(difficulty) {
 				this.form.difficulty = difficulty
 			},
-			setTodaySubject(subject: string): void {
+			setTodaySubject(subject) {
 				this.todaySubject = subject
 			},
-			setTodayChapter(chapter: string): void {
+			setTodayChapter(chapter) {
 				this.todayChapter = chapter
 			},
-			setLibrarySubject(subject: string): void {
+			setLibrarySubject(subject) {
 				this.librarySubject = subject
 			},
-			setLibraryError(errorType: string): void {
+			setLibraryError(errorType) {
 				this.libraryError = errorType
 			},
-			chooseQuestionImage(): void {
+			chooseQuestionImage() {
 				this.chooseImage('questionImage')
 			},
-			chooseAnswerImage(): void {
+			chooseAnswerImage() {
 				this.chooseImage('answerImage')
 			},
-			chooseHomeAvatar(): void {
+			chooseHomeAvatar() {
 				this.chooseImage('homeAvatar')
 			},
-			chooseImage(field: string): void {
+			chooseImage(field) {
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
 					sourceType: ['album', 'camera'],
-					success: (res): void => {
-						if (res.tempFilePaths.length === 0) return
+					success: async (res) => {
+						if (!res.tempFilePaths || res.tempFilePaths.length === 0) return
 						const tempFilePath = res.tempFilePaths[0]
-						if (field === 'questionImage') {
-							this.form.questionImage = tempFilePath
-						} else if (field === 'answerImage') {
-							this.form.answerImage = tempFilePath
-						} else if (field === 'homeAvatar') {
-							this.settingsForm.homeAvatar = tempFilePath
+						this.imageSaving = true
+						const output = await persistImageFile(tempFilePath)
+						this.setImageField(field, output.path)
+						this.imageSaving = false
+						if (!output.persisted && field !== 'homeAvatar') {
+							this.toast('图片已选中；保存失败时会保留原路径')
 						}
+					},
+					fail: () => {
+						this.imageSaving = false
 					}
 				})
 			},
-			saveMistake(): void {
-				if (this.form.questionImage.length === 0 || this.form.answerImage.length === 0) {
+			setImageField(field, filePath) {
+				if (field === 'questionImage') this.form.questionImage = filePath
+				if (field === 'answerImage') this.form.answerImage = filePath
+				if (field === 'homeAvatar') this.settingsForm.homeAvatar = filePath
+			},
+			saveMistake() {
+				if (this.imageSaving) {
+					this.toast('图片正在保存，请稍等')
+					return
+				}
+				if (!this.form.questionImage || !this.form.answerImage) {
 					this.toast('请先上传题目图和答案图')
 					return
 				}
-				const mistake = createMistake(this.form)
+				const mistake = createMistake({ ...this.form })
 				this.resetForm()
 				this.refreshData()
 				this.toast('已保存，2天后开始复习')
 				this.showDetail(mistake)
 			},
-			resetForm(): void {
+			resetForm() {
 				this.form = createDefaultForm()
 			},
-			startFirstReview(): void {
+			startFirstReview() {
 				if (this.filteredTodayList.length === 0) {
 					this.toast('当前筛选下没有待复习错题')
 					return
 				}
 				this.startReview(this.filteredTodayList[0])
 			},
-			startReview(item: Mistake): void {
+			startReview(item) {
 				this.activeReview = item
 				this.hasActiveReview = true
 				this.answerVisible = false
+				this.reviewQuestionImageBroken = false
+				this.reviewAnswerImageBroken = false
 				this.screen = 'review'
 			},
-			revealAnswer(): void {
+			revealAnswer() {
 				this.answerVisible = true
 			},
-			submitReview(result: string): void {
-				if (this.hasActiveReview === false) return
+			submitReview(result) {
+				if (!this.hasActiveReview) return
 				const currentId = this.activeReview.id
 				const output = completeReview(currentId, result)
-				if (output.success === false) {
+				if (!output) {
 					this.toast('复习记录保存失败')
 					return
 				}
 				this.refreshData()
-				this.toast(`已记录：${this.resultLabel(result)}`)
-
-				let next = createEmptyMistake()
-				let hasNext = false
-				for (let index = 0; index < this.filteredTodayList.length; index++) {
-					const item = this.filteredTodayList[index]
-					if (item.id !== currentId) {
-						next = item
-						hasNext = true
-						break
-					}
-				}
-
-				if (hasNext) {
+				this.toast('已记录：' + this.resultLabel(result))
+				const next = this.filteredTodayList.find((item) => item.id !== currentId)
+				if (next) {
 					this.activeReview = next
 					this.hasActiveReview = true
 					this.answerVisible = false
+					this.reviewQuestionImageBroken = false
+					this.reviewAnswerImageBroken = false
 				} else {
 					this.activeReview = createEmptyMistake()
 					this.hasActiveReview = false
 					this.answerVisible = false
+					this.reviewQuestionImageBroken = false
+					this.reviewAnswerImageBroken = false
 					this.screen = 'today'
 				}
 			},
-			showDetail(item: Mistake): void {
+			showDetail(item) {
 				this.refreshData()
-				let detail = item
-				for (let index = 0; index < this.mistakes.length; index++) {
-					if (this.mistakes[index].id === item.id) {
-						detail = this.mistakes[index]
-						break
-					}
-				}
-				this.activeDetail = detail
+				this.activeDetail = this.mistakes.find((mistake) => mistake.id === item.id) || item
 				this.hasActiveDetail = true
 				this.screen = 'detail'
 			},
-			archiveActiveDetail(): void {
-				if (this.hasActiveDetail === false) return
+			replaceDetailImage(field) {
+				if (!this.hasActiveDetail) return
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['compressed'],
+					sourceType: ['album', 'camera'],
+					success: async (res) => {
+						if (!res.tempFilePaths || res.tempFilePaths.length === 0) return
+						this.imageSaving = true
+						const output = await persistImageFile(res.tempFilePaths[0])
+						const updated = updateMistake(this.activeDetail.id, {
+							[field]: output.path
+						})
+						this.imageSaving = false
+						this.refreshData()
+						this.activeDetail = updated || this.activeDetail
+						if (this.hasActiveReview && this.activeReview.id === this.activeDetail.id) {
+							this.activeReview = this.activeDetail
+							if (field === 'questionImage') this.reviewQuestionImageBroken = false
+							if (field === 'answerImage') this.reviewAnswerImageBroken = false
+						}
+						this.toast('图片已更新')
+					},
+					fail: () => {
+						this.imageSaving = false
+					}
+				})
+			},
+			archiveActiveDetail() {
+				if (!this.hasActiveDetail) return
 				archiveMistake(this.activeDetail.id)
 				this.refreshData()
 				this.activeDetail = createEmptyMistake()
@@ -1011,84 +1235,79 @@
 				this.toast('已归档')
 				this.screen = 'library'
 			},
-			addDistributionItem(list: DistributionItem[], name: string): void {
-				for (let index = 0; index < list.length; index++) {
-					if (list[index].name === name) {
-						list[index].count = list[index].count + 1
-						return
-					}
-				}
-				list.push({
-					name,
-					count: 1,
-					percent: 8
-				} as DistributionItem)
+			buildDistribution(field) {
+				const map = {}
+				this.activeMistakes.forEach((item) => {
+					const key = item[field] || '未分类'
+					map[key] = (map[key] || 0) + 1
+				})
+				const max = Math.max(1, ...Object.keys(map).map((key) => map[key]))
+				return Object.keys(map).map((key) => ({
+					name: key,
+					count: map[key],
+					percent: Math.max(8, Math.round((map[key] / max) * 100))
+				}))
 			},
-			finalizeDistribution(list: DistributionItem[]): DistributionItem[] {
-				let max = 1
-				for (let index = 0; index < list.length; index++) {
-					max = Math.max(max, list[index].count)
-				}
-				for (let index = 0; index < list.length; index++) {
-					list[index].percent = Math.max(8, Math.round((list[index].count / max) * 100))
-				}
-				return list
-			},
-			buildChapterDistribution(): DistributionItem[] {
-				const list: DistributionItem[] = []
-				for (let index = 0; index < this.activeMistakes.length; index++) {
-					this.addDistributionItem(list, this.activeMistakes[index].chapter)
-				}
-				return this.finalizeDistribution(list)
-			},
-			buildErrorDistribution(): DistributionItem[] {
-				const list: DistributionItem[] = []
-				for (let index = 0; index < this.activeMistakes.length; index++) {
-					this.addDistributionItem(list, this.activeMistakes[index].errorType)
-				}
-				return this.finalizeDistribution(list)
-			},
-			priorityLabel(item: Mistake): string {
-				if (getOverdueDays(item, this.currentDate) >= 2 || item.totalWrongCount >= 3) return '高'
-				if (getOverdueDays(item, this.currentDate) >= 1 || item.totalWrongCount >= 1) return '中'
+			priorityLabel(item) {
+				if (getOverdueDays(item, this.currentDate) >= 2 || (item.totalWrongCount || 0) >= 3) return '高'
+				if (getOverdueDays(item, this.currentDate) >= 1 || (item.totalWrongCount || 0) >= 1) return '中'
 				return '低'
 			},
-			priorityCardClass(item: Mistake): string {
+			priorityCardClass(item) {
 				const label = this.priorityLabel(item)
 				if (label === '高') return 'priority-card priority-high soft-card'
 				if (label === '中') return 'priority-card priority-mid soft-card'
 				return 'priority-card priority-low soft-card'
 			},
-			priorityIconClass(item: Mistake): string {
+			priorityIconClass(item) {
 				const label = this.priorityLabel(item)
 				if (label === '高') return 'priority-icon priority-icon-high'
 				if (label === '中') return 'priority-icon priority-icon-mid'
 				return 'priority-icon priority-icon-low'
 			},
-			formatDueText(item: Mistake): string {
+			formatDueText(item) {
 				const overdue = getOverdueDays(item, this.currentDate)
-				if (overdue > 0) return `逾期${overdue}天`
+				if (overdue > 0) return '逾期' + overdue + '天'
 				if (item.nextReviewDate === this.currentDate) return '今日'
-				if (item.nextReviewDate.length === 0) return '未安排'
+				if (!item.nextReviewDate) return '未安排'
 				const diff = daysBetween(item.nextReviewDate, this.currentDate)
-				return `${diff}天后`
+				return diff + '天后'
 			},
-			noteText(note: string): string {
-				return note.length > 0 ? note : '暂无备注'
+			noteText(note) {
+				return note || '暂无备注'
 			},
-			barHeightStyle(bar: WeeklyBar): string {
-				return `height: ${bar.height}px`
+			barHeightStyle(bar) {
+				return 'height: ' + bar.height + 'px'
 			},
-			distWidthStyle(item: DistributionItem): string {
-				return `width: ${item.percent}%`
+			distWidthStyle(item) {
+				return 'width: ' + item.percent + '%'
 			},
-			stageLabel(stage: string): string {
+			stageLabel(stage) {
 				return getStageLabel(stage)
 			},
-			resultLabel(result: string): string {
+			resultLabel(result) {
 				return getResultLabel(result)
 			},
-			toast(title: string): void {
+			previewSingleImage(filePath) {
+				if (!previewImages([filePath], filePath)) this.toast('暂无可预览图片')
+			},
+			previewMistakeImages(item, current) {
+				const urls = [item.questionImage, item.answerImage]
+				if (!previewImages(urls, current)) this.toast('暂无可预览图片')
+			},
+			previewReviewImage(current) {
+				const urls = [this.activeReview.questionImage]
+				if (this.answerVisible) urls.push(this.activeReview.answerImage)
+				if (!previewImages(urls, current)) this.toast('暂无可预览图片')
+			},
+			handleImageError(label, field) {
+				if (this.screen === 'review') {
+					if (field === 'questionImage') this.reviewQuestionImageBroken = true
+					if (field === 'answerImage') this.reviewAnswerImageBroken = true
+				}
+				this.toast(label + '无法读取，可在错题详情里更换图片')
+			},
+			toast(title) {
 				uni.showToast({
 					title,
 					icon: 'none'
@@ -1556,6 +1775,7 @@
 	}
 
 	.upload-box {
+		position: relative;
 		height: 196px;
 		border-radius: 30px;
 		border: 2px dashed #CBC4D2;
@@ -1569,6 +1789,27 @@
 	.upload-preview {
 		width: 100%;
 		height: 196px;
+	}
+
+	.upload-change {
+		position: absolute;
+		right: 14px;
+		top: 14px;
+		height: 30px;
+		padding-left: 12px;
+		padding-right: 12px;
+		border-radius: 999px;
+		background-color: rgba(255, 255, 255, 0.92);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.upload-change text {
+		font-size: 12px;
+		line-height: 16px;
+		font-weight: 800;
+		color: #EA580C;
 	}
 
 	.upload-placeholder {
@@ -2024,6 +2265,23 @@
 		padding: 14px 16px;
 	}
 
+	.image-repair-action {
+		height: 38px;
+		border-radius: 999px;
+		background-color: #FFF0E7;
+		margin-top: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.image-repair-action text {
+		font-size: 12px;
+		line-height: 16px;
+		font-weight: 800;
+		color: #EC8358;
+	}
+
 	.answer-text {
 		font-size: 15px;
 		line-height: 24px;
@@ -2234,6 +2492,39 @@
 		height: 180px;
 		border-radius: 22px;
 		margin-top: 10px;
+	}
+
+	.detail-image-actions {
+		display: flex;
+		flex-direction: row;
+		margin-top: 12px;
+	}
+
+	.detail-image-action {
+		flex: 1;
+		height: 38px;
+		border-radius: 999px;
+		background-color: #FFF0E7;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 10px;
+	}
+
+	.detail-image-action text {
+		font-size: 12px;
+		line-height: 16px;
+		font-weight: 800;
+		color: #EC8358;
+	}
+
+	.muted-action {
+		margin-right: 0;
+		background-color: #F8F2FA;
+	}
+
+	.muted-action text {
+		color: #6750A4;
 	}
 
 	.detail-note {
@@ -2464,6 +2755,44 @@
 		border-radius: 28px;
 		padding: 24px;
 		margin-top: 24px;
+	}
+
+	.profile-line {
+		display: block;
+		margin-top: 10px;
+		font-size: 12px;
+		line-height: 18px;
+		font-weight: 700;
+		color: #6E6874;
+	}
+
+	.update-note {
+		border-radius: 20px;
+		background-color: #FFF0E7;
+		padding: 14px;
+		margin-top: 14px;
+	}
+
+	.update-note text {
+		font-size: 12px;
+		line-height: 18px;
+		font-weight: 800;
+		color: #9A3412;
+	}
+
+	.update-progress {
+		width: 100%;
+		height: 10px;
+		border-radius: 999px;
+		background-color: #F1E8E3;
+		overflow: hidden;
+		margin-top: 16px;
+	}
+
+	.update-progress-fill {
+		height: 10px;
+		border-radius: 999px;
+		background-color: #EA580C;
 	}
 
 	.bottom-nav {
