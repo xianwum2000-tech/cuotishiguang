@@ -498,23 +498,27 @@
 				</view>
 
 				<view class="page-content stats-content">
-					<view class="page-heading">
-						<text class="page-title">{{ preferences.statsName }}的学习洞察</text>
-						<text class="page-subtitle">数据助力下一次高效复习</text>
-					</view>
-
-					<view class="stat-summary-grid">
-						<view class="insight-mini insight-last soft-card">
-							<text class="tiny-label">总错题数</text>
-							<text class="insight-number">{{ totalCount }}</text>
+					<view class="user-hero-card soft-card">
+						<view class="user-avatar-ring">
+							<image class="user-avatar-large" :src="preferences.homeAvatar" mode="aspectFill"></image>
 						</view>
-						<view class="insight-mini soft-card">
-							<text class="tiny-label">待复习数</text>
-							<text class="insight-number">{{ dueCount }}</text>
-						</view>
-						<view class="insight-mini soft-card">
-							<text class="tiny-label">已掌握数</text>
-							<text class="insight-number">{{ masteredCount }}</text>
+						<text class="user-display-name">{{ preferences.statsName }}</text>
+						<text class="user-slogan">考研数学 · 错题复习记录</text>
+						<view class="user-stat-trio">
+							<view class="user-stat-cell">
+								<text class="user-stat-num">{{ totalCount }}</text>
+								<text class="user-stat-label">总错题</text>
+							</view>
+							<view class="user-stat-divider"></view>
+							<view class="user-stat-cell">
+								<text class="user-stat-num">{{ dueCount }}</text>
+								<text class="user-stat-label">待复习</text>
+							</view>
+							<view class="user-stat-divider"></view>
+							<view class="user-stat-cell">
+								<text class="user-stat-num">{{ masteredCount }}</text>
+								<text class="user-stat-label">已掌握</text>
+							</view>
 						</view>
 					</view>
 
@@ -552,14 +556,6 @@
 							<text class="dist-name">{{ item.name }}</text>
 							<view class="dist-track"><view class="dist-fill dist-fill-red" :style="distWidthStyle(item)"></view></view>
 							<text class="dist-count">{{ item.count }}</text>
-						</view>
-					</view>
-
-					<view class="momentum-card">
-						<image class="momentum-image" src="/static/stitch_assets/stats-banner.jpg" mode="aspectFill"></image>
-						<view class="momentum-copy">
-							<text class="momentum-title">保持势头！</text>
-							<text class="momentum-sub">任务会累计，但优先级会帮你先做最该复习的。</text>
 						</view>
 					</view>
 
@@ -693,8 +689,8 @@
 					<text class="nav-label">错题</text>
 				</view>
 				<view :class="screen === 'stats' ? 'nav-item nav-active' : 'nav-item'" @click="showStats">
-					<text class="nav-icon">▥</text>
-					<text class="nav-label">统计</text>
+					<text class="nav-icon">◎</text>
+					<text class="nav-label">用户</text>
 				</view>
 			</view>
 		</view>
@@ -2769,6 +2765,86 @@
 		line-height: 18px;
 		font-weight: 700;
 		color: #FFFFFF;
+	}
+
+	.user-hero-card {
+		border-radius: 22px;
+		padding: 28px 20px 20px;
+		margin-bottom: 14px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+	}
+
+	.user-avatar-ring {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		border: 3px solid #E87B35;
+		padding: 3px;
+		margin-bottom: 14px;
+		overflow: hidden;
+	}
+
+	.user-avatar-large {
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+	}
+
+	.user-display-name {
+		font-size: 22px;
+		font-weight: 900;
+		color: #4A3728;
+		line-height: 28px;
+		margin-bottom: 4px;
+	}
+
+	.user-slogan {
+		font-size: 13px;
+		font-weight: 600;
+		color: #998B7A;
+		line-height: 18px;
+		margin-bottom: 20px;
+	}
+
+	.user-stat-trio {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-evenly;
+		width: 100%;
+		border-top: 1px solid #F1E2D8;
+		padding-top: 16px;
+	}
+
+	.user-stat-cell {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		flex: 1;
+	}
+
+	.user-stat-divider {
+		width: 1px;
+		height: 32px;
+		background-color: #F1E2D8;
+	}
+
+	.user-stat-num {
+		font-size: 24px;
+		font-weight: 900;
+		color: #6750A4;
+		line-height: 30px;
+	}
+
+	.user-stat-label {
+		font-size: 12px;
+		font-weight: 600;
+		color: #998B7A;
+		line-height: 16px;
+		margin-top: 2px;
 	}
 
 	.version-card {
