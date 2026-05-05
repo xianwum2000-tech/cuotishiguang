@@ -188,14 +188,7 @@
 			</view>
 
 			<view v-if="screen === 'today'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="avatar small-avatar">
-							<image class="avatar-img" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title small-brand">今日复习</text>
-					</view>
-				</view>
+				<view class="topbar compact-topbar"></view>
 
 				<view class="page-content today-content">
 					<view class="today-head soft-card">
@@ -341,12 +334,6 @@
 
 			<view v-if="screen === 'library'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="avatar small-avatar">
-							<image class="avatar-img" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title small-brand">错题达人</text>
-					</view>
 					<text class="gear small-gear" @click="showAdd">＋</text>
 				</view>
 
