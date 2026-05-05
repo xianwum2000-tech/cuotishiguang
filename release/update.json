@@ -1,9 +1,9 @@
 {
-  "versionName": "1.0.3",
-  "versionCode": 103,
+  "versionName": "1.0.4",
+  "versionCode": 104,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.0.3/cuotishiguang-1.0.3.apk",
-  "changelog": "统计页底部新增版本检查和更新卡片；版本号升级至 1.0.3。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.0.4/cuotishiguang-1.0.4.apk",
+  "changelog": "统计页改为用户页；复习入口仅保留首页按钮；新增应用图标；设置入口统一移至用户页。",
   "force": false,
   "publishedAt": "2026-05-05"
 }

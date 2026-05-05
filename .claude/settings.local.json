@@ -5,7 +5,22 @@
       "Bash(gh auth *)",
       "Bash(gh *)",
       "Bash(C:/Program Files/GitHub CLI/gh auth *)",
-      "Bash(C:/Program Files/GitHub CLI/gh repo *)"
+      "Bash(C:/Program Files/GitHub CLI/gh repo *)",
+      "Bash(C:/Program Files/GitHub CLI/gh release *)",
+      "Bash(npm --version)",
+      "Bash(java --version)",
+      "Bash(npm list *)",
+      "Bash(npm install *)",
+      "Bash(E:/Software/HBuilderX/cli.exe *)",
+      "Bash(E:/Software/HBuilderX/plugins/jdk/bin/keytool.exe *)",
+      "Bash(E:/Software/HBuilderX/plugins/amazon-corretto/bin/keytool.exe *)",
+      "Bash(E:/Software/HBuilderX/cli.exe pack *)",
+      "Bash(tasklist)",
+      "Bash(E:/Software/HBuilderX/cli.exe project *)",
+      "Bash(chcp 65001)",
+      "Bash(\"E:/Software/HBuilderX/cli.exe\" pack *)",
+      "Bash(xxd)",
+      "Bash(curl *)"
     ]
   }
 }
