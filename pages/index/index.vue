@@ -41,7 +41,7 @@
 							<view class="play-circle">
 								<text class="play-symbol">▶</text>
 							</view>
-							<text class="review-start-text">开始复习</text>
+							<text class="review-start-text">进入复习</text>
 						</view>
 					</view>
 
@@ -188,7 +188,9 @@
 			</view>
 
 			<view v-if="screen === 'today'" class="screen screen-cream">
-				<view class="topbar compact-topbar"></view>
+				<view class="topbar compact-topbar">
+					<text class="back-arrow" @click="showHome">← 返回</text>
+				</view>
 
 				<view class="page-content today-content">
 					<view class="today-head soft-card">
@@ -663,11 +665,7 @@
 					<text class="nav-icon">▢</text>
 					<text class="nav-label">首页</text>
 				</view>
-				<view :class="reviewNavClass" @click="showToday">
-					<text class="nav-icon">▶</text>
-					<text class="nav-label">复习</text>
-				</view>
-				<view :class="libraryNavClass" @click="showLibrary">
+<view :class="libraryNavClass" @click="showLibrary">
 					<text class="nav-icon">▱</text>
 					<text class="nav-label">错题</text>
 				</view>
@@ -1432,6 +1430,13 @@
 
 	.small-gear {
 		font-size: 16px;
+	}
+
+	.back-arrow {
+		font-size: 15px;
+		font-weight: 800;
+		color: #6750A4;
+		padding: 6px 0;
 	}
 
 	.page-content {
