@@ -9,7 +9,6 @@
 						</view>
 						<text class="brand-title">{{ preferences.homeTitle }}</text>
 					</view>
-					<text class="gear" @click="showSettings">⚙</text>
 				</view>
 
 				<view class="page-content home-content">
@@ -84,7 +83,6 @@
 						</view>
 						<text class="brand-title small-brand">ReviewMaster</text>
 					</view>
-					<text class="gear small-gear">⚙</text>
 				</view>
 
 				<view class="page-content add-content">
@@ -197,7 +195,6 @@
 						</view>
 						<text class="brand-title small-brand">今日复习</text>
 					</view>
-					<text class="gear small-gear">⚙</text>
 				</view>
 
 				<view class="page-content today-content">
@@ -589,7 +586,6 @@
 						</view>
 						<text class="brand-title small-brand">我的</text>
 					</view>
-					<text class="gear small-gear">⚙</text>
 				</view>
 				<view class="page-content">
 					<view class="profile-card soft-card">
