@@ -481,6 +481,14 @@
 							<text class="app-icon-emoji">◈</text>
 							<text class="app-icon-label">定理合集</text>
 						</view>
+						<view class="app-icon-card" @click="showScaling">
+							<text class="app-icon-emoji">↔</text>
+							<text class="app-icon-label">特殊放缩</text>
+						</view>
+						<view class="app-icon-card" @click="showProperties">
+							<text class="app-icon-emoji">◆</text>
+							<text class="app-icon-label">各类性质</text>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -492,14 +500,329 @@
 					<text></text>
 				</view>
 				<view class="page-content formulas-content">
-					<view class="formulas-placeholder soft-card">
-						<text class="formulas-placeholder-icon">∑</text>
-						<text class="formulas-placeholder-title">考研数学公式</text>
-						<text class="formulas-placeholder-sub">公式内容即将上线</text>
+					<view class="formula-category-grid">
+						<view class="formula-category-card soft-card" @click="showLimits">
+							<text class="formula-category-icon">∞</text>
+							<text class="formula-category-title">极限</text>
+							<text class="formula-category-desc">等价无穷小 · 洛必达 · 泰勒</text>
+						</view>
+						<view class="formula-category-card soft-card" @click="showDerivatives">
+							<text class="formula-category-icon">d</text>
+							<text class="formula-category-title">导数</text>
+							<text class="formula-category-desc">基本导数 · 求导法则 · 高阶</text>
+						</view>
+						<view class="formula-category-card soft-card" @click="showIntegrals">
+							<text class="formula-category-icon">∫</text>
+							<text class="formula-category-title">积分</text>
+							<text class="formula-category-desc">不定积分 · 定积分 · 技巧</text>
+						</view>
 					</view>
 				</view>
 			</view>
 
+			<view v-if="screen === 'limits'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
+					<text class="brand-title small-brand">极限公式</text>
+					<text></text>
+				</view>
+				<view class="page-content formula-detail-content">
+						<view class="formula-section soft-card">
+							<text class="formula-section-title">基本极限</text>
+							<view class="formula-block">
+								<text class="formula-inline">lim  </text>
+								<text class="formula-sub">x→0</text>
+								<view class="formula-frac">
+									<text class="formula-num">sinx</text>
+									<text class="formula-bar">━━</text>
+									<text class="formula-den">x</text>
+								</view>
+								<text class="formula-tail"> = 1</text>
+							</view>
+							<view class="formula-block">
+								<text class="formula-inline">lim  </text>
+								<text class="formula-sub">x→∞</text>
+								<text class="formula-inline"> (1 + </text>
+								<view class="formula-frac">
+									<text class="formula-num">1</text>
+									<text class="formula-bar">━━</text>
+									<text class="formula-den">x</text>
+								</view>
+								<text class="formula-tail">)ˣ = e</text>
+							</view>
+							<view class="formula-block">
+								<text class="formula-inline">lim  </text>
+								<text class="formula-sub">x→0</text>
+								<text class="formula-inline"> (1 + x)</text>
+								<view class="formula-frac">
+									<text class="formula-num">1</text>
+									<text class="formula-bar">━━</text>
+									<text class="formula-den">x</text>
+								</view>
+								<text class="formula-tail"> = e</text>
+							</view>
+							<view class="formula-block">
+								<text class="formula-inline">lim  </text>
+								<text class="formula-sub">x→0</text>
+								<view class="formula-frac">
+									<text class="formula-num">eˣ − 1</text>
+									<text class="formula-bar">━━━━</text>
+									<text class="formula-den">x</text>
+								</view>
+								<text class="formula-tail"> = 1</text>
+							</view>
+							<view class="formula-block">
+								<text class="formula-inline">lim  </text>
+								<text class="formula-sub">x→0</text>
+								<view class="formula-frac">
+									<text class="formula-num">ln(1 + x)</text>
+									<text class="formula-bar">━━━━━━</text>
+									<text class="formula-den">x</text>
+								</view>
+								<text class="formula-tail"> = 1</text>
+							</view>
+						</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">等价无穷小（x→0）</text>
+						<text class="formula-line">sinx ~ x</text>
+						<text class="formula-line">tanx ~ x</text>
+						<text class="formula-line">arcsinx ~ x</text>
+						<text class="formula-line">arctanx ~ x</text>
+						<text class="formula-line">ln(1+x) ~ x</text>
+						<text class="formula-line">eˣ − 1 ~ x</text>
+						<text class="formula-line">1 − cosx ~ x²⁄2</text>
+						<text class="formula-line">(1+x)ᵅ − 1 ~ αx</text>
+						<text class="formula-line">aˣ − 1 ~ x·lna</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">洛必达法则</text>
+						<text class="formula-line">0/0 或 ∞/∞ 型：</text>
+						<view class="formula-block">
+							<view class="formula-frac">
+								<text class="formula-num">f(x)</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">g(x)</text>
+							</view>
+							<text class="formula-tail"> = lim </text>
+							<view class="formula-frac">
+								<text class="formula-num">f'(x)</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">g'(x)</text>
+							</view>
+						</view>
+						<text class="formula-line">可多次使用，每次使用前需验证条件</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">常见泰勒展开（x=0）</text>
+						<text class="formula-line">eˣ = 1+x+x²⁄2!+x³⁄3!+···</text>
+						<text class="formula-line">sinx = x−x³⁄3!+x⁵⁄5!−···</text>
+						<text class="formula-line">cosx = 1−x²⁄2!+x⁴⁄4!−···</text>
+						<text class="formula-line">ln(1+x) = x−x²⁄2+x³⁄3−···</text>
+						<text class="formula-line">(1+x)ᵅ = 1+αx+α(α−1)x²⁄2!+···</text>
+					</view>
+					<view style="height: 24px;"></view>
+				</view>
+			</view>
+			<view v-if="screen === 'derivatives'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
+					<text class="brand-title small-brand">导数公式</text>
+					<text></text>
+				</view>
+				<view class="page-content formula-detail-content">
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">基本导数公式</text>
+						<text class="formula-line">(C)' = 0</text>
+						<text class="formula-line">(xⁿ)' = n·xⁿ⁻¹</text>
+						<text class="formula-line">(eˣ)' = eˣ</text>
+						<text class="formula-line">(aˣ)' = aˣ·lna</text>
+						<text class="formula-line">(lnx)' = ¹⁄ₓ</text>
+						<text class="formula-line">(logₐx)' = ¹⁄₍ₓ·ₗₙₐ₎</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">三角函数导数</text>
+						<text class="formula-line">(sinx)' = cosx</text>
+						<text class="formula-line">(cosx)' = −sinx</text>
+						<text class="formula-line">(tanx)' = sec²x</text>
+						<text class="formula-line">(cotx)' = −csc²x</text>
+						<text class="formula-line">(secx)' = secx·tanx</text>
+						<text class="formula-line">(cscx)' = −cscx·cotx</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">反三角函数导数</text>
+						<view class="formula-block">
+							<text class="formula-inline">(arcsinx)' = </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">√1−x²</text>
+							</view>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">(arccosx)' = −</text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">√1−x²</text>
+							</view>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">(arctanx)' = </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">1+x²</text>
+							</view>
+						</view>
+						<text class="formula-line">(arccotx)' = −1⁄(1+x²)</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">求导法则</text>
+						<text class="formula-line">(u±v)' = u' ± v'</text>
+						<text class="formula-line">(uv)' = u'v + uv'</text>
+						<view class="formula-block">
+							<text class="formula-inline">(u/v)' = </text>
+							<view class="formula-frac">
+								<text class="formula-num">u'v − uv'</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">v²</text>
+							</view>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">链式：</text>
+							<view class="formula-frac">
+								<text class="formula-num">dy</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">dx</text>
+							</view>
+							<text class="formula-tail"> = </text>
+							<view class="formula-frac">
+								<text class="formula-num">dy</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">du</text>
+							</view>
+							<text class="formula-tail"> · </text>
+							<view class="formula-frac">
+								<text class="formula-num">du</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">dx</text>
+							</view>
+						</view>
+						<text class="formula-line">隐函数：F(x,y)=0，dy⁄dx = −Fₓ⁄Fᵧ</text>
+					</view>
+					<view style="height: 24px;"></view>
+				</view>
+			</view>
+			<view v-if="screen === 'integrals'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<text class="back-arrow" @click="handleBackPress">← 返回</text>
+					<text class="brand-title small-brand">积分公式</text>
+					<text></text>
+				</view>
+				<view class="page-content formula-detail-content">
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">基本积分公式</text>
+						<view class="formula-block">
+							<text class="formula-inline">∫ xⁿ dx = </text>
+							<view class="formula-frac">
+								<text class="formula-num">xⁿ⁺¹</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">n+1</text>
+							</view>
+							<text class="formula-tail"> + C  (n≠−1)</text>
+						</view>
+						<text class="formula-line">∫ ¹⁄ₓ dx = ln|x| + C</text>
+						<text class="formula-line">∫ eˣ dx = eˣ + C</text>
+						<text class="formula-line">∫ aˣ dx = aˣ⁄lna + C</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">三角函数积分</text>
+						<text class="formula-line">∫ sinx dx = −cosx + C</text>
+						<text class="formula-line">∫ cosx dx = sinx + C</text>
+						<text class="formula-line">∫ tanx dx = −ln|cosx| + C</text>
+						<text class="formula-line">∫ cotx dx = ln|sinx| + C</text>
+						<text class="formula-line">∫ sec²x dx = tanx + C</text>
+						<text class="formula-line">∫ csc²x dx = −cotx + C</text>
+						<text class="formula-line">∫ secx·tanx dx = secx + C</text>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">常见凑微分</text>
+						<view class="formula-block">
+							<text class="formula-inline">∫ </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">1+x²</text>
+							</view>
+							<text class="formula-tail"> dx = arctanx + C</text>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">∫ </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">√1−x²</text>
+							</view>
+							<text class="formula-tail"> dx = arcsinx + C</text>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">∫ </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">a²+x²</text>
+							</view>
+							<text class="formula-tail"> dx = </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━</text>
+								<text class="formula-den">a</text>
+							</view>
+							<text class="formula-tail"> arctan(x⁄a) + C</text>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">∫ </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">√a²−x²</text>
+							</view>
+							<text class="formula-tail"> dx = arcsin(x⁄a) + C</text>
+						</view>
+						<view class="formula-block">
+							<text class="formula-inline">∫ </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━━━</text>
+								<text class="formula-den">x²−a²</text>
+							</view>
+							<text class="formula-tail"> dx = </text>
+							<view class="formula-frac">
+								<text class="formula-num">1</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">2a</text>
+							</view>
+							<text class="formula-tail"> ln</text>
+							<text class="formula-inline">|</text>
+							<view class="formula-frac">
+								<text class="formula-num">x−a</text>
+								<text class="formula-bar">━━</text>
+								<text class="formula-den">x+a</text>
+							</view>
+							<text class="formula-tail">| + C</text>
+						</view>
+					</view>
+					<view class="formula-section soft-card">
+						<text class="formula-section-title">积分技巧</text>
+						<text class="formula-line">分部积分：∫ u dv = uv − ∫ v du</text>
+						<text class="formula-line">换元积分：∫ f[φ(x)]φ'(x)dx = ∫ f(t)dt</text>
+						<text class="formula-line">定积分：∫ₐᵇ f(x)dx = F(b) − F(a)</text>
+						<text class="formula-line">华里士：∫₀ᵖⁱᐟ² sinⁿx dx</text>
+						<text class="formula-line">  n为奇→(n−1)!!⁄n!!，偶→(n−1)!!⁄n!!·π⁄2</text>
+					</view>
+					<view style="height: 24px;"></view>
+				</view>
+			</view>
 			<view v-if="screen === 'theorems'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<text class="back-arrow" @click="handleBackPress">← 返回</text>
@@ -514,6 +837,36 @@
 					</view>
 				</view>
 			</view>
+
+				<view v-if="screen === 'scaling'" class="screen screen-cream">
+					<view class="topbar compact-topbar">
+						<text class="back-arrow" @click="handleBackPress">← 返回</text>
+						<text class="brand-title small-brand">特殊放缩</text>
+						<text></text>
+					</view>
+					<view class="page-content formulas-content">
+						<view class="formulas-placeholder soft-card">
+							<text class="formulas-placeholder-icon">↔</text>
+							<text class="formulas-placeholder-title">特殊放缩公式</text>
+							<text class="formulas-placeholder-sub">内容即将上线</text>
+						</view>
+					</view>
+				</view>
+
+				<view v-if="screen === 'properties'" class="screen screen-cream">
+					<view class="topbar compact-topbar">
+						<text class="back-arrow" @click="handleBackPress">← 返回</text>
+						<text class="brand-title small-brand">各类性质</text>
+						<text></text>
+					</view>
+					<view class="page-content formulas-content">
+						<view class="formulas-placeholder soft-card">
+							<text class="formulas-placeholder-icon">◆</text>
+							<text class="formulas-placeholder-title">函数各类性质</text>
+							<text class="formulas-placeholder-sub">内容即将上线</text>
+						</view>
+					</view>
+				</view>
 
 			<view v-if="screen === 'stats'" class="screen screen-lilac">
 				<view class="topbar compact-topbar">
@@ -743,7 +1096,7 @@
 					<text class="nav-icon">▱</text>
 					<text class="nav-label">错题</text>
 				</view>
-				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
+				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' || screen === 'scaling' || screen === 'properties' || screen === 'limits' || screen === 'derivatives' || screen === 'integrals' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
 					<text class="nav-icon">◇</text>
 					<text class="nav-label">应用</text>
 				</view>
@@ -1014,8 +1367,13 @@
 					this.screen = this.screenHistory.pop()
 					return
 				}
-				if (typeof plus !== 'undefined' && plus.runtime) {
-					plus.runtime.quit()
+				var now = Date.now()
+				if (now - this.lastBackTime < 2000) {
+					if (typeof plus !== 'undefined' && plus.runtime) {
+						plus.runtime.quit()
+					}
+				} else {
+					this.lastBackTime = now
 				}
 			},
 			refreshData() {
@@ -1087,6 +1445,21 @@
 			},
 			showTheorems() {
 				this.navigateTo('theorems')
+			},
+			showScaling() {
+				this.navigateTo('scaling')
+			},
+			showProperties() {
+				this.navigateTo('properties')
+			},
+			showLimits() {
+				this.navigateTo('limits')
+			},
+			showDerivatives() {
+				this.navigateTo('derivatives')
+			},
+			showIntegrals() {
+				this.navigateTo('integrals')
 			},
 			showProfile() {
 				this.refreshData()
@@ -3138,10 +3511,11 @@
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
+		justify-content: space-between;
 	}
 
 	.app-icon-card {
-		width: 72px;
+		width: 68px;
 		height: 86px;
 		border-radius: 18px;
 		background-color: #FFF8F0;
@@ -3150,7 +3524,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		margin-right: 14px;
 		margin-bottom: 14px;
 	}
 
@@ -3232,5 +3605,123 @@
 		font-size: 14px;
 		color: #998B7A;
 		font-weight: 600;
+	}
+
+	.formula-category-grid {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.formula-category-card {
+		border-radius: 20px;
+		padding: 20px 18px;
+		margin-bottom: 14px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.formula-category-icon {
+		font-size: 36px;
+		font-weight: 900;
+		color: #E87B35;
+		margin-bottom: 8px;
+	}
+
+	.formula-category-title {
+		font-size: 19px;
+		font-weight: 900;
+		color: #4A3728;
+		margin-bottom: 4px;
+	}
+
+	.formula-category-desc {
+		font-size: 13px;
+		color: #998B7A;
+		font-weight: 600;
+	}
+
+	.formula-detail-content {
+		padding-top: 16px;
+	}
+
+	.formula-section {
+		border-radius: 18px;
+		padding: 18px 16px;
+		margin-bottom: 14px;
+	}
+
+	.formula-section-title {
+		font-size: 17px;
+		font-weight: 900;
+		color: #E87B35;
+		margin-bottom: 12px;
+		display: block;
+	}
+
+	.formula-line {
+		font-size: 14px;
+		font-weight: 600;
+		color: #4A3728;
+		line-height: 28px;
+		display: block;
+	}
+
+	.formula-block {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: wrap;
+		padding: 4px 0;
+	}
+
+	.formula-frac {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin: 2px 6px;
+	}
+
+	.formula-num {
+		font-size: 14px;
+		font-weight: 700;
+		color: #4A3728;
+		line-height: 20px;
+	}
+
+	.formula-bar {
+		font-size: 12px;
+		color: #4A3728;
+		line-height: 14px;
+		font-weight: 400;
+	}
+
+	.formula-den {
+		font-size: 14px;
+		font-weight: 700;
+		color: #4A3728;
+		line-height: 20px;
+	}
+
+	.formula-tail {
+		font-size: 14px;
+		font-weight: 600;
+		color: #4A3728;
+		line-height: 28px;
+	}
+
+	.formula-inline {
+		font-size: 14px;
+		font-weight: 600;
+		color: #4A3728;
+		line-height: 28px;
+	}
+
+	.formula-sub {
+		font-size: 11px;
+		font-weight: 600;
+		color: #998B7A;
+		line-height: 28px;
+		margin-right: 2px;
 	}
 </style>
