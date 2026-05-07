@@ -529,18 +529,24 @@
 				</view>
 				<view class="page-content formulas-content">
 					<view class="formula-category-grid">
-						<view class="formula-category-card soft-card" @click="showLimits">
-							<text class="formula-category-icon">∞</text>
+						<view class="formula-category-card formula-card-limits" @click="showLimits">
+							<view class="formula-card-icon-circle formula-icon-orange">
+								<text class="formula-category-icon">∞</text>
+							</view>
 							<text class="formula-category-title">极限</text>
 							<text class="formula-category-desc">等价无穷小 · 洛必达 · 泰勒</text>
 						</view>
-						<view class="formula-category-card soft-card" @click="showDerivatives">
-							<text class="formula-category-icon">d</text>
+						<view class="formula-category-card formula-card-derivatives" @click="showDerivatives">
+							<view class="formula-card-icon-circle formula-icon-purple">
+								<text class="formula-category-icon">d</text>
+							</view>
 							<text class="formula-category-title">导数</text>
 							<text class="formula-category-desc">基本导数 · 求导法则 · 高阶</text>
 						</view>
-						<view class="formula-category-card soft-card" @click="showIntegrals">
-							<text class="formula-category-icon">∫</text>
+						<view class="formula-category-card formula-card-integrals" @click="showIntegrals">
+							<view class="formula-card-icon-circle formula-icon-green">
+								<text class="formula-category-icon">∫</text>
+							</view>
 							<text class="formula-category-title">积分</text>
 							<text class="formula-category-desc">不定积分 · 定积分 · 技巧</text>
 						</view>
@@ -3840,30 +3846,122 @@
 
 	.formula-category-card {
 		border-radius: 20px;
-		padding: 20px 18px;
+		padding: 28px 20px;
 		margin-bottom: 14px;
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
+		text-align: center;
+		transition: transform 0.2s ease;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.formula-category-card:active {
+		transform: scale(0.97);
+	}
+
+	.formula-card-limits {
+		background: linear-gradient(145deg, #FFFFFF 0%, #FFF7ED 100%);
+		box-shadow: 0 6px 20px rgba(249, 115, 22, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
+		border: 1px solid rgba(249, 115, 22, 0.1);
+	}
+
+	.formula-card-limits::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background: linear-gradient(90deg, #F97316, #FB923C);
+	}
+
+	.formula-card-derivatives {
+		background: linear-gradient(145deg, #FFFFFF 0%, #F5F3FF 100%);
+		box-shadow: 0 6px 20px rgba(124, 58, 237, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
+		border: 1px solid rgba(124, 58, 237, 0.1);
+	}
+
+	.formula-card-derivatives::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background: linear-gradient(90deg, #8B5CF6, #A78BFA);
+	}
+
+	.formula-card-integrals {
+		background: linear-gradient(145deg, #FFFFFF 0%, #ECFDF5 100%);
+		box-shadow: 0 6px 20px rgba(16, 185, 129, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
+		border: 1px solid rgba(16, 185, 129, 0.1);
+	}
+
+	.formula-card-integrals::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background: linear-gradient(90deg, #10B981, #34D399);
+	}
+
+	.formula-card-icon-circle {
+		width: 60px;
+		height: 60px;
+		border-radius: 18px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 14px;
+	}
+
+	.formula-icon-orange {
+		background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+		box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+	}
+
+	.formula-icon-purple {
+		background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+		box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+	}
+
+	.formula-icon-green {
+		background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+		box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
 	}
 
 	.formula-category-icon {
-		font-size: 36px;
+		font-size: 32px;
 		font-weight: 900;
-		color: #E87B35;
-		margin-bottom: 8px;
+		line-height: 1;
+	}
+
+	.formula-icon-orange .formula-category-icon {
+		color: #EA580C;
+	}
+
+	.formula-icon-purple .formula-category-icon {
+		color: #7C3AED;
+	}
+
+	.formula-icon-green .formula-category-icon {
+		color: #059669;
 	}
 
 	.formula-category-title {
-		font-size: 19px;
-		font-weight: 900;
-		color: #4A3728;
-		margin-bottom: 4px;
+		font-size: 18px;
+		font-weight: 800;
+		color: #1C1917;
+		margin-bottom: 6px;
 	}
 
 	.formula-category-desc {
 		font-size: 13px;
-		color: #998B7A;
+		color: #A8A29E;
 		font-weight: 600;
 	}
 
