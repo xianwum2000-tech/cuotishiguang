@@ -573,7 +573,7 @@
 								<view class="formula-mini-card"><text class="formula-mini-line">arctanx ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">eˣ−1 ~ x</text></view>
-								<view class="formula-mini-card"><view class="formula-mini-frac"><text class="formula-mini-num">1−cosx</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view><text class="formula-mini-eq">~ x²</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">1−cosx ~ </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)ᵅ−1 ~ αx</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">aˣ−1 ~ x·lna</text></view>
 							</view>
