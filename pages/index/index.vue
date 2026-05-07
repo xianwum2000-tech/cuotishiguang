@@ -559,63 +559,13 @@
 						<text class="back-arrow" @click="handleBackPress">← 返回</text>
 						<view class="topbar-title-wrap">
 							<text class="brand-title small-brand">极限公式</text>
-							<text class="topbar-subtitle">基本极限 · 等价无穷小 · 洛必达 · 泰勒</text>
+							<text class="topbar-subtitle">等价无穷小 · 重要极限 · 洛必达 · 泰勒</text>
 						</view>
 						<text></text>
 					</view>
 					<view class="page-content formula-detail-content">
-						<view class="formula-section">
-							<text class="formula-section-label">趋于 0</text>
-							<view class="formula-card-grid">
-								<view class="formula-mini-card">
-									<view class="formula-mini-frac">
-										<text class="formula-mini-num">sinx</text>
-										<text class="formula-mini-bar">—</text>
-										<text class="formula-mini-den">x</text>
-									</view>
-									<text class="formula-mini-eq">= 1</text>
-								</view>
-								<view class="formula-mini-card">
-									<view class="formula-mini-frac">
-										<text class="formula-mini-num">eˣ − 1</text>
-										<text class="formula-mini-bar">——</text>
-										<text class="formula-mini-den">x</text>
-									</view>
-									<text class="formula-mini-eq">= 1</text>
-								</view>
-								<view class="formula-mini-card">
-									<view class="formula-mini-frac">
-										<text class="formula-mini-num">ln(1+x)</text>
-										<text class="formula-mini-bar">——</text>
-										<text class="formula-mini-den">x</text>
-									</view>
-									<text class="formula-mini-eq">= 1</text>
-								</view>
-								<view class="formula-mini-card">
-									<view class="formula-mini-frac">
-										<text class="formula-mini-num">1 − cosx</text>
-										<text class="formula-mini-bar">——</text>
-										<text class="formula-mini-den">x²</text>
-									</view>
-									<text class="formula-mini-eq">= ½</text>
-								</view>
-								<view class="formula-mini-card">
-									<text class="formula-mini-line">(1+x)^(1/x) = e</text>
-								</view>
-							</view>
-						</view>
-
-						<view class="formula-section">
-							<text class="formula-section-label">趋于 ∞</text>
-							<view class="formula-card-grid">
-								<view class="formula-mini-card">
-									<text class="formula-mini-line">(1 + 1/x)ˣ = e</text>
-								</view>
-							</view>
-						</view>
-
-						<view class="formula-section">
-							<text class="formula-section-label">等价无穷小（x→0）</text>
+						<view class="formula-group-card">
+							<text class="formula-group-title">等价无穷小（x→0）</text>
 							<view class="formula-card-grid">
 								<view class="formula-mini-card"><text class="formula-mini-line">sinx ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">tanx ~ x</text></view>
@@ -624,13 +574,22 @@
 								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">eˣ−1 ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">1−cosx ~ x²/2</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)ᵟ−1 ~ αx</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)ᵅ−1 ~ αx</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">aˣ−1 ~ x·lna</text></view>
 							</view>
 						</view>
 
-						<view class="formula-section">
-							<text class="formula-section-label">洛必达法则</text>
+						<view class="formula-group-card">
+							<text class="formula-group-title">重要极限</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">sinx/x → 1（x→0）</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)^(1/x) → e（x→0）</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+1/x)ˣ → e（x→∞）</text></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">洛必达法则</text>
 							<view class="formula-card-grid">
 								<view class="formula-mini-card formula-mini-wide">
 									<view class="formula-mini-frac">
@@ -649,8 +608,8 @@
 							<text class="formula-footnote">适用于 0/0 或 ∞/∞ 型，可多次使用</text>
 						</view>
 
-						<view class="formula-section">
-							<text class="formula-section-label">泰勒展开（x=0）</text>
+						<view class="formula-group-card">
+							<text class="formula-group-title">泰勒展开（x=0）</text>
 							<view class="formula-card-grid">
 								<view class="formula-mini-card"><text class="formula-mini-line">eˣ = 1+x+x²/2!+···</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">sinx = x−x³/3!+···</text></view>
@@ -3973,16 +3932,21 @@
 		padding-top: 12px;
 	}
 
-	.formula-section {
-		margin-bottom: 20px;
+	.formula-group-card {
+		background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
+		border-radius: 20px;
+		padding: 20px 16px;
+		margin-bottom: 16px;
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
+		border: 1px solid rgba(241, 226, 216, 0.5);
 	}
 
-	.formula-section-label {
+	.formula-group-title {
 		display: block;
 		font-size: 15px;
 		font-weight: 700;
 		color: #7C3AED;
-		margin-bottom: 10px;
+		margin-bottom: 12px;
 		padding-left: 2px;
 	}
 
@@ -3994,10 +3958,10 @@
 	}
 
 	.formula-mini-card {
-		background: #FFFFFF;
-		border-radius: 12px;
-		padding: 10px 14px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+		background: linear-gradient(145deg, #FEF9F0 0%, #FFFFFF 100%);
+		border-radius: 10px;
+		padding: 8px 12px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 		border: 1px solid rgba(241, 226, 216, 0.6);
 		display: flex;
 		flex-direction: row;
@@ -4007,7 +3971,7 @@
 	}
 
 	.formula-mini-wide {
-		padding: 14px 18px;
+		padding: 12px 16px;
 	}
 
 	.formula-mini-frac {
