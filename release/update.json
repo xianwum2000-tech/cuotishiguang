@@ -1,9 +1,9 @@
 {
-  "versionName": "1.1.1",
-  "versionCode": 111,
+  "versionName": "1.1.2",
+  "versionCode": 112,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.1.1/cuotishiguang-1.1.1.apk",
-  "changelog": "导航栏和应用卡片图标替换为Lucide SVG图片，App端正常显示；修复SVG内联图标在Android WebView中不渲染的问题。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.1.2/cuotishiguang-1.1.2.apk",
+  "changelog": "首页UI质感升级；公式手册/极限公式页面重构为小卡片布局；分数改为上下排版；修复1-cosx等价无穷小公式错误。",
   "force": false,
   "publishedAt": "2026-05-07"
 }
