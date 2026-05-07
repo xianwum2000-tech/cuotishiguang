@@ -475,47 +475,29 @@
 					<view class="apps-grid">
 						<view class="app-card app-card-active" @click="showFormulas">
 							<view class="app-card-icon-wrap app-card-icon-orange">
-								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
-									<path d="M4.745 3A2.25 2.25 0 002.5 5.25v13.5A2.25 2.25 0 004.745 21h14.51A2.25 2.25 0 0021.5 18.75V5.25A2.25 2.25 0 0019.255 3H4.745z" stroke="currentColor" stroke-width="1.8"/>
-									<path d="M7 8h4M7 12h10M7 16h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-									<circle cx="17" cy="8" r="1.5" fill="currentColor"/>
-								</svg>
+								<text class="app-card-emoji">∑</text>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">公式手册</text>
 								<text class="app-card-desc">极限 · 导数 · 积分</text>
 							</view>
-							<view class="app-card-arrow">
-								<svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-									<path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
-							</view>
+							<text class="app-card-arrow">›</text>
 						</view>
 
 						<view class="app-card app-card-active" @click="showTheorems">
 							<view class="app-card-icon-wrap app-card-icon-purple">
-								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
-									<path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-									<path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-									<path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-								</svg>
+								<text class="app-card-emoji">◈</text>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">定理合集</text>
 								<text class="app-card-desc">中值 · 积分 · 级数</text>
 							</view>
-							<view class="app-card-arrow">
-								<svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-									<path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
-							</view>
+							<text class="app-card-arrow">›</text>
 						</view>
 
 						<view class="app-card app-card-disabled">
 							<view class="app-card-icon-wrap app-card-icon-gray">
-								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
-									<path d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
+								<text class="app-card-emoji">⇄</text>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">特殊放缩</text>
@@ -526,9 +508,7 @@
 
 						<view class="app-card app-card-disabled">
 							<view class="app-card-icon-wrap app-card-icon-gray">
-								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
-									<path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
+								<text class="app-card-emoji">ƒ</text>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">各类性质</text>
@@ -1148,36 +1128,19 @@
 
 			<view v-if="screen === 'home' || screen === 'library' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
-					<view class="nav-icon-wrapper">
-						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V16C10 15.4477 10.4477 15 11 15H13C13.5523 15 14 15.4477 14 16V20C14 20.5523 14.4477 21 15 21M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-					</view>
+					<text class="nav-icon">⌂</text>
 					<text class="nav-label">首页</text>
 				</view>
 				<view :class="libraryNavClass" @click="showLibrary">
-					<view class="nav-icon-wrapper">
-						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-					</view>
+					<text class="nav-icon">☰</text>
 					<text class="nav-label">错题</text>
 				</view>
 				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' || screen === 'scaling' || screen === 'properties' || screen === 'limits' || screen === 'derivatives' || screen === 'integrals' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
-					<view class="nav-icon-wrapper">
-						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-					</view>
+					<text class="nav-icon">◈</text>
 					<text class="nav-label">应用</text>
 				</view>
 				<view :class="screen === 'stats' ? 'nav-item nav-active' : 'nav-item'" @click="showStats">
-					<view class="nav-icon-wrapper">
-						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0ZM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-					</view>
+					<text class="nav-icon">◎</text>
 					<text class="nav-label">用户</text>
 				</view>
 			</view>
@@ -3599,22 +3562,10 @@
 		opacity: 0.9;
 	}
 
-	.nav-icon-wrapper {
-		width: 26px;
-		height: 26px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.nav-icon-svg {
-		width: 22px;
-		height: 22px;
-		transition: all 0.3s ease;
-	}
-
-	.nav-active .nav-icon-svg {
-		filter: drop-shadow(0 1px 2px rgba(154, 52, 18, 0.2));
+	.nav-icon {
+		font-size: 18px;
+		line-height: 18px;
+		font-weight: 800;
 	}
 
 	.nav-label {
@@ -3707,9 +3658,10 @@
 		color: #A8A29E;
 	}
 
-	.app-card-svg {
-		width: 24px;
-		height: 24px;
+	.app-card-emoji {
+		font-size: 24px;
+		font-weight: 800;
+		line-height: 1;
 	}
 
 	.app-card-info {
@@ -3742,12 +3694,10 @@
 		position: absolute;
 		right: 16px;
 		bottom: 16px;
-		width: 24px;
-		height: 24px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		font-size: 22px;
+		font-weight: 300;
 		color: #D6D3D1;
+		line-height: 1;
 	}
 
 	.app-card-active .app-card-arrow {
