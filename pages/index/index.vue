@@ -554,109 +554,113 @@
 				</view>
 			</view>
 
-			<view v-if="screen === 'limits'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<text class="brand-title small-brand">极限公式</text>
-					<text></text>
-				</view>
-				<view class="page-content formula-detail-content">
-						<view class="formula-section soft-card">
-							<text class="formula-section-title">基本极限</text>
-							<view class="formula-block">
-								<text class="formula-inline">lim  </text>
-								<text class="formula-sub">x→0</text>
-								<view class="formula-frac">
-									<text class="formula-num">sinx</text>
-									<text class="formula-bar">━━</text>
-									<text class="formula-den">x</text>
+				<view v-if="screen === 'limits'" class="screen screen-cream">
+					<view class="topbar compact-topbar">
+						<text class="back-arrow" @click="handleBackPress">← 返回</text>
+						<view class="topbar-title-wrap">
+							<text class="brand-title small-brand">极限公式</text>
+							<text class="topbar-subtitle">基本极限 · 等价无穷小 · 洛必达 · 泰勒</text>
+						</view>
+						<text></text>
+					</view>
+					<view class="page-content formula-detail-content">
+						<view class="formula-section">
+							<text class="formula-section-label">趋于 0</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card">
+									<view class="formula-mini-frac">
+										<text class="formula-mini-num">sinx</text>
+										<text class="formula-mini-bar">—</text>
+										<text class="formula-mini-den">x</text>
+									</view>
+									<text class="formula-mini-eq">= 1</text>
 								</view>
-								<text class="formula-tail"> = 1</text>
-							</view>
-							<view class="formula-block">
-								<text class="formula-inline">lim  </text>
-								<text class="formula-sub">x→∞</text>
-								<text class="formula-inline"> (1 + </text>
-								<view class="formula-frac">
-									<text class="formula-num">1</text>
-									<text class="formula-bar">━━</text>
-									<text class="formula-den">x</text>
+								<view class="formula-mini-card">
+									<view class="formula-mini-frac">
+										<text class="formula-mini-num">eˣ − 1</text>
+										<text class="formula-mini-bar">——</text>
+										<text class="formula-mini-den">x</text>
+									</view>
+									<text class="formula-mini-eq">= 1</text>
 								</view>
-								<text class="formula-tail">)ˣ = e</text>
-							</view>
-							<view class="formula-block">
-								<text class="formula-inline">lim  </text>
-								<text class="formula-sub">x→0</text>
-								<text class="formula-inline"> (1 + x)</text>
-								<view class="formula-frac">
-									<text class="formula-num">1</text>
-									<text class="formula-bar">━━</text>
-									<text class="formula-den">x</text>
+								<view class="formula-mini-card">
+									<view class="formula-mini-frac">
+										<text class="formula-mini-num">ln(1+x)</text>
+										<text class="formula-mini-bar">——</text>
+										<text class="formula-mini-den">x</text>
+									</view>
+									<text class="formula-mini-eq">= 1</text>
 								</view>
-								<text class="formula-tail"> = e</text>
-							</view>
-							<view class="formula-block">
-								<text class="formula-inline">lim  </text>
-								<text class="formula-sub">x→0</text>
-								<view class="formula-frac">
-									<text class="formula-num">eˣ − 1</text>
-									<text class="formula-bar">━━━━</text>
-									<text class="formula-den">x</text>
+								<view class="formula-mini-card">
+									<view class="formula-mini-frac">
+										<text class="formula-mini-num">1 − cosx</text>
+										<text class="formula-mini-bar">——</text>
+										<text class="formula-mini-den">x²</text>
+									</view>
+									<text class="formula-mini-eq">= ½</text>
 								</view>
-								<text class="formula-tail"> = 1</text>
-							</view>
-							<view class="formula-block">
-								<text class="formula-inline">lim  </text>
-								<text class="formula-sub">x→0</text>
-								<view class="formula-frac">
-									<text class="formula-num">ln(1 + x)</text>
-									<text class="formula-bar">━━━━━━</text>
-									<text class="formula-den">x</text>
+								<view class="formula-mini-card">
+									<text class="formula-mini-line">(1+x)^(1/x) = e</text>
 								</view>
-								<text class="formula-tail"> = 1</text>
 							</view>
 						</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">等价无穷小（x→0）</text>
-						<text class="formula-line">sinx ~ x</text>
-						<text class="formula-line">tanx ~ x</text>
-						<text class="formula-line">arcsinx ~ x</text>
-						<text class="formula-line">arctanx ~ x</text>
-						<text class="formula-line">ln(1+x) ~ x</text>
-						<text class="formula-line">eˣ − 1 ~ x</text>
-						<text class="formula-line">1 − cosx ~ x²⁄2</text>
-						<text class="formula-line">(1+x)ᵅ − 1 ~ αx</text>
-						<text class="formula-line">aˣ − 1 ~ x·lna</text>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">洛必达法则</text>
-						<text class="formula-line">0/0 或 ∞/∞ 型：</text>
-						<view class="formula-block">
-							<view class="formula-frac">
-								<text class="formula-num">f(x)</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">g(x)</text>
-							</view>
-							<text class="formula-tail"> = lim </text>
-							<view class="formula-frac">
-								<text class="formula-num">f'(x)</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">g'(x)</text>
+
+						<view class="formula-section">
+							<text class="formula-section-label">趋于 ∞</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card">
+									<text class="formula-mini-line">(1 + 1/x)ˣ = e</text>
+								</view>
 							</view>
 						</view>
-						<text class="formula-line">可多次使用，每次使用前需验证条件</text>
+
+						<view class="formula-section">
+							<text class="formula-section-label">等价无穷小（x→0）</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">sinx ~ x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">tanx ~ x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">arcsinx ~ x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">arctanx ~ x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) ~ x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">eˣ−1 ~ x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">1−cosx ~ x²/2</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)ᵟ−1 ~ αx</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">aˣ−1 ~ x·lna</text></view>
+							</view>
+						</view>
+
+						<view class="formula-section">
+							<text class="formula-section-label">洛必达法则</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card formula-mini-wide">
+									<view class="formula-mini-frac">
+										<text class="formula-mini-num">f(x)</text>
+										<text class="formula-mini-bar">—</text>
+										<text class="formula-mini-den">g(x)</text>
+									</view>
+									<text class="formula-mini-eq">=</text>
+									<view class="formula-mini-frac">
+										<text class="formula-mini-num">f'(x)</text>
+										<text class="formula-mini-bar">—</text>
+										<text class="formula-mini-den">g'(x)</text>
+									</view>
+								</view>
+							</view>
+							<text class="formula-footnote">适用于 0/0 或 ∞/∞ 型，可多次使用</text>
+						</view>
+
+						<view class="formula-section">
+							<text class="formula-section-label">泰勒展开（x=0）</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">eˣ = 1+x+x²/2!+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">sinx = x−x³/3!+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">cosx = 1−x²/2!+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) = x−x²/2+···</text></view>
+							</view>
+						</view>
+						<view style="height: 24px;"></view>
 					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">常见泰勒展开（x=0）</text>
-						<text class="formula-line">eˣ = 1+x+x²⁄2!+x³⁄3!+···</text>
-						<text class="formula-line">sinx = x−x³⁄3!+x⁵⁄5!−···</text>
-						<text class="formula-line">cosx = 1−x²⁄2!+x⁴⁄4!−···</text>
-						<text class="formula-line">ln(1+x) = x−x²⁄2+x³⁄3−···</text>
-						<text class="formula-line">(1+x)ᵅ = 1+αx+α(α−1)x²⁄2!+···</text>
-					</view>
-					<view style="height: 24px;"></view>
 				</view>
-			</view>
 			<view v-if="screen === 'derivatives'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<text class="back-arrow" @click="handleBackPress">← 返回</text>
@@ -3966,7 +3970,92 @@
 	}
 
 	.formula-detail-content {
-		padding-top: 16px;
+		padding-top: 12px;
+	}
+
+	.formula-section {
+		margin-bottom: 20px;
+	}
+
+	.formula-section-label {
+		display: block;
+		font-size: 15px;
+		font-weight: 700;
+		color: #7C3AED;
+		margin-bottom: 10px;
+		padding-left: 2px;
+	}
+
+	.formula-card-grid {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.formula-mini-card {
+		background: #FFFFFF;
+		border-radius: 12px;
+		padding: 10px 14px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+		border: 1px solid rgba(241, 226, 216, 0.6);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+	}
+
+	.formula-mini-wide {
+		padding: 14px 18px;
+	}
+
+	.formula-mini-frac {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.formula-mini-num {
+		font-size: 13px;
+		font-weight: 700;
+		color: #1C1917;
+		line-height: 16px;
+	}
+
+	.formula-mini-bar {
+		font-size: 10px;
+		color: #A8A29E;
+		line-height: 8px;
+		letter-spacing: 1px;
+	}
+
+	.formula-mini-den {
+		font-size: 13px;
+		font-weight: 700;
+		color: #1C1917;
+		line-height: 16px;
+	}
+
+	.formula-mini-eq {
+		font-size: 13px;
+		font-weight: 700;
+		color: #EA580C;
+	}
+
+	.formula-mini-line {
+		font-size: 13px;
+		font-weight: 600;
+		color: #1C1917;
+		line-height: 18px;
+	}
+
+	.formula-footnote {
+		display: block;
+		margin-top: 8px;
+		font-size: 12px;
+		color: #A8A29E;
+		padding-left: 2px;
 	}
 
 	.formula-section {
