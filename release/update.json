@@ -1,9 +1,9 @@
 {
-  "versionName": "1.0.9",
-  "versionCode": 109,
+  "versionName": "1.1.0",
+  "versionCode": 110,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.0.9/cuotishiguang-1.0.9.apk",
-  "changelog": "公式手册新增极限/导数/积分三大分类，真分数排版（上下堆叠式），次方改用上标符号；应用中心新增特殊放缩/各类性质页面。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.1.0/cuotishiguang-1.1.0.apk",
+  "changelog": "导航栏UI升级（SVG图标+渐变背景+动画）；应用中心重构为2x2卡片布局；修复Android返回键直接退出问题；公式手册/定理合集等页面标题下添加描述小字。",
   "force": false,
-  "publishedAt": "2026-05-06"
+  "publishedAt": "2026-05-07"
 }
