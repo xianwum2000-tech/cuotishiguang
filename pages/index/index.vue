@@ -573,7 +573,7 @@
 								<view class="formula-mini-card"><text class="formula-mini-line">arctanx ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) ~ x</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">eˣ−1 ~ x</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">1−cosx ~ x²/2</text></view>
+								<view class="formula-mini-card"><view class="formula-mini-frac"><text class="formula-mini-num">1−cosx</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view><text class="formula-mini-eq">~ x²</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)ᵅ−1 ~ αx</text></view>
 								<view class="formula-mini-card"><text class="formula-mini-line">aˣ−1 ~ x·lna</text></view>
 							</view>
@@ -582,9 +582,9 @@
 						<view class="formula-group-card">
 							<text class="formula-group-title">重要极限</text>
 							<view class="formula-card-grid">
-								<view class="formula-mini-card"><text class="formula-mini-line">sinx/x → 1（x→0）</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)^(1/x) → e（x→0）</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">(1+1/x)ˣ → e（x→∞）</text></view>
+								<view class="formula-mini-card"><view class="formula-mini-frac"><text class="formula-mini-num">sinx</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">x</text></view><text class="formula-mini-eq">→ 1</text><text class="formula-mini-cond">x→0</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">x</text></view><text class="formula-mini-eq">→ e</text><text class="formula-mini-cond">x→0</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+</text><view class="formula-mini-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">x</text></view><text class="formula-mini-line">)ˣ → e</text><text class="formula-mini-cond">x→∞</text></view>
 							</view>
 						</view>
 
@@ -611,10 +611,10 @@
 						<view class="formula-group-card">
 							<text class="formula-group-title">泰勒展开（x=0）</text>
 							<view class="formula-card-grid">
-								<view class="formula-mini-card"><text class="formula-mini-line">eˣ = 1+x+x²/2!+···</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">sinx = x−x³/3!+···</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">cosx = 1−x²/2!+···</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) = x−x²/2+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">eˣ = 1+x+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view><text class="formula-mini-line">+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">sinx = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3!</text></view><text class="formula-mini-line">+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">cosx = 1−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view><text class="formula-mini-line">+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view><text class="formula-mini-line">+···</text></view>
 							</view>
 						</view>
 						<view style="height: 24px;"></view>
@@ -3935,7 +3935,7 @@
 	.formula-group-card {
 		background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
 		border-radius: 20px;
-		padding: 20px 16px;
+		padding: 22px 18px;
 		margin-bottom: 16px;
 		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
 		border: 1px solid rgba(241, 226, 216, 0.5);
@@ -3943,10 +3943,10 @@
 
 	.formula-group-title {
 		display: block;
-		font-size: 15px;
+		font-size: 16px;
 		font-weight: 700;
 		color: #7C3AED;
-		margin-bottom: 12px;
+		margin-bottom: 14px;
 		padding-left: 2px;
 	}
 
@@ -3954,24 +3954,24 @@
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
-		gap: 8px;
+		gap: 10px;
 	}
 
 	.formula-mini-card {
 		background: linear-gradient(145deg, #FEF9F0 0%, #FFFFFF 100%);
-		border-radius: 10px;
-		padding: 8px 12px;
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+		border-radius: 12px;
+		padding: 10px 14px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 		border: 1px solid rgba(241, 226, 216, 0.6);
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
-		gap: 4px;
+		gap: 3px;
 	}
 
 	.formula-mini-wide {
-		padding: 12px 16px;
+		padding: 14px 18px;
 	}
 
 	.formula-mini-frac {
@@ -3980,44 +3980,56 @@
 		align-items: center;
 	}
 
+	.sup-frac {
+		vertical-align: super;
+		margin-left: 2px;
+	}
+
 	.formula-mini-num {
-		font-size: 13px;
+		font-size: 14px;
 		font-weight: 700;
 		color: #1C1917;
-		line-height: 16px;
+		line-height: 17px;
 	}
 
 	.formula-mini-bar {
-		font-size: 10px;
+		font-size: 11px;
 		color: #A8A29E;
-		line-height: 8px;
+		line-height: 6px;
 		letter-spacing: 1px;
 	}
 
 	.formula-mini-den {
-		font-size: 13px;
+		font-size: 14px;
 		font-weight: 700;
 		color: #1C1917;
-		line-height: 16px;
+		line-height: 17px;
 	}
 
 	.formula-mini-eq {
-		font-size: 13px;
+		font-size: 14px;
 		font-weight: 700;
 		color: #EA580C;
 	}
 
+	.formula-mini-cond {
+		font-size: 12px;
+		font-weight: 600;
+		color: #A8A29E;
+		margin-left: 2px;
+	}
+
 	.formula-mini-line {
-		font-size: 13px;
+		font-size: 14px;
 		font-weight: 600;
 		color: #1C1917;
-		line-height: 18px;
+		line-height: 20px;
 	}
 
 	.formula-footnote {
 		display: block;
-		margin-top: 8px;
-		font-size: 12px;
+		margin-top: 10px;
+		font-size: 13px;
 		color: #A8A29E;
 		padding-left: 2px;
 	}
