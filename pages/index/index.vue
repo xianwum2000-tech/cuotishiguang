@@ -38,9 +38,7 @@
 							<text class="add-text">新增错题</text>
 						</view>
 						<view class="review-start-button" @click="showToday">
-							<view class="play-circle">
-								<text class="play-symbol">▶</text>
-							</view>
+							<image class="review-icon-img" src="/static/icons/review.svg" mode="aspectFit"></image>
 							<text class="review-start-text">进入复习</text>
 						</view>
 					</view>
@@ -2206,22 +2204,11 @@
 		color: #D4541E;
 	}
 
-	.play-circle {
-		width: 34px;
-		height: 34px;
-		border-radius: 999px;
-		border: 3px solid #D4541E;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-right: 10px;
-	}
-
-	.play-symbol {
-		margin-left: 2px;
-		font-size: 15px;
-		line-height: 16px;
-		color: #D4541E;
+	.review-icon-img {
+		width: 22px;
+		height: 22px;
+		margin-right: 8px;
+		filter: invert(33%) sepia(90%) saturate(1200%) hue-rotate(12deg) brightness(92%) contrast(95%);
 	}
 
 	.section-head {
