@@ -475,29 +475,29 @@
 					<view class="apps-grid">
 						<view class="app-card app-card-active" @click="showFormulas">
 							<view class="app-card-icon-wrap app-card-icon-orange">
-								<text class="app-card-emoji">∑</text>
+								<image class="app-card-icon-img" src="/static/icons/formula.svg" mode="aspectFit"></image>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">公式手册</text>
 								<text class="app-card-desc">极限 · 导数 · 积分</text>
 							</view>
-							<text class="app-card-arrow">›</text>
+							<image class="app-card-arrow-img" src="/static/icons/arrow.svg" mode="aspectFit"></image>
 						</view>
 
 						<view class="app-card app-card-active" @click="showTheorems">
 							<view class="app-card-icon-wrap app-card-icon-purple">
-								<text class="app-card-emoji">◈</text>
+								<image class="app-card-icon-img" src="/static/icons/theorem.svg" mode="aspectFit"></image>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">定理合集</text>
 								<text class="app-card-desc">中值 · 积分 · 级数</text>
 							</view>
-							<text class="app-card-arrow">›</text>
+							<image class="app-card-arrow-img" src="/static/icons/arrow.svg" mode="aspectFit"></image>
 						</view>
 
 						<view class="app-card app-card-disabled">
 							<view class="app-card-icon-wrap app-card-icon-gray">
-								<text class="app-card-emoji">⇄</text>
+								<image class="app-card-icon-img" src="/static/icons/scale.svg" mode="aspectFit"></image>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">特殊放缩</text>
@@ -508,7 +508,7 @@
 
 						<view class="app-card app-card-disabled">
 							<view class="app-card-icon-wrap app-card-icon-gray">
-								<text class="app-card-emoji">ƒ</text>
+								<image class="app-card-icon-img" src="/static/icons/property.svg" mode="aspectFit"></image>
 							</view>
 							<view class="app-card-info">
 								<text class="app-card-title">各类性质</text>
@@ -1128,19 +1128,19 @@
 
 			<view v-if="screen === 'home' || screen === 'library' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
-					<text class="nav-icon">⌂</text>
+					<image class="nav-icon-img" src="/static/icons/home.svg" mode="aspectFit"></image>
 					<text class="nav-label">首页</text>
 				</view>
 				<view :class="libraryNavClass" @click="showLibrary">
-					<text class="nav-icon">☰</text>
+					<image class="nav-icon-img" src="/static/icons/library.svg" mode="aspectFit"></image>
 					<text class="nav-label">错题</text>
 				</view>
 				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' || screen === 'scaling' || screen === 'properties' || screen === 'limits' || screen === 'derivatives' || screen === 'integrals' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
-					<text class="nav-icon">◈</text>
+					<image class="nav-icon-img" src="/static/icons/apps.svg" mode="aspectFit"></image>
 					<text class="nav-label">应用</text>
 				</view>
 				<view :class="screen === 'stats' ? 'nav-item nav-active' : 'nav-item'" @click="showStats">
-					<text class="nav-icon">◎</text>
+					<image class="nav-icon-img" src="/static/icons/user.svg" mode="aspectFit"></image>
 					<text class="nav-label">用户</text>
 				</view>
 			</view>
@@ -3562,10 +3562,13 @@
 		opacity: 0.9;
 	}
 
-	.nav-icon {
-		font-size: 18px;
-		line-height: 18px;
-		font-weight: 800;
+	.nav-icon-img {
+		width: 22px;
+		height: 22px;
+	}
+
+	.nav-active .nav-icon-img {
+		filter: drop-shadow(0 1px 2px rgba(154, 52, 18, 0.3));
 	}
 
 	.nav-label {
@@ -3658,10 +3661,21 @@
 		color: #A8A29E;
 	}
 
-	.app-card-emoji {
-		font-size: 24px;
-		font-weight: 800;
-		line-height: 1;
+	.app-card-icon-img {
+		width: 28px;
+		height: 28px;
+	}
+
+	.app-card-icon-orange .app-card-icon-img {
+		filter: invert(58%) sepia(68%) saturate(2638%) hue-rotate(2deg) brightness(101%) contrast(103%);
+	}
+
+	.app-card-icon-purple .app-card-icon-img {
+		filter: invert(35%) sepia(65%) saturate(3207%) hue-rotate(254deg) brightness(91%) contrast(97%);
+	}
+
+	.app-card-icon-gray .app-card-icon-img {
+		opacity: 0.5;
 	}
 
 	.app-card-info {
@@ -3690,18 +3704,18 @@
 		color: #D6D3D1;
 	}
 
-	.app-card-arrow {
+	.app-card-arrow-img {
 		position: absolute;
 		right: 16px;
 		bottom: 16px;
-		font-size: 22px;
-		font-weight: 300;
-		color: #D6D3D1;
-		line-height: 1;
+		width: 18px;
+		height: 18px;
+		opacity: 0.3;
 	}
 
-	.app-card-active .app-card-arrow {
-		color: #F97316;
+	.app-card-active .app-card-arrow-img {
+		opacity: 1;
+		filter: invert(58%) sepia(68%) saturate(2638%) hue-rotate(2deg) brightness(101%) contrast(103%);
 	}
 
 	.app-card-badge {
