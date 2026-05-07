@@ -62,7 +62,7 @@
 - GitHub Releases更新检查/下载/安装
 
 ## 版本信息
-- versionName: 1.0.2, versionCode: 102
+- versionName: 1.0.9, versionCode: 109
 - packageName: com.cuotishiguang.app
 - appid: __UNI__9F74044
 - 覆盖安装条件：同包名、同签名证书、versionCode递增、不卸载旧版

@@ -473,21 +473,68 @@
 				</view>
 				<view class="page-content apps-content">
 					<view class="apps-grid">
-						<view class="app-icon-card" @click="showFormulas">
-							<text class="app-icon-emoji">∑</text>
-							<text class="app-icon-label">公式手册</text>
+						<view class="app-card app-card-active" @click="showFormulas">
+							<view class="app-card-icon-wrap app-card-icon-orange">
+								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
+									<path d="M4.745 3A2.25 2.25 0 002.5 5.25v13.5A2.25 2.25 0 004.745 21h14.51A2.25 2.25 0 0021.5 18.75V5.25A2.25 2.25 0 0019.255 3H4.745z" stroke="currentColor" stroke-width="1.8"/>
+									<path d="M7 8h4M7 12h10M7 16h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+									<circle cx="17" cy="8" r="1.5" fill="currentColor"/>
+								</svg>
+							</view>
+							<view class="app-card-info">
+								<text class="app-card-title">公式手册</text>
+								<text class="app-card-desc">极限 · 导数 · 积分</text>
+							</view>
+							<view class="app-card-arrow">
+								<svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+									<path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</view>
 						</view>
-						<view class="app-icon-card" @click="showTheorems">
-							<text class="app-icon-emoji">◈</text>
-							<text class="app-icon-label">定理合集</text>
+
+						<view class="app-card app-card-active" @click="showTheorems">
+							<view class="app-card-icon-wrap app-card-icon-purple">
+								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
+									<path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+									<path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+									<path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+								</svg>
+							</view>
+							<view class="app-card-info">
+								<text class="app-card-title">定理合集</text>
+								<text class="app-card-desc">中值 · 积分 · 级数</text>
+							</view>
+							<view class="app-card-arrow">
+								<svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+									<path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</view>
 						</view>
-						<view class="app-icon-card" @click="showScaling">
-							<text class="app-icon-emoji">↔</text>
-							<text class="app-icon-label">特殊放缩</text>
+
+						<view class="app-card app-card-disabled">
+							<view class="app-card-icon-wrap app-card-icon-gray">
+								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
+									<path d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</view>
+							<view class="app-card-info">
+								<text class="app-card-title">特殊放缩</text>
+								<text class="app-card-desc">即将上线</text>
+							</view>
+							<view class="app-card-badge">敬请期待</view>
 						</view>
-						<view class="app-icon-card" @click="showProperties">
-							<text class="app-icon-emoji">◆</text>
-							<text class="app-icon-label">各类性质</text>
+
+						<view class="app-card app-card-disabled">
+							<view class="app-card-icon-wrap app-card-icon-gray">
+								<svg class="app-card-svg" viewBox="0 0 24 24" fill="none">
+									<path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</view>
+							<view class="app-card-info">
+								<text class="app-card-title">各类性质</text>
+								<text class="app-card-desc">即将上线</text>
+							</view>
+							<view class="app-card-badge">敬请期待</view>
 						</view>
 					</view>
 				</view>
@@ -496,7 +543,10 @@
 			<view v-if="screen === 'formulas'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<text class="brand-title small-brand">公式手册</text>
+					<view class="topbar-title-wrap">
+						<text class="brand-title small-brand">公式手册</text>
+						<text class="topbar-subtitle">极限 · 导数 · 积分</text>
+					</view>
 					<text></text>
 				</view>
 				<view class="page-content formulas-content">
@@ -826,7 +876,10 @@
 			<view v-if="screen === 'theorems'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<text class="brand-title small-brand">定理合集</text>
+					<view class="topbar-title-wrap">
+						<text class="brand-title small-brand">定理合集</text>
+						<text class="topbar-subtitle">中值 · 积分 · 级数</text>
+					</view>
 					<text></text>
 				</view>
 				<view class="page-content formulas-content">
@@ -841,7 +894,10 @@
 				<view v-if="screen === 'scaling'" class="screen screen-cream">
 					<view class="topbar compact-topbar">
 						<text class="back-arrow" @click="handleBackPress">← 返回</text>
-						<text class="brand-title small-brand">特殊放缩</text>
+						<view class="topbar-title-wrap">
+							<text class="brand-title small-brand">特殊放缩</text>
+							<text class="topbar-subtitle">常用放缩 · 不等式</text>
+						</view>
 						<text></text>
 					</view>
 					<view class="page-content formulas-content">
@@ -856,7 +912,10 @@
 				<view v-if="screen === 'properties'" class="screen screen-cream">
 					<view class="topbar compact-topbar">
 						<text class="back-arrow" @click="handleBackPress">← 返回</text>
-						<text class="brand-title small-brand">各类性质</text>
+						<view class="topbar-title-wrap">
+							<text class="brand-title small-brand">各类性质</text>
+							<text class="topbar-subtitle">连续 · 可导 · 可积</text>
+						</view>
 						<text></text>
 					</view>
 					<view class="page-content formulas-content">
@@ -1089,19 +1148,36 @@
 
 			<view v-if="screen === 'home' || screen === 'library' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
-					<text class="nav-icon">▢</text>
+					<view class="nav-icon-wrapper">
+						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V16C10 15.4477 10.4477 15 11 15H13C13.5523 15 14 15.4477 14 16V20C14 20.5523 14.4477 21 15 21M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</view>
 					<text class="nav-label">首页</text>
 				</view>
-<view :class="libraryNavClass" @click="showLibrary">
-					<text class="nav-icon">▱</text>
+				<view :class="libraryNavClass" @click="showLibrary">
+					<view class="nav-icon-wrapper">
+						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</view>
 					<text class="nav-label">错题</text>
 				</view>
 				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' || screen === 'scaling' || screen === 'properties' || screen === 'limits' || screen === 'derivatives' || screen === 'integrals' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
-					<text class="nav-icon">◇</text>
+					<view class="nav-icon-wrapper">
+						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</view>
 					<text class="nav-label">应用</text>
 				</view>
 				<view :class="screen === 'stats' ? 'nav-item nav-active' : 'nav-item'" @click="showStats">
-					<text class="nav-icon">◎</text>
+					<view class="nav-icon-wrapper">
+						<svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0ZM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</view>
 					<text class="nav-label">用户</text>
 				</view>
 			</view>
@@ -1349,6 +1425,7 @@
 			if (typeof plus !== 'undefined' && plus.key) {
 				plus.key.addEventListener('backbutton', function() {
 					self.handleBackPress()
+					return false
 				})
 			}
 			setTimeout(function() {
@@ -1897,8 +1974,8 @@
 	}
 
 	.compact-topbar {
-		height: 94px;
-		padding-top: 42px;
+		height: 108px;
+		padding-top: 36px;
 	}
 
 	.brand-row {
@@ -1941,6 +2018,19 @@
 	.small-brand {
 		font-size: 15px;
 		font-weight: 800;
+	}
+
+	.topbar-title-wrap {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.topbar-subtitle {
+		font-size: 11px;
+		color: #A8A29E;
+		margin-top: 2px;
+		letter-spacing: 1px;
 	}
 
 	.gear {
@@ -3458,88 +3548,222 @@
 		transform: translateX(-50%);
 		width: 100%;
 		max-width: 393px;
-		min-height: 62px;
-		padding: 8px 24px 10px;
-		border-top-left-radius: 24px;
-		border-top-right-radius: 24px;
-		background-color: #FEF9F0;
-		box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.04);
+		min-height: 68px;
+		padding: 10px 20px 12px;
+		border-top-left-radius: 28px;
+		border-top-right-radius: 28px;
+		background: linear-gradient(180deg, #FFFBF5 0%, #FEF3E2 100%);
+		box-shadow: 0 -8px 32px rgba(154, 52, 18, 0.08), 0 -2px 8px rgba(0, 0, 0, 0.04);
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: space-around;
 		z-index: 20;
+		border-top: 1px solid rgba(255, 237, 213, 0.8);
 	}
 
 	.nav-item {
-		min-width: 44px;
-		height: 40px;
-		border-radius: 999px;
-		padding-left: 8px;
-		padding-right: 8px;
+		min-width: 56px;
+		height: 52px;
+		border-radius: 16px;
+		padding: 6px 12px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		color: #94A3B8;
+		color: #A8A29E;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		position: relative;
+	}
+
+	.nav-item:active {
+		transform: scale(0.92);
 	}
 
 	.nav-active {
-		min-width: 52px;
-		background-color: #FFEDD5;
 		color: #9A3412;
+		background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+		box-shadow: 0 4px 12px rgba(154, 52, 18, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 	}
 
-	.nav-icon {
-		font-size: 15px;
-		line-height: 15px;
-		font-weight: 800;
+	.nav-active::before {
+		content: '';
+		position: absolute;
+		top: -10px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 20px;
+		height: 3px;
+		background: linear-gradient(90deg, #EC8358, #F97316);
+		border-radius: 0 0 4px 4px;
+		opacity: 0.9;
+	}
+
+	.nav-icon-wrapper {
+		width: 26px;
+		height: 26px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.nav-icon-svg {
+		width: 22px;
+		height: 22px;
+		transition: all 0.3s ease;
+	}
+
+	.nav-active .nav-icon-svg {
+		filter: drop-shadow(0 1px 2px rgba(154, 52, 18, 0.2));
 	}
 
 	.nav-label {
 		margin-top: 2px;
 		font-size: 10px;
 		line-height: 12px;
-		font-weight: 800;
+		font-weight: 600;
+		letter-spacing: 0.5px;
 	}
 
 	.apps-content {
-		padding-top: 16px;
+		padding-top: 20px;
 	}
 
 	.apps-grid {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: space-between;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 14px;
 	}
 
-	.app-icon-card {
-		width: 68px;
-		height: 86px;
-		border-radius: 18px;
-		background-color: #FFF8F0;
-		border: 1px solid #F1E2D8;
+	.app-card {
+		position: relative;
 		display: flex;
 		flex-direction: column;
+		padding: 20px 16px 16px;
+		border-radius: 20px;
+		min-height: 140px;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		overflow: hidden;
+	}
+
+	.app-card:active {
+		transform: scale(0.96);
+	}
+
+	.app-card-active {
+		background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+		border: 1px solid rgba(241, 226, 216, 0.6);
+	}
+
+	.app-card-active::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		border-radius: 20px 20px 0 0;
+	}
+
+	.app-card-active:nth-child(1)::before {
+		background: linear-gradient(90deg, #F97316, #FB923C);
+	}
+
+	.app-card-active:nth-child(2)::before {
+		background: linear-gradient(90deg, #8B5CF6, #A78BFA);
+	}
+
+	.app-card-disabled {
+		background: linear-gradient(145deg, #F5F5F4 0%, #F0EFED 100%);
+		border: 1px solid #E7E5E4;
+		opacity: 0.7;
+	}
+
+	.app-card-icon-wrap {
+		width: 48px;
+		height: 48px;
+		border-radius: 14px;
+		display: flex;
 		align-items: center;
 		justify-content: center;
 		margin-bottom: 14px;
 	}
 
-	.app-icon-emoji {
-		font-size: 28px;
-		font-weight: 900;
-		color: #E87B35;
-		line-height: 32px;
+	.app-card-icon-orange {
+		background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+		color: #EA580C;
+		box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
+	}
+
+	.app-card-icon-purple {
+		background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+		color: #7C3AED;
+		box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+	}
+
+	.app-card-icon-gray {
+		background: linear-gradient(135deg, #F5F5F4 0%, #E7E5E4 100%);
+		color: #A8A29E;
+	}
+
+	.app-card-svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.app-card-info {
+		flex: 1;
+	}
+
+	.app-card-title {
+		font-size: 16px;
+		font-weight: 700;
+		color: #292524;
+		line-height: 20px;
 		margin-bottom: 4px;
 	}
 
-	.app-icon-label {
-		font-size: 11px;
-		font-weight: 700;
-		color: #6750A4;
-		line-height: 14px;
+	.app-card-disabled .app-card-title {
+		color: #A8A29E;
+	}
+
+	.app-card-desc {
+		font-size: 12px;
+		color: #A8A29E;
+		line-height: 16px;
+	}
+
+	.app-card-disabled .app-card-desc {
+		color: #D6D3D1;
+	}
+
+	.app-card-arrow {
+		position: absolute;
+		right: 16px;
+		bottom: 16px;
+		width: 24px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #D6D3D1;
+	}
+
+	.app-card-active .app-card-arrow {
+		color: #F97316;
+	}
+
+	.app-card-badge {
+		position: absolute;
+		right: 12px;
+		top: 12px;
+		padding: 3px 8px;
+		border-radius: 6px;
+		background-color: #E7E5E4;
+		font-size: 10px;
+		font-weight: 600;
+		color: #A8A29E;
 	}
 
 	.quote-line {
