@@ -22,9 +22,9 @@
 							<text class="stat-label stat-label-light">今日待复习</text>
 							<text class="stat-number stat-number-light">{{ dueCount }}</text>
 						</view>
-						<view class="stat-card stat-surface stat-middle">
-							<text class="stat-label stat-label-red">已逾期</text>
-							<text class="stat-number stat-number-red">{{ overdueCount }}</text>
+						<view class="stat-card stat-surface stat-middle" @click="goWatchlist">
+							<text class="stat-label stat-label-red">错题讲解</text>
+							<text class="stat-number stat-number-red">{{ watchlistPendingCount }}</text>
 						</view>
 						<view class="stat-card stat-surface">
 							<text class="stat-label stat-label-muted">错题总数</text>
@@ -40,6 +40,17 @@
 						<view class="review-start-button" @click="showToday">
 							<image class="review-icon-img" src="/static/icons/review.svg" mode="aspectFit"></image>
 							<text class="review-start-text">进入复习</text>
+						</view>
+					</view>
+
+					<view class="watchlist-entry soft-card" @click="goWatchlist">
+						<view class="watchlist-entry-left">
+							<text class="watchlist-entry-title">错题讲解清单</text>
+							<text class="watchlist-entry-desc">记录需要观看讲解视频的错题</text>
+						</view>
+						<view class="watchlist-entry-right">
+							<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
+							<text class="watchlist-entry-arrow">›</text>
 						</view>
 					</view>
 
@@ -1353,6 +1364,13 @@
 			overdueCount() {
 				return getOverdueMistakes(this.activeMistakes, this.currentDate).length
 			},
+			watchlistPendingCount() {
+				try {
+					const raw = uni.getStorageSync('mistake_scheduler_watchlist_v1')
+					if (!Array.isArray(raw)) return 0
+					return raw.filter(item => !item.done).length
+				} catch (e) { return 0 }
+			},
 			masteredCount() {
 				return this.activeMistakes.filter((item) => item.reviewStage === 'pass3' && item.lastReviewResult === 'known').length
 			},
@@ -1550,6 +1568,9 @@
 			},
 			showAdd() {
 				this.navigateTo('add')
+			},
+			goWatchlist() {
+				uni.navigateTo({ url: '/pages/watchlist/watchlist' })
 			},
 			showToday() {
 				this.refreshData()
@@ -2393,6 +2414,66 @@
 		height: 22px;
 		margin-right: 8px;
 		filter: invert(33%) sepia(90%) saturate(1200%) hue-rotate(12deg) brightness(92%) contrast(95%);
+	}
+
+	.watchlist-entry {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 16px 18px;
+		margin-bottom: 20px;
+		background: linear-gradient(145deg, #FFFFFF 0%, #F5F3FF 100%);
+		border: 1px solid rgba(124, 58, 237, 0.1);
+	}
+
+	.watchlist-entry:active {
+		transform: scale(0.98);
+	}
+
+	.watchlist-entry-left {
+		flex: 1;
+	}
+
+	.watchlist-entry-title {
+		display: block;
+		font-size: 15px;
+		font-weight: 700;
+		color: #1C1917;
+	}
+
+	.watchlist-entry-desc {
+		display: block;
+		font-size: 12px;
+		color: #A8A29E;
+		margin-top: 3px;
+	}
+
+	.watchlist-entry-right {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.watchlist-entry-badge {
+		min-width: 22px;
+		height: 22px;
+		border-radius: 999px;
+		background: linear-gradient(145deg, #F97316 0%, #EC8358 100%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 12px;
+		font-weight: 800;
+		color: #FFFFFF;
+		padding: 0 6px;
+	}
+
+	.watchlist-entry-arrow {
+		font-size: 20px;
+		color: #D6D3D1;
+		font-weight: 300;
 	}
 
 	.section-head {
