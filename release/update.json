@@ -1,9 +1,9 @@
 {
-  "versionName": "1.2.0",
-  "versionCode": 120,
+  "versionName": "1.3.0",
+  "versionCode": 130,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.2.0/cuotishiguang-1.2.0.apk",
-  "changelog": "新增错题讲解待看清单；自定义科目/章节/错因选项；题目来源字段；编辑已入库错题功能。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.3.0/cuotishiguang-1.3.0.apk",
+  "changelog": "首页新增考研倒计时（可配置日期和文字）；学习进度圆环（可设置名称、当前值、目标值）；错题讲解清单数字实时更新。",
   "force": false,
   "publishedAt": "2026-05-08"
 }
