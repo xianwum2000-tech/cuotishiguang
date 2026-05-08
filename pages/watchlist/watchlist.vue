@@ -9,22 +9,6 @@
 		</view>
 
 		<view class="page-content watchlist-content">
-			<!-- 圆环进度图 -->
-			<view class="progress-ring-row">
-				<view class="progress-ring-item" v-for="(ring, idx) in rings" :key="idx">
-					<view class="progress-ring-wrap">
-						<view class="progress-ring-bg"></view>
-						<view class="progress-ring-fill" :style="{ background: ringConic(ring) }"></view>
-						<view class="progress-ring-inner">
-							<text class="progress-ring-value">{{ ring.current }}</text>
-							<text class="progress-ring-label">/{{ ring.target }}</text>
-						</view>
-					</view>
-					<text class="progress-ring-name">{{ ring.name }}</text>
-				</view>
-			</view>
-
-			<!-- 添加区域 -->
 			<view class="add-card soft-card">
 				<input class="watchlist-input" v-model="newName" placeholder="错题名称或简要描述" />
 				<input class="watchlist-input watchlist-input-space" v-model="newLink" placeholder="视频链接（可选）" />
@@ -33,7 +17,6 @@
 				</view>
 			</view>
 
-			<!-- 待看清单 -->
 			<view v-if="!showCompleted">
 				<view class="section-head">
 					<text class="section-title">待看清单</text>
@@ -62,7 +45,6 @@
 				</view>
 			</view>
 
-			<!-- 已完成清单 -->
 			<view v-if="showCompleted">
 				<view class="section-head">
 					<text class="section-title">已完成</text>
@@ -96,18 +78,11 @@
 import { ref, computed, onMounted } from 'vue'
 
 const STORAGE_KEY = 'mistake_scheduler_watchlist_v1'
-const GOALS_KEY = 'mistake_scheduler_watchlist_goals_v1'
 
 const items = ref([])
 const newName = ref('')
 const newLink = ref('')
 const showCompleted = ref(false)
-
-const goals = ref({
-	ring1: { name: '本周', current: 0, target: 10 },
-	ring2: { name: '本月', current: 0, target: 40 },
-	ring3: { name: '总计', current: 0, target: 100 }
-})
 
 function loadItems() {
 	try {
@@ -118,42 +93,8 @@ function loadItems() {
 	}
 }
 
-function loadGoals() {
-	try {
-		const raw = uni.getStorageSync(GOALS_KEY)
-		if (raw && typeof raw === 'object') {
-			goals.value.ring1 = { ...goals.value.ring1, ...raw.ring1 }
-			goals.value.ring2 = { ...goals.value.ring2, ...raw.ring2 }
-			goals.value.ring3 = { ...goals.value.ring3, ...raw.ring3 }
-		}
-	} catch (e) {}
-}
-
 function saveItems() {
 	uni.setStorageSync(STORAGE_KEY, items.value)
-}
-
-function updateCurrentValues() {
-	const now = new Date()
-	const completed = items.value.filter(i => i.done)
-	const weekAgo = new Date(now)
-	weekAgo.setDate(weekAgo.getDate() - 7)
-	const monthAgo = new Date(now)
-	monthAgo.setDate(monthAgo.getDate() - 30)
-
-	goals.value.ring1.current = completed.filter(i => i.completedAt && new Date(i.completedAt) >= weekAgo).length
-	goals.value.ring2.current = completed.filter(i => i.completedAt && new Date(i.completedAt) >= monthAgo).length
-	goals.value.ring3.current = completed.length
-}
-
-const rings = computed(() => [goals.value.ring1, goals.value.ring2, goals.value.ring3])
-
-function ringConic(ring) {
-	const pct = ring.target > 0 ? Math.min(ring.current / ring.target, 1) : 0
-	const deg = pct * 360
-	if (deg === 0) return '#E7E5E4'
-	if (deg >= 360) return '#10B981'
-	return `conic-gradient(#10B981 0deg ${deg}deg, #E7E5E4 ${deg}deg 360deg)`
 }
 
 const pendingItems = computed(() => {
@@ -194,7 +135,6 @@ function completeItem(id) {
 		item.done = true
 		item.completedAt = new Date().toISOString()
 		saveItems()
-		updateCurrentValues()
 	}
 }
 
@@ -206,7 +146,6 @@ function deleteItem(id) {
 			if (res.confirm) {
 				items.value = items.value.filter(i => i.id !== id)
 				saveItems()
-				updateCurrentValues()
 			}
 		}
 	})
@@ -215,7 +154,6 @@ function deleteItem(id) {
 function deleteCompletedItem(id) {
 	items.value = items.value.filter(i => i.id !== id)
 	saveItems()
-	updateCurrentValues()
 }
 
 function clearCompleted() {
@@ -226,7 +164,6 @@ function clearCompleted() {
 			if (res.confirm) {
 				items.value = items.value.filter(i => !i.done)
 				saveItems()
-				updateCurrentValues()
 			}
 		}
 	})
@@ -259,8 +196,6 @@ function goBack() {
 
 onMounted(() => {
 	loadItems()
-	loadGoals()
-	updateCurrentValues()
 })
 </script>
 
@@ -338,84 +273,6 @@ onMounted(() => {
 
 .watchlist-content {
 	padding-top: 12px;
-}
-
-.progress-ring-row {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-	margin-bottom: 20px;
-	padding: 16px 0;
-	background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
-	border-radius: 20px;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-	border: 1px solid rgba(241, 226, 216, 0.5);
-}
-
-.progress-ring-item {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 8px;
-}
-
-.progress-ring-wrap {
-	width: 72px;
-	height: 72px;
-	border-radius: 999px;
-	position: relative;
-}
-
-.progress-ring-bg {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	border-radius: 999px;
-	background-color: #E7E5E4;
-}
-
-.progress-ring-fill {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	border-radius: 999px;
-}
-
-.progress-ring-inner {
-	position: absolute;
-	top: 6px;
-	left: 6px;
-	width: 60px;
-	height: 60px;
-	border-radius: 999px;
-	background-color: #FFFFFF;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 1px;
-}
-
-.progress-ring-value {
-	font-size: 18px;
-	font-weight: 800;
-	color: #1C1917;
-}
-
-.progress-ring-label {
-	font-size: 11px;
-	font-weight: 600;
-	color: #A8A29E;
-}
-
-.progress-ring-name {
-	font-size: 13px;
-	font-weight: 700;
-	color: #6B6370;
 }
 
 .soft-card {

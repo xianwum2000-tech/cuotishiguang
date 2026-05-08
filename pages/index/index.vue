@@ -43,6 +43,20 @@
 						</view>
 					</view>
 
+					<view class="progress-ring-row">
+						<view class="progress-ring-item" v-for="(ring, idx) in progressRings" :key="idx">
+							<view class="progress-ring-wrap">
+								<view class="progress-ring-fill" :style="{ background: ringConic(ring) }"></view>
+								<view class="progress-ring-inner">
+									<text class="progress-ring-value">{{ ring.current }}</text>
+									<text class="progress-ring-slash">/</text>
+									<text class="progress-ring-target">{{ ring.target }}</text>
+								</view>
+							</view>
+							<text class="progress-ring-name">{{ ring.name }}</text>
+						</view>
+					</view>
+
 					<view class="watchlist-entry" @click="goWatchlist">
 						<text class="watchlist-entry-title">错题讲解清单</text>
 						<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
@@ -1107,22 +1121,26 @@
 					</view>
 
 					<view class="settings-card soft-card" style="margin-top: 20px;">
-						<text class="field-label">讲解清单进度目标</text>
-						<view class="goal-row">
-							<text class="goal-label">本周目标</text>
-							<input class="settings-input goal-input" type="number" v-model="watchlistGoals.ring1.target" placeholder="10" />
-						</view>
-						<view class="goal-row">
-							<text class="goal-label">本月目标</text>
-							<input class="settings-input goal-input" type="number" v-model="watchlistGoals.ring2.target" placeholder="40" />
-						</view>
-						<view class="goal-row">
-							<text class="goal-label">总计目标</text>
-							<input class="settings-input goal-input" type="number" v-model="watchlistGoals.ring3.target" placeholder="100" />
+						<text class="field-label">学习进度圆环</text>
+						<text class="page-subtitle" style="margin-bottom: 14px;">设置三个进度圆环的名称、当前值和目标值。</text>
+						<view v-for="(ring, idx) in progressRings" :key="idx" class="goal-section">
+							<text class="field-label field-space">圆环 {{ idx + 1 }}</text>
+							<view class="goal-row">
+								<text class="goal-label">名称</text>
+								<input class="settings-input goal-input" v-model="ring.name" placeholder="例如：高数" />
+							</view>
+							<view class="goal-row">
+								<text class="goal-label">当前值</text>
+								<input class="settings-input goal-input" type="number" v-model.number="ring.current" placeholder="0" />
+							</view>
+							<view class="goal-row">
+								<text class="goal-label">目标值</text>
+								<input class="settings-input goal-input" type="number" v-model.number="ring.target" placeholder="10" />
+							</view>
 						</view>
 					</view>
-					<view class="save-button" @click="saveWatchlistGoals" style="margin-top: 12px;">
-						<text>保存进度目标</text>
+					<view class="save-button" @click="saveProgressRings" style="margin-top: 12px;">
+						<text>保存学习进度</text>
 					</view>
 				</view>
 			</view>
@@ -1349,11 +1367,11 @@
 				form: createDefaultForm(),
 				editForm: null,
 				editingMistakeId: null,
-				watchlistGoals: {
-					ring1: { name: '本周', target: 10 },
-					ring2: { name: '本月', target: 40 },
-					ring3: { name: '总计', target: 100 }
-				},
+				progressRings: [
+					{ name: '高数', current: 0, target: 10 },
+					{ name: '线代', current: 0, target: 10 },
+					{ name: '概率', current: 0, target: 10 }
+				],
 				watchlistItems: []
 			}
 		},
@@ -1549,7 +1567,7 @@
 				this.appVersion = runtimeInfo.current
 				this.updateConfigured = runtimeInfo.configured
 				this.updateManifestUrl = runtimeInfo.manifestUrl
-				this.loadWatchlistGoals()
+				this.loadProgressRings()
 				try {
 					const wl = uni.getStorageSync('mistake_scheduler_watchlist_v1')
 					this.watchlistItems = Array.isArray(wl) ? wl : []
@@ -1696,25 +1714,24 @@
 				this.toast('已恢复默认')
 				this.handleBackPress()
 			},
-			loadWatchlistGoals() {
+			loadProgressRings() {
 				try {
-					const raw = uni.getStorageSync('mistake_scheduler_watchlist_goals_v1')
-					if (raw && typeof raw === 'object') {
-						this.watchlistGoals.ring1 = { ...this.watchlistGoals.ring1, ...raw.ring1 }
-						this.watchlistGoals.ring2 = { ...this.watchlistGoals.ring2, ...raw.ring2 }
-						this.watchlistGoals.ring3 = { ...this.watchlistGoals.ring3, ...raw.ring3 }
+					const raw = uni.getStorageSync('mistake_scheduler_progress_rings_v1')
+					if (Array.isArray(raw) && raw.length === 3) {
+						this.progressRings = raw
 					}
 				} catch (e) {}
 			},
-			saveWatchlistGoals() {
-				const r1 = parseInt(this.watchlistGoals.ring1.target) || 10
-				const r2 = parseInt(this.watchlistGoals.ring2.target) || 40
-				const r3 = parseInt(this.watchlistGoals.ring3.target) || 100
-				this.watchlistGoals.ring1.target = r1
-				this.watchlistGoals.ring2.target = r2
-				this.watchlistGoals.ring3.target = r3
-				uni.setStorageSync('mistake_scheduler_watchlist_goals_v1', this.watchlistGoals)
-				this.toast('进度目标已保存')
+			saveProgressRings() {
+				uni.setStorageSync('mistake_scheduler_progress_rings_v1', this.progressRings)
+				this.toast('学习进度已保存')
+			},
+			ringConic(ring) {
+				const pct = ring.target > 0 ? Math.min(ring.current / ring.target, 1) : 0
+				const deg = pct * 360
+				if (deg === 0) return '#E7E5E4'
+				if (deg >= 360) return '#10B981'
+				return 'conic-gradient(#10B981 0deg ' + deg + 'deg, #E7E5E4 ' + deg + 'deg 360deg)'
 			},
 			async checkAppUpdate(silent) {
 				if (this.updateChecking || this.updateDownloading) return
@@ -2457,6 +2474,86 @@
 		height: 22px;
 		margin-right: 8px;
 		filter: invert(33%) sepia(90%) saturate(1200%) hue-rotate(12deg) brightness(92%) contrast(95%);
+	}
+
+	.progress-ring-row {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		margin-bottom: 20px;
+		padding: 20px 10px;
+		background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
+		border-radius: 20px;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+		border: 1px solid rgba(241, 226, 216, 0.5);
+	}
+
+	.progress-ring-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.progress-ring-wrap {
+		width: 76px;
+		height: 76px;
+		border-radius: 999px;
+		position: relative;
+	}
+
+	.progress-ring-fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: 999px;
+	}
+
+	.progress-ring-inner {
+		position: absolute;
+		top: 6px;
+		left: 6px;
+		width: 64px;
+		height: 64px;
+		border-radius: 999px;
+		background-color: #FFFFFF;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.progress-ring-value {
+		font-size: 20px;
+		font-weight: 900;
+		color: #1C1917;
+	}
+
+	.progress-ring-slash {
+		font-size: 14px;
+		font-weight: 400;
+		color: #D6D3D1;
+		margin: 0 1px;
+	}
+
+	.progress-ring-target {
+		font-size: 14px;
+		font-weight: 600;
+		color: #A8A29E;
+	}
+
+	.progress-ring-name {
+		font-size: 14px;
+		font-weight: 700;
+		color: #6B6370;
+	}
+
+	.goal-section {
+		margin-top: 10px;
+		padding-top: 10px;
+		border-top: 1px solid #F1E2D8;
 	}
 
 	.watchlist-entry {
