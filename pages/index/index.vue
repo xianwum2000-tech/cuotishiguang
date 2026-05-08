@@ -1105,6 +1105,25 @@
 					<view class="secondary-button" @click="resetHomeSettings">
 						<text>恢复默认</text>
 					</view>
+
+					<view class="settings-card soft-card" style="margin-top: 20px;">
+						<text class="field-label">讲解清单进度目标</text>
+						<view class="goal-row">
+							<text class="goal-label">本周目标</text>
+							<input class="settings-input goal-input" type="number" v-model="watchlistGoals.ring1.target" placeholder="10" />
+						</view>
+						<view class="goal-row">
+							<text class="goal-label">本月目标</text>
+							<input class="settings-input goal-input" type="number" v-model="watchlistGoals.ring2.target" placeholder="40" />
+						</view>
+						<view class="goal-row">
+							<text class="goal-label">总计目标</text>
+							<input class="settings-input goal-input" type="number" v-model="watchlistGoals.ring3.target" placeholder="100" />
+						</view>
+					</view>
+					<view class="save-button" @click="saveWatchlistGoals" style="margin-top: 12px;">
+						<text>保存进度目标</text>
+					</view>
 				</view>
 			</view>
 
@@ -1329,7 +1348,12 @@
 				customErrorTypes: [],
 				form: createDefaultForm(),
 				editForm: null,
-				editingMistakeId: null
+				editingMistakeId: null,
+				watchlistGoals: {
+					ring1: { name: '本周', target: 10 },
+					ring2: { name: '本月', target: 40 },
+					ring3: { name: '总计', target: 100 }
+				}
 			}
 		},
 		computed: {
@@ -1525,6 +1549,7 @@
 				this.appVersion = runtimeInfo.current
 				this.updateConfigured = runtimeInfo.configured
 				this.updateManifestUrl = runtimeInfo.manifestUrl
+				this.loadWatchlistGoals()
 			},
 			async migrateStoredImages() {
 				if (this.imageMigrationDone) return
@@ -1666,6 +1691,26 @@
 				this.preferences = savePreferences(this.settingsForm)
 				this.toast('已恢复默认')
 				this.handleBackPress()
+			},
+			loadWatchlistGoals() {
+				try {
+					const raw = uni.getStorageSync('mistake_scheduler_watchlist_goals_v1')
+					if (raw && typeof raw === 'object') {
+						this.watchlistGoals.ring1 = { ...this.watchlistGoals.ring1, ...raw.ring1 }
+						this.watchlistGoals.ring2 = { ...this.watchlistGoals.ring2, ...raw.ring2 }
+						this.watchlistGoals.ring3 = { ...this.watchlistGoals.ring3, ...raw.ring3 }
+					}
+				} catch (e) {}
+			},
+			saveWatchlistGoals() {
+				const r1 = parseInt(this.watchlistGoals.ring1.target) || 10
+				const r2 = parseInt(this.watchlistGoals.ring2.target) || 40
+				const r3 = parseInt(this.watchlistGoals.ring3.target) || 100
+				this.watchlistGoals.ring1.target = r1
+				this.watchlistGoals.ring2.target = r2
+				this.watchlistGoals.ring3.target = r3
+				uni.setStorageSync('mistake_scheduler_watchlist_goals_v1', this.watchlistGoals)
+				this.toast('进度目标已保存')
 			},
 			async checkAppUpdate(silent) {
 				if (this.updateChecking || this.updateDownloading) return
@@ -2812,6 +2857,30 @@
 		font-size: 15px;
 		font-weight: 700;
 		color: #1D1B20;
+	}
+
+	.goal-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: 12px;
+	}
+
+	.goal-label {
+		font-size: 14px;
+		font-weight: 600;
+		color: #6B6370;
+		min-width: 80px;
+	}
+
+	.goal-input {
+		width: 100px;
+		height: 42px;
+		border-radius: 14px;
+		text-align: center;
+		padding-left: 0;
+		padding-right: 0;
 	}
 
 	.settings-avatar-row {
