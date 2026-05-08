@@ -1353,7 +1353,8 @@
 					ring1: { name: '本周', target: 10 },
 					ring2: { name: '本月', target: 40 },
 					ring3: { name: '总计', target: 100 }
-				}
+				},
+				watchlistItems: []
 			}
 		},
 		computed: {
@@ -1383,11 +1384,7 @@
 				return getOverdueMistakes(this.activeMistakes, this.currentDate).length
 			},
 			watchlistPendingCount() {
-				try {
-					const raw = uni.getStorageSync('mistake_scheduler_watchlist_v1')
-					if (!Array.isArray(raw)) return 0
-					return raw.filter(item => !item.done).length
-				} catch (e) { return 0 }
+				return this.watchlistItems.filter(item => !item.done).length
 			},
 			masteredCount() {
 				return this.activeMistakes.filter((item) => item.reviewStage === 'pass3' && item.lastReviewResult === 'known').length
@@ -1512,7 +1509,10 @@
 				self.checkAppUpdate(true)
 			}, 1500)
 		},
-		methods: {
+					onShow() {
+				this.refreshData()
+			},
+			methods: {
 			navigateTo(newScreen) {
 				if (this.screen && this.screen !== newScreen) {
 					this.screenHistory.push(this.screen)
@@ -1550,6 +1550,10 @@
 				this.updateConfigured = runtimeInfo.configured
 				this.updateManifestUrl = runtimeInfo.manifestUrl
 				this.loadWatchlistGoals()
+				try {
+					const wl = uni.getStorageSync('mistake_scheduler_watchlist_v1')
+					this.watchlistItems = Array.isArray(wl) ? wl : []
+				} catch (e) { this.watchlistItems = [] }
 			},
 			async migrateStoredImages() {
 				if (this.imageMigrationDone) return
