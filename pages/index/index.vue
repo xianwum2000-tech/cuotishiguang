@@ -1374,6 +1374,10 @@
 					this.screen = this.screenHistory.pop()
 					return
 				}
+				if (this.screen !== 'home') {
+					this.showHome()
+					return
+				}
 				var now = Date.now()
 				if (now - this.lastBackTime < 2000) {
 					if (typeof plus !== 'undefined' && plus.runtime) {
