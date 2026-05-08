@@ -44,14 +44,8 @@
 					</view>
 
 					<view class="watchlist-entry" @click="goWatchlist">
-						<view class="watchlist-entry-icon">
-							<text>▶</text>
-						</view>
 						<text class="watchlist-entry-title">错题讲解清单</text>
-						<view class="watchlist-entry-right">
-							<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
-							<text class="watchlist-entry-arrow">›</text>
-						</view>
+						<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
 					</view>
 
 					<view class="section-head">
@@ -2420,69 +2414,38 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		justify-content: center;
 		padding: 14px 18px;
 		margin-bottom: 20px;
-		background: linear-gradient(135deg, #1C1917 0%, #292524 100%);
+		background-color: #FF5A1F;
 		border-radius: 16px;
-		box-shadow: 0 6px 20px rgba(28, 25, 23, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
+		box-shadow: 0 6px 20px rgba(255, 90, 31, 0.3), 0 2px 6px rgba(0, 0, 0, 0.06);
 		transition: transform 0.2s ease;
+		gap: 10px;
 	}
 
 	.watchlist-entry:active {
 		transform: scale(0.97);
 	}
 
-	.watchlist-entry-icon {
-		width: 36px;
-		height: 36px;
-		border-radius: 10px;
-		background: linear-gradient(135deg, #F97316 0%, #EC8358 100%);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-right: 14px;
-		box-shadow: 0 3px 10px rgba(249, 115, 22, 0.3);
-	}
-
-	.watchlist-entry-icon text {
-		font-size: 14px;
-		color: #FFFFFF;
-		margin-left: 2px;
-	}
-
 	.watchlist-entry-title {
-		flex: 1;
 		font-size: 16px;
 		font-weight: 700;
 		color: #FFFFFF;
-	}
-
-	.watchlist-entry-right {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 8px;
 	}
 
 	.watchlist-entry-badge {
 		min-width: 24px;
 		height: 24px;
 		border-radius: 999px;
-		background: linear-gradient(145deg, #F97316 0%, #EC8358 100%);
+		background-color: #FFFFFF;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		font-size: 12px;
 		font-weight: 800;
-		color: #FFFFFF;
+		color: #FF5A1F;
 		padding: 0 7px;
-		box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
-	}
-
-	.watchlist-entry-arrow {
-		font-size: 22px;
-		color: rgba(255, 255, 255, 0.4);
-		font-weight: 300;
 	}
 
 	.section-head {
