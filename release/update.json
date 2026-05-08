@@ -1,9 +1,9 @@
 {
-  "versionName": "1.1.3",
-  "versionCode": 113,
+  "versionName": "1.2.0",
+  "versionCode": 120,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.1.3/cuotishiguang-1.1.3.apk",
-  "changelog": "修复非首页按返回键直接退出的问题，现在先回首页再按才退出。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.2.0/cuotishiguang-1.2.0.apk",
+  "changelog": "新增错题讲解待看清单；自定义科目/章节/错因选项；题目来源字段；编辑已入库错题功能。",
   "force": false,
   "publishedAt": "2026-05-08"
 }
