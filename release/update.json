@@ -1,9 +1,9 @@
 {
-  "versionName": "1.1.2",
-  "versionCode": 112,
+  "versionName": "1.1.3",
+  "versionCode": 113,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.1.2/cuotishiguang-1.1.2.apk",
-  "changelog": "首页UI质感升级；公式手册/极限公式页面重构为小卡片布局；分数改为上下排版；修复1-cosx等价无穷小公式错误。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.1.3/cuotishiguang-1.1.3.apk",
+  "changelog": "修复非首页按返回键直接退出的问题，现在先回首页再按才退出。",
   "force": false,
-  "publishedAt": "2026-05-07"
+  "publishedAt": "2026-05-08"
 }
