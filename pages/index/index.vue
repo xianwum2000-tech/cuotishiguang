@@ -43,11 +43,11 @@
 						</view>
 					</view>
 
-					<view class="watchlist-entry soft-card" @click="goWatchlist">
-						<view class="watchlist-entry-left">
-							<text class="watchlist-entry-title">错题讲解清单</text>
-							<text class="watchlist-entry-desc">记录需要观看讲解视频的错题</text>
+					<view class="watchlist-entry" @click="goWatchlist">
+						<view class="watchlist-entry-icon">
+							<text>▶</text>
 						</view>
+						<text class="watchlist-entry-title">错题讲解清单</text>
 						<view class="watchlist-entry-right">
 							<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
 							<text class="watchlist-entry-arrow">›</text>
@@ -2420,33 +2420,41 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		justify-content: space-between;
-		padding: 16px 18px;
+		padding: 14px 18px;
 		margin-bottom: 20px;
-		background: linear-gradient(145deg, #FFFFFF 0%, #F5F3FF 100%);
-		border: 1px solid rgba(124, 58, 237, 0.1);
+		background: linear-gradient(135deg, #1C1917 0%, #292524 100%);
+		border-radius: 16px;
+		box-shadow: 0 6px 20px rgba(28, 25, 23, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
+		transition: transform 0.2s ease;
 	}
 
 	.watchlist-entry:active {
-		transform: scale(0.98);
+		transform: scale(0.97);
 	}
 
-	.watchlist-entry-left {
-		flex: 1;
+	.watchlist-entry-icon {
+		width: 36px;
+		height: 36px;
+		border-radius: 10px;
+		background: linear-gradient(135deg, #F97316 0%, #EC8358 100%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 14px;
+		box-shadow: 0 3px 10px rgba(249, 115, 22, 0.3);
+	}
+
+	.watchlist-entry-icon text {
+		font-size: 14px;
+		color: #FFFFFF;
+		margin-left: 2px;
 	}
 
 	.watchlist-entry-title {
-		display: block;
-		font-size: 15px;
+		flex: 1;
+		font-size: 16px;
 		font-weight: 700;
-		color: #1C1917;
-	}
-
-	.watchlist-entry-desc {
-		display: block;
-		font-size: 12px;
-		color: #A8A29E;
-		margin-top: 3px;
+		color: #FFFFFF;
 	}
 
 	.watchlist-entry-right {
@@ -2457,8 +2465,8 @@
 	}
 
 	.watchlist-entry-badge {
-		min-width: 22px;
-		height: 22px;
+		min-width: 24px;
+		height: 24px;
 		border-radius: 999px;
 		background: linear-gradient(145deg, #F97316 0%, #EC8358 100%);
 		display: flex;
@@ -2467,12 +2475,13 @@
 		font-size: 12px;
 		font-weight: 800;
 		color: #FFFFFF;
-		padding: 0 6px;
+		padding: 0 7px;
+		box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
 	}
 
 	.watchlist-entry-arrow {
-		font-size: 20px;
-		color: #D6D3D1;
+		font-size: 22px;
+		color: rgba(255, 255, 255, 0.4);
 		font-weight: 300;
 	}
 
