@@ -62,6 +62,14 @@
 						<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
 					</view>
 
+					<view class="countdown-card">
+						<text class="countdown-label">{{ countdownText }}</text>
+						<view class="countdown-num-row">
+							<text class="countdown-days">{{ countdownDays }}</text>
+							<text class="countdown-unit">天</text>
+						</view>
+					</view>
+
 					<view class="section-head">
 						<text class="section-title">建议优先级</text>
 						<text class="section-link" @click="showToday">查看全部</text>
@@ -1121,6 +1129,19 @@
 					</view>
 
 					<view class="settings-card soft-card" style="margin-top: 20px;">
+						<text class="field-label">倒计时设置</text>
+						<text class="page-subtitle" style="margin-bottom: 14px;">首页倒计时的目标日期和显示文字。</text>
+						<text class="field-label field-space">显示文字</text>
+						<input class="settings-input" v-model="countdownLabel" placeholder="例如：距离27年考研还剩下" />
+						<text class="field-label field-space">目标日期</text>
+						<input class="settings-input" v-model="countdownTarget" placeholder="例如：2027-12-25" />
+						<text class="field-label field-space" style="font-size: 12px; color: #A8A29E; margin-top: 6px;">格式：YYYY-MM-DD，当前倒计时 {{ countdownDays }} 天</text>
+					</view>
+					<view class="save-button" @click="saveCountdown" style="margin-top: 12px;">
+						<text>保存倒计时</text>
+					</view>
+
+					<view class="settings-card soft-card" style="margin-top: 20px;">
 						<text class="field-label">学习进度圆环</text>
 						<text class="page-subtitle" style="margin-bottom: 14px;">设置三个进度圆环的名称、当前值和目标值。</text>
 						<view v-for="(ring, idx) in progressRings" :key="idx" class="goal-section">
@@ -1372,6 +1393,8 @@
 					{ name: '线代', current: 0, target: 10 },
 					{ name: '概率', current: 0, target: 10 }
 				],
+				countdownTarget: '2027-12-25',
+				countdownLabel: '距离27年考研还剩下',
 				watchlistItems: []
 			}
 		},
@@ -1403,6 +1426,18 @@
 			},
 			watchlistPendingCount() {
 				return this.watchlistItems.filter(item => !item.done).length
+			},
+			countdownDays() {
+				try {
+					const target = new Date(this.countdownTarget + 'T00:00:00')
+					const today = new Date()
+					today.setHours(0, 0, 0, 0)
+					const diff = Math.ceil((target - today) / 86400000)
+					return diff >= 0 ? diff : 0
+				} catch (e) { return 0 }
+			},
+			countdownText() {
+				return this.countdownLabel || '距离考研还剩下'
 			},
 			masteredCount() {
 				return this.activeMistakes.filter((item) => item.reviewStage === 'pass3' && item.lastReviewResult === 'known').length
@@ -1568,6 +1603,7 @@
 				this.updateConfigured = runtimeInfo.configured
 				this.updateManifestUrl = runtimeInfo.manifestUrl
 				this.loadProgressRings()
+				this.loadCountdown()
 				try {
 					const wl = uni.getStorageSync('mistake_scheduler_watchlist_v1')
 					this.watchlistItems = Array.isArray(wl) ? wl : []
@@ -1725,6 +1761,22 @@
 			saveProgressRings() {
 				uni.setStorageSync('mistake_scheduler_progress_rings_v1', this.progressRings)
 				this.toast('学习进度已保存')
+			},
+			loadCountdown() {
+				try {
+					const raw = uni.getStorageSync('mistake_scheduler_countdown_v1')
+					if (raw && typeof raw === 'object') {
+						if (raw.target) this.countdownTarget = raw.target
+						if (raw.label) this.countdownLabel = raw.label
+					}
+				} catch (e) {}
+			},
+			saveCountdown() {
+				uni.setStorageSync('mistake_scheduler_countdown_v1', {
+					target: this.countdownTarget,
+					label: this.countdownLabel
+				})
+				this.toast('倒计时已保存')
 			},
 			ringConic(ring) {
 				const pct = ring.target > 0 ? Math.min(ring.current / ring.target, 1) : 0
@@ -2474,6 +2526,45 @@
 		height: 22px;
 		margin-right: 8px;
 		filter: invert(33%) sepia(90%) saturate(1200%) hue-rotate(12deg) brightness(92%) contrast(95%);
+	}
+
+	.countdown-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 24px 20px;
+		margin-bottom: 20px;
+		background: linear-gradient(145deg, #1C1917 0%, #292524 100%);
+		border-radius: 20px;
+		box-shadow: 0 8px 24px rgba(28, 25, 23, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
+	}
+
+	.countdown-label {
+		font-size: 15px;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.7);
+		margin-bottom: 8px;
+	}
+
+	.countdown-num-row {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		gap: 6px;
+	}
+
+	.countdown-days {
+		font-size: 52px;
+		font-weight: 900;
+		color: #FFFFFF;
+		line-height: 1;
+	}
+
+	.countdown-unit {
+		font-size: 18px;
+		font-weight: 700;
+		color: rgba(255, 255, 255, 0.5);
 	}
 
 	.progress-ring-row {
