@@ -77,4 +77,4 @@ cli pack --platform android --project . --android.androidpacktype 3 --android.pa
 
 ## 版本
 
-当前版本：**1.0.9** (versionCode 109)
+当前版本：**1.1.2** (versionCode 112)
