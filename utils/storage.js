@@ -6,6 +6,7 @@ const RECORDS_KEY = 'mistake_scheduler_review_records_v1'
 const PREFERENCES_KEY = 'mistake_scheduler_preferences_v1'
 
 const QUOTES_KEY = 'mistake_scheduler_quotes_v1'
+const CUSTOM_OPTIONS_KEY = 'mistake_scheduler_custom_options_v1'
 
 const DEFAULT_QUOTES = {
 	quotes: [
@@ -101,6 +102,7 @@ export function createMistake(payload) {
 		chapter: payload.chapter,
 		errorType: payload.errorType,
 		difficulty: payload.difficulty || '中等',
+		source: payload.source || '',
 		note: payload.note || '',
 		createdAt: now,
 		updatedAt: now,
@@ -186,5 +188,21 @@ export function getQuotes() {
 export function saveQuotes(data) {
 	const next = { ...DEFAULT_QUOTES, ...data }
 	uni.setStorageSync(QUOTES_KEY, next)
+	return next
+}
+
+const DEFAULT_CUSTOM_OPTIONS = {
+	subjects: [],
+	chapters: {},
+	errorTypes: []
+}
+
+export function getCustomOptions() {
+	return readObject(CUSTOM_OPTIONS_KEY, DEFAULT_CUSTOM_OPTIONS)
+}
+
+export function saveCustomOptions(data) {
+	const next = { ...DEFAULT_CUSTOM_OPTIONS, ...data }
+	uni.setStorageSync(CUSTOM_OPTIONS_KEY, next)
 	return next
 }
