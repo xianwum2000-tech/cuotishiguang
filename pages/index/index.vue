@@ -596,12 +596,28 @@
 						<text class="back-arrow" @click="handleBackPress">← 返回</text>
 						<view class="topbar-title-wrap">
 							<text class="brand-title small-brand">极限公式</text>
-							<text class="topbar-subtitle">等价无穷小 · 重要极限 · 洛必达 · 泰勒</text>
+							<text class="topbar-subtitle">泰勒 · 等价无穷小 · 重要极限 · 洛必达</text>
 						</view>
 						<text></text>
 					</view>
 					<view class="page-content formula-detail-content">
-						<view class="formula-group-card">
+												<view class="formula-group-card">
+							<text class="formula-group-title">泰勒展开（x=0）</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">eˣ = 1+x+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view><text class="formula-mini-line">+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3!</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">sinx = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3!</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">cosx = 1−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">tanx = x+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">arcsinx = x+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">6</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">arctanx = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view><text class="formula-mini-line">+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(1+x)ᵅ = 1+αx+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">α(α−1)x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view></view>
+								<view class="formula-mini-card"><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">1−x</text></view><text class="formula-mini-line"> = 1+x+x²+x³</text></view>
+								<view class="formula-mini-card"><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">1+x</text></view><text class="formula-mini-line"> = 1−x+x²−x³</text></view>
+							</view>
+						</view>
+
+<view class="formula-group-card">
 							<text class="formula-group-title">等价无穷小（x→0）</text>
 							<view class="formula-card-grid">
 								<view class="formula-mini-card"><text class="formula-mini-line">sinx ~ x</text></view>
@@ -616,7 +632,9 @@
 							</view>
 						</view>
 
-						<view class="formula-group-card">
+						
+
+<view class="formula-group-card">
 							<text class="formula-group-title">重要极限</text>
 							<view class="formula-card-grid">
 								<view class="formula-mini-card"><view class="formula-mini-frac"><text class="formula-mini-num">sinx</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">x</text></view><text class="formula-mini-eq">→ 1</text><text class="formula-mini-cond">x→0</text></view>
@@ -625,7 +643,9 @@
 							</view>
 						</view>
 
-						<view class="formula-group-card">
+						
+
+<view class="formula-group-card">
 							<text class="formula-group-title">洛必达法则</text>
 							<view class="formula-card-grid">
 								<view class="formula-mini-card formula-mini-wide">
@@ -645,219 +665,123 @@
 							<text class="formula-footnote">适用于 0/0 或 ∞/∞ 型，可多次使用</text>
 						</view>
 
+						<view style="height: 24px;"></view>
+					</view>
+				</view>
+						<view v-if="screen === 'derivatives'" class="screen screen-cream">
+					<view class="topbar compact-topbar">
+						<text class="back-arrow" @click="handleBackPress">← 返回</text>
+						<view class="topbar-title-wrap">
+							<text class="brand-title small-brand">导数公式</text>
+							<text class="topbar-subtitle">基本导数 · 三角函数 · 反三角 · 求导法则</text>
+						</view>
+						<text></text>
+					</view>
+					<view class="page-content formula-detail-content">
 						<view class="formula-group-card">
-							<text class="formula-group-title">泰勒展开（x=0）</text>
+							<text class="formula-group-title">基本导数公式</text>
 							<view class="formula-card-grid">
-								<view class="formula-mini-card"><text class="formula-mini-line">eˣ = 1+x+</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view><text class="formula-mini-line">+···</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">sinx = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x³</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">3!</text></view><text class="formula-mini-line">+···</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">cosx = 1−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2!</text></view><text class="formula-mini-line">+···</text></view>
-								<view class="formula-mini-card"><text class="formula-mini-line">ln(1+x) = x−</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x²</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view><text class="formula-mini-line">+···</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(C)' = 0</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(xⁿ)' = n·xⁿ⁻¹</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(eˣ)' = eˣ</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(aˣ)' = aˣ·lna</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(lnx)' = ¹⁄ₓ</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(logₐx)' = ¹⁄₍ₓ·ₗₙₐ₎</text></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">三角函数导数</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">(sinx)' = cosx</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(cosx)' = −sinx</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(tanx)' = sec²x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(cotx)' = −csc²x</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(secx)' = secx·tanx</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(cscx)' = −cscx·cotx</text></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">反三角函数导数</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">(arcsinx)' = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">√1−x²</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(arccosx)' = −</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">√1−x²</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(arctanx)' = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">1+x²</text></view></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(arccotx)' = −</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">1+x²</text></view></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">求导法则</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">(u±v)' = u' ± v'</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(uv)' = u'v + uv'</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">(u/v)' = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">u'v − uv'</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">v²</text></view></view>
+								<view class="formula-mini-card formula-mini-wide"><text class="formula-mini-line">链式：</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">dy</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">dx</text></view><text class="formula-mini-line"> = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">dy</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">du</text></view><text class="formula-mini-line"> · </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">du</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">dx</text></view></view>
+								<view class="formula-mini-card formula-mini-wide"><text class="formula-mini-line">隐函数：F(x,y)=0</text><text class="formula-mini-eq">→</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">dy</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">dx</text></view><text class="formula-mini-line"> = −</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">Fₓ</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">Fᵧ</text></view></view>
 							</view>
 						</view>
 						<view style="height: 24px;"></view>
 					</view>
 				</view>
-			<view v-if="screen === 'derivatives'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<text class="brand-title small-brand">导数公式</text>
-					<text></text>
+						<view v-if="screen === 'integrals'" class="screen screen-cream">
+					<view class="topbar compact-topbar">
+						<text class="back-arrow" @click="handleBackPress">← 返回</text>
+						<view class="topbar-title-wrap">
+							<text class="brand-title small-brand">积分公式</text>
+							<text class="topbar-subtitle">基本积分 · 三角积分 · 凑微分 · 积分技巧</text>
+						</view>
+						<text></text>
+					</view>
+					<view class="page-content formula-detail-content">
+						<view class="formula-group-card">
+							<text class="formula-group-title">基本积分公式</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ xⁿ dx = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">xⁿ⁺¹</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">n+1</text></view><text class="formula-mini-line"> + C</text><text class="formula-mini-cond">n≠−1</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ ¹⁄ₓ dx = ln|x| + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ eˣ dx = eˣ + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ aˣ dx = aˣ⁄lna + C</text></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">三角函数积分</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ sinx dx = −cosx + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ cosx dx = sinx + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ tanx dx = −ln|cosx| + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ cotx dx = ln|sinx| + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ sec²x dx = tanx + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ csc²x dx = −cotx + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ secx·tanx dx = secx + C</text></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">常见凑微分</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">1+x²</text></view><text class="formula-mini-line"> dx = arctanx + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">√1−x²</text></view><text class="formula-mini-line"> dx = arcsinx + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">a²+x²</text></view><text class="formula-mini-line"> dx = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">a</text></view><text class="formula-mini-line"> arctan</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">a</text></view><text class="formula-mini-line"> + C</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">∫ </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">√a²−x²</text></view><text class="formula-mini-line"> dx = arcsin</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">a</text></view><text class="formula-mini-line"> + C</text></view>
+								<view class="formula-mini-card formula-mini-wide"><text class="formula-mini-line">∫ </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">x²−a²</text></view><text class="formula-mini-line"> dx = </text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">1</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2a</text></view><text class="formula-mini-line"> ln</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">x−a</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">x+a</text></view><text class="formula-mini-line"> + C</text></view>
+							</view>
+						</view>
+
+						<view class="formula-group-card">
+							<text class="formula-group-title">积分技巧</text>
+							<view class="formula-card-grid">
+								<view class="formula-mini-card"><text class="formula-mini-line">分部积分：∫ u dv = uv − ∫ v du</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">换元积分：∫ f[φ(x)]φ'(x)dx = ∫ f(t)dt</text></view>
+								<view class="formula-mini-card"><text class="formula-mini-line">定积分：∫ₐᵇ f(x)dx = F(b) − F(a)</text></view>
+								<view class="formula-mini-card formula-mini-wide"><text class="formula-mini-line">华里士：∫₀ᵖⁱᐟ² sinⁿx dx，n奇→</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">(n−1)!!</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">n!!</text></view><text class="formula-mini-line">，n偶→</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">(n−1)!!</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">n!!</text></view><text class="formula-mini-line">·</text><view class="formula-mini-frac sup-frac"><text class="formula-mini-num">π</text><text class="formula-mini-bar">—</text><text class="formula-mini-den">2</text></view></view>
+							</view>
+						</view>
+						<view style="height: 24px;"></view>
+					</view>
 				</view>
-				<view class="page-content formula-detail-content">
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">基本导数公式</text>
-						<text class="formula-line">(C)' = 0</text>
-						<text class="formula-line">(xⁿ)' = n·xⁿ⁻¹</text>
-						<text class="formula-line">(eˣ)' = eˣ</text>
-						<text class="formula-line">(aˣ)' = aˣ·lna</text>
-						<text class="formula-line">(lnx)' = ¹⁄ₓ</text>
-						<text class="formula-line">(logₐx)' = ¹⁄₍ₓ·ₗₙₐ₎</text>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">三角函数导数</text>
-						<text class="formula-line">(sinx)' = cosx</text>
-						<text class="formula-line">(cosx)' = −sinx</text>
-						<text class="formula-line">(tanx)' = sec²x</text>
-						<text class="formula-line">(cotx)' = −csc²x</text>
-						<text class="formula-line">(secx)' = secx·tanx</text>
-						<text class="formula-line">(cscx)' = −cscx·cotx</text>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">反三角函数导数</text>
-						<view class="formula-block">
-							<text class="formula-inline">(arcsinx)' = </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">√1−x²</text>
-							</view>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">(arccosx)' = −</text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">√1−x²</text>
-							</view>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">(arctanx)' = </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">1+x²</text>
-							</view>
-						</view>
-						<text class="formula-line">(arccotx)' = −1⁄(1+x²)</text>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">求导法则</text>
-						<text class="formula-line">(u±v)' = u' ± v'</text>
-						<text class="formula-line">(uv)' = u'v + uv'</text>
-						<view class="formula-block">
-							<text class="formula-inline">(u/v)' = </text>
-							<view class="formula-frac">
-								<text class="formula-num">u'v − uv'</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">v²</text>
-							</view>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">链式：</text>
-							<view class="formula-frac">
-								<text class="formula-num">dy</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">dx</text>
-							</view>
-							<text class="formula-tail"> = </text>
-							<view class="formula-frac">
-								<text class="formula-num">dy</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">du</text>
-							</view>
-							<text class="formula-tail"> · </text>
-							<view class="formula-frac">
-								<text class="formula-num">du</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">dx</text>
-							</view>
-						</view>
-						<text class="formula-line">隐函数：F(x,y)=0，dy⁄dx = −Fₓ⁄Fᵧ</text>
-					</view>
-					<view style="height: 24px;"></view>
-				</view>
-			</view>
-			<view v-if="screen === 'integrals'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<text class="brand-title small-brand">积分公式</text>
-					<text></text>
-				</view>
-				<view class="page-content formula-detail-content">
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">基本积分公式</text>
-						<view class="formula-block">
-							<text class="formula-inline">∫ xⁿ dx = </text>
-							<view class="formula-frac">
-								<text class="formula-num">xⁿ⁺¹</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">n+1</text>
-							</view>
-							<text class="formula-tail"> + C  (n≠−1)</text>
-						</view>
-						<text class="formula-line">∫ ¹⁄ₓ dx = ln|x| + C</text>
-						<text class="formula-line">∫ eˣ dx = eˣ + C</text>
-						<text class="formula-line">∫ aˣ dx = aˣ⁄lna + C</text>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">三角函数积分</text>
-						<text class="formula-line">∫ sinx dx = −cosx + C</text>
-						<text class="formula-line">∫ cosx dx = sinx + C</text>
-						<text class="formula-line">∫ tanx dx = −ln|cosx| + C</text>
-						<text class="formula-line">∫ cotx dx = ln|sinx| + C</text>
-						<text class="formula-line">∫ sec²x dx = tanx + C</text>
-						<text class="formula-line">∫ csc²x dx = −cotx + C</text>
-						<text class="formula-line">∫ secx·tanx dx = secx + C</text>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">常见凑微分</text>
-						<view class="formula-block">
-							<text class="formula-inline">∫ </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">1+x²</text>
-							</view>
-							<text class="formula-tail"> dx = arctanx + C</text>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">∫ </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">√1−x²</text>
-							</view>
-							<text class="formula-tail"> dx = arcsinx + C</text>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">∫ </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">a²+x²</text>
-							</view>
-							<text class="formula-tail"> dx = </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━</text>
-								<text class="formula-den">a</text>
-							</view>
-							<text class="formula-tail"> arctan(x⁄a) + C</text>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">∫ </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">√a²−x²</text>
-							</view>
-							<text class="formula-tail"> dx = arcsin(x⁄a) + C</text>
-						</view>
-						<view class="formula-block">
-							<text class="formula-inline">∫ </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━━━</text>
-								<text class="formula-den">x²−a²</text>
-							</view>
-							<text class="formula-tail"> dx = </text>
-							<view class="formula-frac">
-								<text class="formula-num">1</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">2a</text>
-							</view>
-							<text class="formula-tail"> ln</text>
-							<text class="formula-inline">|</text>
-							<view class="formula-frac">
-								<text class="formula-num">x−a</text>
-								<text class="formula-bar">━━</text>
-								<text class="formula-den">x+a</text>
-							</view>
-							<text class="formula-tail">| + C</text>
-						</view>
-					</view>
-					<view class="formula-section soft-card">
-						<text class="formula-section-title">积分技巧</text>
-						<text class="formula-line">分部积分：∫ u dv = uv − ∫ v du</text>
-						<text class="formula-line">换元积分：∫ f[φ(x)]φ'(x)dx = ∫ f(t)dt</text>
-						<text class="formula-line">定积分：∫ₐᵇ f(x)dx = F(b) − F(a)</text>
-						<text class="formula-line">华里士：∫₀ᵖⁱᐟ² sinⁿx dx</text>
-						<text class="formula-line">  n为奇→(n−1)!!⁄n!!，偶→(n−1)!!⁄n!!·π⁄2</text>
-					</view>
-					<view style="height: 24px;"></view>
-				</view>
-			</view>
-			<view v-if="screen === 'theorems'" class="screen screen-cream">
+<view v-if="screen === 'theorems'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<text class="back-arrow" @click="handleBackPress">← 返回</text>
 					<view class="topbar-title-wrap">
@@ -1343,6 +1267,7 @@
 	export default {
 		data() {
 			return {
+				_tick: Date.now(),
 				screen: 'home',
 					screenHistory: [],
 					lastBackTime: 0,
@@ -1400,13 +1325,15 @@
 		},
 		computed: {
 			currentDate() {
+				void this._tick
 				return todayKey()
 			},
 			currentQuote() {
+				void this._tick
 				const data = this.quotesData
 				if (!data.quotes || data.quotes.length === 0) return ''
 				const days = Math.abs(data.quoteDays || 1)
-				const idx = Math.floor(new Date().getTime() / (days * 86400000)) % data.quotes.length
+				const idx = Math.floor(Date.now() / (days * 86400000)) % data.quotes.length
 				return data.quotes[idx]
 			},
 			activeMistakes() {
@@ -1428,6 +1355,7 @@
 				return this.watchlistItems.filter(item => !item.done).length
 			},
 			countdownDays() {
+				void this._tick
 				try {
 					const target = new Date(this.countdownTarget + 'T00:00:00')
 					const today = new Date()
@@ -1558,9 +1486,18 @@
 					return false
 				})
 			}
+			this._tickTimer = setInterval(function() {
+				self._tick = Date.now()
+			}, 60000)
 			setTimeout(function() {
 				self.checkAppUpdate(true)
 			}, 1500)
+		},
+		onUnload() {
+			if (this._tickTimer) {
+				clearInterval(this._tickTimer)
+				this._tickTimer = null
+			}
 		},
 					onShow() {
 				this.refreshData()

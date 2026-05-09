@@ -46,11 +46,16 @@ export const FORMULA_DATA = {
 			{
 				title: '常见泰勒展开（x = 0）',
 				items: [
-					{ type: 'line', text: 'eˣ = 1 + x + x²/2! + x³/3! + ···' },
-					{ type: 'line', text: 'sinx = x − x³/3! + x⁵/5! − ···' },
-					{ type: 'line', text: 'cosx = 1 − x²/2! + x⁴/4! − ···' },
-					{ type: 'line', text: 'ln(1 + x) = x − x²/2 + x³/3 − ···' },
-					{ type: 'line', text: '(1 + x)ᵅ = 1 + αx + α(α−1)x²/2! + ···' }
+					{ type: 'line', text: 'eˣ = 1 + x + x²/2! + x³/3!' },
+					{ type: 'line', text: 'sinx = x − x³/3!' },
+					{ type: 'line', text: 'cosx = 1 − x²/2!' },
+					{ type: 'line', text: 'tanx = x + x³/3' },
+					{ type: 'line', text: 'arcsinx = x + x³/6' },
+					{ type: 'line', text: 'arctanx = x − x³/3' },
+					{ type: 'line', text: 'ln(1 + x) = x − x²/2 + x³/3' },
+					{ type: 'line', text: '(1 + x)ᵅ = 1 + αx + α(α−1)x²/2!' },
+					{ type: 'line', text: '1/(1 − x) = 1 + x + x² + x³' },
+					{ type: 'line', text: '1/(1 + x) = 1 − x + x² − x³' }
 				]
 			}
 		]
@@ -92,17 +97,11 @@ export const FORMULA_DATA = {
 			{
 				title: '求导法则',
 				items: [
-					{ type: 'line', text: '(u ± v)′ = u′ ± v′' },
+					{ type: 'line', text: '(u±v)′ = u′ ± v′' },
 					{ type: 'line', text: '(uv)′ = u′v + uv′' },
 					{ type: 'line', text: '(u/v)′ = (u′v − uv′)/v²' },
-					{ type: 'line', text: '链式法则：dy/dx = dy/du · du/dx' }
-				]
-			},
-			{
-				title: '高阶导数',
-				items: [
-					{ type: 'line', text: '(sinx)⁽ⁿ⁾ = sin(x + nπ/2)' },
-					{ type: 'line', text: '(cosx)⁽ⁿ⁾ = cos(x + nπ/2)' }
+					{ type: 'line', text: '链式法则：dy/dx = dy/du · du/dx' },
+					{ type: 'line', text: '隐函数：F(x,y)=0, dy/dx = −Fₓ/Fᵧ' }
 				]
 			}
 		]
@@ -116,40 +115,38 @@ export const FORMULA_DATA = {
 					{ type: 'line', text: '∫ xⁿ dx = xⁿ⁺¹/(n+1) + C  (n ≠ −1)' },
 					{ type: 'line', text: '∫ 1/x dx = ln|x| + C' },
 					{ type: 'line', text: '∫ eˣ dx = eˣ + C' },
-					{ type: 'line', text: '∫ aˣ dx = aˣ/lna + C' },
-					{ type: 'line', text: '∫ sinx dx = −cosx + C' },
-					{ type: 'line', text: '∫ cosx dx = sinx + C' },
-					{ type: 'line', text: '∫ sec²x dx = tanx + C' },
-					{ type: 'line', text: '∫ csc²x dx = −cotx + C' },
-					{ type: 'line', text: '∫ secx·tanx dx = secx + C' },
-					{ type: 'line', text: '∫ cscx·cotx dx = −cscx + C' }
+					{ type: 'line', text: '∫ aˣ dx = aˣ/lna + C' }
 				]
 			},
 			{
-				title: '有理函数积分',
+				title: '三角函数积分',
+				items: [
+					{ type: 'line', text: '∫ sinx dx = −cosx + C' },
+					{ type: 'line', text: '∫ cosx dx = sinx + C' },
+					{ type: 'line', text: '∫ tanx dx = −ln|cosx| + C' },
+					{ type: 'line', text: '∫ cotx dx = ln|sinx| + C' },
+					{ type: 'line', text: '∫ sec²x dx = tanx + C' },
+					{ type: 'line', text: '∫ csc²x dx = −cotx + C' },
+					{ type: 'line', text: '∫ secx·tanx dx = secx + C' }
+				]
+			},
+			{
+				title: '常见凑微分',
 				items: [
 					{ type: 'line', text: '∫ 1/(1+x²) dx = arctanx + C' },
 					{ type: 'line', text: '∫ 1/√(1−x²) dx = arcsinx + C' },
-					{ type: 'line', text: '∫ 1/(x²−a²) dx = 1/(2a) ln|(x−a)/(x+a)| + C' }
+					{ type: 'line', text: '∫ 1/(a²+x²) dx = 1/a·arctan(x/a) + C' },
+					{ type: 'line', text: '∫ 1/√(a²−x²) dx = arcsin(x/a) + C' },
+					{ type: 'line', text: '∫ 1/(x²−a²) dx = 1/(2a)·ln|(x−a)/(x+a)| + C' }
 				]
 			},
 			{
-				title: '分部积分',
+				title: '积分技巧',
 				items: [
-					{ type: 'line', text: '∫ u dv = uv − ∫ v du' },
-					{ type: 'line', text: '∫ x·eˣ dx = eˣ(x−1) + C' },
-					{ type: 'line', text: '∫ x·sinx dx = −x·cosx + sinx + C' },
-					{ type: 'line', text: '∫ x·cosx dx = x·sinx + cosx + C' },
-					{ type: 'line', text: '∫ lnx dx = x·lnx − x + C' },
-					{ type: 'line', text: '∫ x·lnx dx = x²/2·lnx − x²/4 + C' }
-				]
-			},
-			{
-				title: '定积分常用结论',
-				items: [
-					{ type: 'line', text: '∫₋ₐᵃ f(x) dx = 0（f 为奇函数）' },
-					{ type: 'line', text: '∫₋ₐᵃ f(x) dx = 2∫₀ᵃ f(x) dx（f 为偶函数）' },
-					{ type: 'line', text: '∫₀ᴨ sinⁿx dx = ∫₀ᴨ cosⁿx dx' }
+					{ type: 'line', text: '分部积分：∫ u dv = uv − ∫ v du' },
+					{ type: 'line', text: '换元积分：∫ f[φ(x)]φ\'(x)dx = ∫ f(t)dt' },
+					{ type: 'line', text: '定积分：∫ₐᵇ f(x)dx = F(b) − F(a)' },
+					{ type: 'line', text: '华里士公式：∫₀ᵖⁱᐟ² sinⁿx dx' }
 				]
 			}
 		]

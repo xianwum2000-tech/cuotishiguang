@@ -1,8 +1,8 @@
 {
-  "versionName": "1.0.2",
-  "versionCode": 102,
+  "versionName": "1.3.1",
+  "versionCode": 131,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY/releases/download/v1.0.2/cuotishiguang-1.0.2.apk",
+  "apkUrl": "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY/releases/download/v1.3.1/cuotishiguang-1.3.1.apk",
   "changelog": "新增 GitHub Releases 应用内检查更新；固定包名与版本号，支持覆盖安装保留本地错题数据。",
   "force": false,
   "publishedAt": "2026-05-04"
