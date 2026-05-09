@@ -1,9 +1,9 @@
 {
-  "versionName": "1.3.0",
-  "versionCode": 130,
+  "versionName": "1.3.2",
+  "versionCode": 132,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.3.0/cuotishiguang-1.3.0.apk",
-  "changelog": "首页新增考研倒计时（可配置日期和文字）；学习进度圆环（可设置名称、当前值、目标值）；错题讲解清单数字实时更新。",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.3.2/cuotishiguang-1.3.2.apk",
+  "changelog": "1. 首页计时更新\n2. 泰勒展开扩充\n3. 导数和积分页面改造",
   "force": false,
-  "publishedAt": "2026-05-08"
+  "publishedAt": "2026-05-09"
 }
