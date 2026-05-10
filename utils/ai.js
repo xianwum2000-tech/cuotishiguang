@@ -150,8 +150,22 @@ export function buildMistakeSummary() {
 	return lines.join('\n')
 }
 
+var _systemPromptCache = ''
+var _systemPromptCacheTime = 0
+
 export function buildSystemPrompt(customPersonality) {
+	// 缓存 5 分钟，避免重复生成
+	var now = Date.now()
+	if (_systemPromptCache && now - _systemPromptCacheTime < 300000) {
+		return _systemPromptCache
+	}
+
 	var summary = buildMistakeSummary()
+
+	// 限制摘要长度，防止主线程阻塞
+	if (summary.length > 6000) {
+		summary = summary.substring(0, 6000) + '\n...(数据已截断)'
+	}
 
 	var base = '你是「错题拾光」内置的考研数学 AI 助手。你的核心能力：\n' +
 		'1. 深入了解用户的错题记录，分析薄弱环节，给出针对性复习建议\n' +
@@ -182,13 +196,24 @@ export function buildSystemPrompt(customPersonality) {
 		base += '【用户设定的性格/风格】\n' + customPersonality.trim() + '\n\n'
 	}
 
-	base += '以下是该用户的完整错题数据，请基于这些数据来回答用户的问题：\n\n' + summary
+	base += '以下是该用户的错题数据摘要：\n\n' + summary
+
+	_systemPromptCache = base
+	_systemPromptCacheTime = now
 
 	return base
 }
 
+var _formatCache = {}
+var _formatCacheSize = 0
+var MAX_FORMAT_CACHE = 200
+
 export function formatAiText(text) {
 	if (!text) return ''
+
+	var cached = _formatCache[text]
+	if (cached !== undefined) return cached
+
 	var result = text
 
 	// 转义 HTML
@@ -223,11 +248,22 @@ export function formatAiText(text) {
 	result = result.replace(/<p>\s*<\/p>/g, '')
 	result = result.replace(/<p>\s*(<br\/>\s*)*<\/p>/g, '')
 
+	// 缓存结果，限制缓存大小
+	if (_formatCacheSize >= MAX_FORMAT_CACHE) {
+		_formatCache = {}
+		_formatCacheSize = 0
+	}
+	_formatCache[text] = result
+	_formatCacheSize++
+
 	return result
 }
 
 export function callDeepSeek(messages, apiKey, baseUrl, model) {
-	return new Promise(function(resolve, reject) {
+	var requestTask = null
+	var aborted = false
+
+	var promise = new Promise(function(resolve, reject) {
 		if (!apiKey) {
 			reject(new Error('请先在设置中配置 API Key'))
 			return
@@ -235,7 +271,7 @@ export function callDeepSeek(messages, apiKey, baseUrl, model) {
 
 		var url = (baseUrl || 'https://api.deepseek.com').replace(/\/+$/, '') + '/chat/completions'
 
-		uni.request({
+		requestTask = uni.request({
 			url: url,
 			method: 'POST',
 			header: {
@@ -250,6 +286,7 @@ export function callDeepSeek(messages, apiKey, baseUrl, model) {
 			},
 			timeout: 30000,
 			success: function(res) {
+				if (aborted) return
 				if (res.statusCode === 200 && res.data && res.data.choices && res.data.choices.length > 0) {
 					resolve(res.data.choices[0].message.content)
 				} else if (res.statusCode === 401) {
@@ -262,10 +299,24 @@ export function callDeepSeek(messages, apiKey, baseUrl, model) {
 				}
 			},
 			fail: function(err) {
-				reject(new Error('网络请求失败，请检查网络连接'))
+				if (aborted) return
+				if (err.errMsg && err.errMsg.indexOf('abort') >= 0) {
+					resolve('[已取消]')
+				} else {
+					reject(new Error('网络请求失败，请检查网络连接'))
+				}
 			}
 		})
 	})
+
+	promise.abort = function() {
+		aborted = true
+		if (requestTask && requestTask.abort) {
+			requestTask.abort()
+		}
+	}
+
+	return promise
 }
 
 export function trimMessages(messages, maxCount) {

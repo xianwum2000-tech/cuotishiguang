@@ -1051,6 +1051,9 @@
 					<view class="secondary-button" @click="resetHomeSettings">
 						<text>恢复默认</text>
 					</view>
+					<view class="danger-button" @click="resetAiData">
+						<text>重置 AI 数据</text>
+					</view>
 
 					<view class="settings-card soft-card" style="margin-top: 20px;">
 						<text class="field-label">倒计时设置</text>
@@ -1208,8 +1211,13 @@
 							</view>
 						</view>
 
+						<!-- 加载更多 -->
+						<view v-if="aiHasMoreMessages" class="ai-load-more" @click="loadMoreAiMessages">
+							<text class="ai-load-more-text">加载更早的消息</text>
+						</view>
+
 						<!-- 消息列表 -->
-						<view v-for="(msg, idx) in aiMessages" :key="idx" :class="msg.role === 'user' ? 'ai-msg ai-msg-user' : 'ai-msg ai-msg-ai'">
+						<view v-for="(msg, idx) in visibleAiMessages" :key="idx" :class="msg.role === 'user' ? 'ai-msg ai-msg-user' : 'ai-msg ai-msg-ai'">
 							<view v-if="msg.role === 'assistant'" class="ai-msg-avatar">
 								<image class="ai-msg-avatar-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
 							</view>
@@ -1238,7 +1246,10 @@
 				<!-- 输入区域 -->
 				<view class="ai-input-bar">
 					<textarea class="ai-input-field" v-model="aiInputText" placeholder="输入你的问题..." :disabled="aiLoading" :auto-height="true" :maxlength="2000" @confirm="sendAiMessage" confirm-type="send"></textarea>
-					<view :class="aiInputText.trim() && !aiLoading ? 'ai-send-btn ai-send-active' : 'ai-send-btn'" @click="sendAiMessage">
+					<view v-if="aiLoading" class="ai-send-btn ai-cancel-btn" @click="cancelAiMessage">
+						<text class="ai-send-text">取消</text>
+					</view>
+					<view v-else :class="aiInputText.trim() ? 'ai-send-btn ai-send-active' : 'ai-send-btn'" @click="sendAiMessage">
 						<text class="ai-send-text">发送</text>
 					</view>
 				</view>
@@ -1452,6 +1463,7 @@
 				aiInputText: '',
 				aiLoading: false,
 				aiInitialized: false,
+				aiVisibleCount: 50,
 				aiSettingsForm: {
 					deepseekApiKey: '',
 					deepseekBaseUrl: 'https://api.deepseek.com',
@@ -1464,7 +1476,9 @@
 					{ id: 'deepseek-chat', name: 'V3 Chat', desc: '标准 · 够用实惠' },
 					{ id: 'deepseek-reasoner', name: 'R1 推理', desc: '深度推理 · 严谨' }
 				],
-				_aiScrollTop: 0
+				_aiScrollTop: 0,
+				_aiAbort: null,
+				_aiRequestTime: 0
 			}
 		},
 		computed: {
@@ -1572,6 +1586,14 @@
 			detailRecords() {
 				if (!this.hasActiveDetail) return []
 				return this.records.filter((record) => record.questionId === this.activeDetail.id)
+			},
+			visibleAiMessages() {
+				var msgs = this.aiMessages
+				if (msgs.length <= this.aiVisibleCount) return msgs
+				return msgs.slice(msgs.length - this.aiVisibleCount)
+			},
+			aiHasMoreMessages() {
+				return this.aiMessages.length > this.aiVisibleCount
 			},
 			weeklyBars() {
 				const bars = []
@@ -2273,12 +2295,24 @@
 					var history = getAiChatHistory()
 					this.aiMessages = history.messages || []
 					this.aiInitialized = true
+					this.aiVisibleCount = 50
 				}
+
+				// 检测超时死请求：App 切后台后请求回调可能丢失，aiLoading 卡在 true
+				if (this.aiLoading && this._aiRequestTime > 0 && Date.now() - this._aiRequestTime > 35000) {
+					this.aiLoading = false
+					this._aiAbort = null
+					this._aiRequestTime = 0
+				}
+
 				this.navigateTo('ai-chat')
 				var self = this
 				this.$nextTick(function() {
 					self.scrollAiToBottom()
 				})
+			},
+			loadMoreAiMessages() {
+				this.aiVisibleCount += 50
 			},
 			scrollAiToBottom() {
 				var self = this
@@ -2299,25 +2333,55 @@
 				this.aiMessages.push({ role: 'user', content: text })
 				this.aiInputText = ''
 				this.aiLoading = true
+				this._aiRequestTime = Date.now()
 				this.scrollAiToBottom()
 
-				var systemPrompt = buildSystemPrompt(prefs.aiPersonality)
-				var chatMessages = [{ role: 'system', content: systemPrompt }]
-				var historyMessages = this.aiMessages.filter(function(m) { return m.role === 'user' || m.role === 'assistant' })
-				chatMessages = chatMessages.concat(trimMessages(historyMessages, 41))
-
 				var self = this
-				callDeepSeek(chatMessages, prefs.deepseekApiKey, prefs.deepseekBaseUrl, prefs.deepseekModel).then(function(reply) {
-					self.aiMessages.push({ role: 'assistant', content: reply })
-					self.aiLoading = false
-					self.scrollAiToBottom()
-					saveAiChatHistory(self.aiMessages)
-				}).catch(function(err) {
-					self.aiMessages.push({ role: 'assistant', content: '抱歉，出错了：' + err.message })
-					self.aiLoading = false
-					self.scrollAiToBottom()
-					saveAiChatHistory(self.aiMessages)
-				})
+				var savedPersonality = prefs.aiPersonality
+				var savedApiKey = prefs.deepseekApiKey
+				var savedBaseUrl = prefs.deepseekBaseUrl
+				var savedModel = prefs.deepseekModel
+
+				// 用 setTimeout 释放主线程，防止 buildSystemPrompt 阻塞 UI
+				setTimeout(function() {
+					var systemPrompt = buildSystemPrompt(savedPersonality)
+					var chatMessages = [{ role: 'system', content: systemPrompt }]
+					var historyMessages = self.aiMessages.filter(function(m) { return m.role === 'user' || m.role === 'assistant' })
+					chatMessages = chatMessages.concat(trimMessages(historyMessages, 41))
+
+					var aiPromise = callDeepSeek(chatMessages, savedApiKey, savedBaseUrl, savedModel)
+					self._aiAbort = aiPromise.abort || null
+
+					aiPromise.then(function(reply) {
+						if (reply === '[已取消]') {
+							self.aiLoading = false
+							self._aiAbort = null
+							self._aiRequestTime = 0
+							return
+						}
+						self.aiMessages.push({ role: 'assistant', content: reply })
+						self.aiLoading = false
+						self._aiAbort = null
+						self._aiRequestTime = 0
+						self.scrollAiToBottom()
+						saveAiChatHistory(self.aiMessages)
+					}).catch(function(err) {
+						self.aiMessages.push({ role: 'assistant', content: '抱歉，出错了：' + err.message })
+						self.aiLoading = false
+						self._aiAbort = null
+						self._aiRequestTime = 0
+						self.scrollAiToBottom()
+						saveAiChatHistory(self.aiMessages)
+					})
+				}, 50)
+			},
+			cancelAiMessage() {
+				if (this._aiAbort) {
+					this._aiAbort()
+					this._aiAbort = null
+				}
+				this.aiLoading = false
+				this._aiRequestTime = 0
 			},
 			sendQuickQuestion(q) {
 				this.aiInputText = q
@@ -2330,6 +2394,11 @@
 					content: '确定要清空所有对话记录吗？',
 					success: function(res) {
 						if (res.confirm) {
+							if (self._aiAbort) {
+								self._aiAbort()
+								self._aiAbort = null
+							}
+							self.aiLoading = false
 							self.aiMessages = []
 							self.aiInitialized = false
 							clearAiChatHistory()
@@ -2380,6 +2449,35 @@
 					uni.showModal({ title: '连接成功', content: 'AI 回复：' + reply.substring(0, 100), showCancel: false })
 				}).catch(function(err) {
 					uni.showModal({ title: '连接失败', content: err.message, showCancel: false })
+				})
+			},
+			resetAiData() {
+				var self = this
+				uni.showModal({
+					title: '重置 AI 数据',
+					content: '将清除所有聊天记录。API Key、模型选择等配置会保留。',
+					confirmText: '继续',
+					confirmColor: '#EF4444',
+					success: function(res) {
+						if (!res.confirm) return
+						uni.showModal({
+							title: '确认重置',
+							content: '此操作不可撤销，确定要清除所有聊天记录吗？',
+							confirmText: '确定重置',
+							confirmColor: '#EF4444',
+							success: function(res2) {
+								if (!res2.confirm) return
+								self.aiMessages = []
+								self.aiInitialized = false
+								self.aiLoading = false
+								self._aiAbort = null
+								self._aiRequestTime = 0
+								self.aiVisibleCount = 50
+								clearAiChatHistory()
+								self.toast('AI 聊天记录已清除')
+							}
+						})
+					}
 				})
 			},
 			toast(title) {
@@ -3383,6 +3481,24 @@
 		line-height: 20px;
 		font-weight: 800;
 		color: #6750A4;
+	}
+
+	.danger-button {
+		height: 54px;
+		border-radius: 28px;
+		background-color: #FFFFFF;
+		border: 1px solid #FCA5A5;
+		margin-top: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.danger-button text {
+		font-size: 14px;
+		line-height: 20px;
+		font-weight: 800;
+		color: #EF4444;
 	}
 
 	.save-icon {
@@ -4899,6 +5015,21 @@
 		min-height: 100%;
 	}
 
+	/* 加载更多 */
+	.ai-load-more {
+		display: flex;
+		justify-content: center;
+		padding: 12px 0;
+		margin-bottom: 12px;
+	}
+	.ai-load-more-text {
+		font-size: 13px;
+		color: #8B5CF6;
+		padding: 6px 16px;
+		border-radius: 16px;
+		background-color: rgba(139, 92, 246, 0.08);
+	}
+
 	/* 欢迎卡片 */
 	.ai-welcome-card {
 		background-color: #FFFFFF;
@@ -5092,6 +5223,11 @@
 	.ai-send-active {
 		background-color: #EA580C;
 		box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+	}
+
+	.ai-cancel-btn {
+		background-color: #F87171;
+		width: 60px;
 	}
 
 	.ai-send-text {

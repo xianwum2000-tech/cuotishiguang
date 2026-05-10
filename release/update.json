@@ -1,9 +1,9 @@
 {
-  "versionName": "1.4.0",
-  "versionCode": 140,
+  "versionName": "1.4.4",
+  "versionCode": 144,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.4.0/cuotishiguang-1.4.0.apk",
-  "changelog": "1. 新增 AI 助手，支持错题分析和自由问答\n2. 底部导航栏新增 AI 入口\n3. 设置页可配置 AI 模型和性格\n4. 公式独立成行高亮显示",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.4.4/cuotishiguang-1.4.4.apk",
+  "changelog": "1. 用户设置页新增重置 AI 数据功能（双重确认）\n2. 重置时保留 API 配置，仅清除聊天记录",
   "force": false,
   "publishedAt": "2026-05-10"
 }
