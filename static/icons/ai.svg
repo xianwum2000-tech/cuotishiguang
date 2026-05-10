@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- 天线球 -->
+  <circle cx="12" cy="2.5" r="1.8" fill="white"/>
+  <!-- 天线杆 -->
+  <rect x="11.2" y="4" width="1.6" height="3.5" rx="0.8" fill="white"/>
+  <!-- 头部 -->
+  <rect x="3.5" y="7" width="17" height="13" rx="4.5" fill="white"/>
+  <!-- 左眼 -->
+  <circle cx="9" cy="12.5" r="2" fill="#7C3AED"/>
+  <!-- 右眼 -->
+  <circle cx="15" cy="12.5" r="2" fill="#7C3AED"/>
+  <!-- 左眼高光 -->
+  <circle cx="9.7" cy="11.8" r="0.7" fill="white" opacity="0.8"/>
+  <!-- 右眼高光 -->
+  <circle cx="15.7" cy="11.8" r="0.7" fill="white" opacity="0.8"/>
+  <!-- 嘴巴 -->
+  <path d="M9.5 16.5 Q12 19 14.5 16.5" stroke="#7C3AED" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1171,7 +1171,124 @@
 				</view>
 			</view>
 
-			<view v-if="screen === 'home' || screen === 'library' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
+			<!-- AI 聊天屏幕 -->
+			<view v-if="screen === 'ai-chat'" class="screen screen-lilac ai-screen">
+				<view class="topbar compact-topbar">
+					<view class="brand-row">
+						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
+						<text class="brand-title small-brand">AI 助手</text>
+					</view>
+					<view class="ai-topbar-actions">
+						<text class="gear small-gear" @click="clearAiChat">清空</text>
+						<text class="gear small-gear" @click="showAiSettings">设置</text>
+					</view>
+				</view>
+				<scroll-view class="ai-chat-area" scroll-y :scroll-top="_aiScrollTop || 0" :scroll-with-animation="true">
+					<view class="ai-chat-inner">
+						<!-- 欢迎消息 -->
+						<view v-if="aiMessages.length === 0" class="ai-welcome-card">
+							<view class="ai-welcome-icon">
+								<image class="ai-welcome-icon-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
+							</view>
+							<text class="ai-welcome-title">你好，我是 AI 助手</text>
+							<text class="ai-welcome-desc">我了解你的所有错题记录，可以帮你分析薄弱环节、推荐复习重点，也能回答数学问题。</text>
+							<view class="ai-quick-questions">
+								<view class="ai-quick-btn" @click="sendQuickQuestion('分析我的薄弱章节')">
+									<text class="ai-quick-text">分析薄弱章节</text>
+								</view>
+								<view class="ai-quick-btn" @click="sendQuickQuestion('推荐今日复习重点')">
+									<text class="ai-quick-text">今日复习重点</text>
+								</view>
+								<view class="ai-quick-btn" @click="sendQuickQuestion('我的错因分布有什么规律？')">
+									<text class="ai-quick-text">错因分析</text>
+								</view>
+								<view class="ai-quick-btn" @click="sendQuickQuestion('给我一些考研数学复习建议')">
+									<text class="ai-quick-text">复习建议</text>
+								</view>
+							</view>
+						</view>
+
+						<!-- 消息列表 -->
+						<view v-for="(msg, idx) in aiMessages" :key="idx" :class="msg.role === 'user' ? 'ai-msg ai-msg-user' : 'ai-msg ai-msg-ai'">
+							<view v-if="msg.role === 'assistant'" class="ai-msg-avatar">
+								<image class="ai-msg-avatar-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
+							</view>
+							<view :class="msg.role === 'user' ? 'ai-bubble ai-bubble-user' : 'ai-bubble ai-bubble-ai'">
+								<text v-if="msg.role === 'user'" class="ai-bubble-text" :selectable="true">{{ msg.content }}</text>
+								<rich-text v-else class="ai-bubble-text ai-rich-text" :selectable="true" :nodes="formatAiText(msg.content)"></rich-text>
+							</view>
+						</view>
+
+						<!-- 加载动画 -->
+						<view v-if="aiLoading" class="ai-msg ai-msg-ai">
+							<view class="ai-msg-avatar">
+								<image class="ai-msg-avatar-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
+							</view>
+							<view class="ai-bubble ai-bubble-ai">
+								<view class="ai-typing">
+									<view class="ai-dot"></view>
+									<view class="ai-dot"></view>
+									<view class="ai-dot"></view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+
+				<!-- 输入区域 -->
+				<view class="ai-input-bar">
+					<textarea class="ai-input-field" v-model="aiInputText" placeholder="输入你的问题..." :disabled="aiLoading" :auto-height="true" :maxlength="2000" @confirm="sendAiMessage" confirm-type="send"></textarea>
+					<view :class="aiInputText.trim() && !aiLoading ? 'ai-send-btn ai-send-active' : 'ai-send-btn'" @click="sendAiMessage">
+						<text class="ai-send-text">发送</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- AI 设置屏幕 -->
+			<view v-if="screen === 'ai-settings'" class="screen screen-cream">
+				<view class="topbar compact-topbar">
+					<view class="brand-row">
+						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
+						<text class="brand-title small-brand">AI 配置</text>
+					</view>
+					<text class="gear small-gear" @click="saveAiSettings">保存</text>
+				</view>
+				<view class="page-content" style="padding-top: 20px;">
+					<view class="settings-card soft-card">
+						<text class="field-label">API Key</text>
+						<input class="settings-input" v-model="aiSettingsForm.deepseekApiKey" placeholder="输入你的 DeepSeek API Key" type="password" />
+
+						<text class="field-label field-space">API Base URL</text>
+						<input class="settings-input" v-model="aiSettingsForm.deepseekBaseUrl" placeholder="https://api.deepseek.com" />
+
+						<text class="field-label field-space">选择模型</text>
+						<view class="ai-model-grid">
+							<view v-for="m in aiModelOptions" :key="m.id"
+								:class="aiSettingsForm.deepseekModel === m.id ? 'ai-model-card ai-model-active' : 'ai-model-card'"
+								@click="aiSettingsForm.deepseekModel = m.id"
+							>
+								<text class="ai-model-name">{{ m.name }}</text>
+								<text class="ai-model-desc">{{ m.desc }}</text>
+							</view>
+						</view>
+					</view>
+
+					<view class="settings-card soft-card">
+						<text class="field-label">AI 性格设定</text>
+						<textarea class="ai-personality-field" v-model="aiSettingsForm.aiPersonality" placeholder="自定义 AI 的性格和回答风格，例如：&#10;&#10;请用轻松幽默的语气回答，多举例子帮助理解。&#10;每次回答结尾给我留一道练习题。&#10;回答要详细，推导过程要完整。" :maxlength="500"></textarea>
+						<text class="ai-personality-hint">留空则使用默认风格。设定后 AI 会按你写的风格来回答。</text>
+					</view>
+
+					<view class="save-button" @click="saveAiSettings">
+						<text>保存配置</text>
+					</view>
+					<view class="secondary-button" @click="testAiConnection">
+						<text>测试连接</text>
+					</view>
+				</view>
+			</view>
+
+			<view v-if="screen === 'home' || screen === 'library' || screen === 'ai-chat' || screen === 'ai-settings' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
 					<image class="nav-icon-img" src="/static/icons/home.svg" mode="aspectFit"></image>
 					<text class="nav-label">首页</text>
@@ -1179,6 +1296,12 @@
 				<view :class="libraryNavClass" @click="showLibrary">
 					<image class="nav-icon-img" src="/static/icons/library.svg" mode="aspectFit"></image>
 					<text class="nav-label">错题</text>
+				</view>
+				<view :class="aiNavClass" @click="showAiChat">
+					<view class="ai-nav-icon-wrap">
+						<image class="nav-icon-img ai-nav-icon-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
+					</view>
+					<text class="nav-label">AI</text>
 				</view>
 				<view :class="screen === 'apps' || screen === 'formulas' || screen === 'theorems' || screen === 'scaling' || screen === 'properties' || screen === 'limits' || screen === 'derivatives' || screen === 'integrals' ? 'nav-item nav-active' : 'nav-item'" @click="showApps">
 					<image class="nav-icon-img" src="/static/icons/apps.svg" mode="aspectFit"></image>
@@ -1215,8 +1338,12 @@
 		saveCustomOptions,
 		savePreferences,
 		saveQuotes,
-		updateMistake
+		updateMistake,
+		getAiChatHistory,
+		saveAiChatHistory,
+		clearAiChatHistory
 	} from '@/utils/storage.js'
+	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
 	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/updater.js'
 
@@ -1320,7 +1447,24 @@
 				],
 				countdownTarget: '2027-12-25',
 				countdownLabel: '距离27年考研还剩下',
-				watchlistItems: []
+				watchlistItems: [],
+				aiMessages: [],
+				aiInputText: '',
+				aiLoading: false,
+				aiInitialized: false,
+				aiSettingsForm: {
+					deepseekApiKey: '',
+					deepseekBaseUrl: 'https://api.deepseek.com',
+					deepseekModel: 'deepseek-chat',
+					aiPersonality: ''
+				},
+				aiModelOptions: [
+					{ id: 'deepseek-v4-pro', name: 'V4 Pro', desc: '最强 · 数学推理最佳' },
+					{ id: 'deepseek-v4-flash', name: 'V4 Flash', desc: '快速 · 性价比高' },
+					{ id: 'deepseek-chat', name: 'V3 Chat', desc: '标准 · 够用实惠' },
+					{ id: 'deepseek-reasoner', name: 'R1 推理', desc: '深度推理 · 严谨' }
+				],
+				_aiScrollTop: 0
 			}
 		},
 		computed: {
@@ -1474,6 +1618,9 @@
 			},
 			libraryNavClass() {
 				return this.screen === 'library' || this.screen === 'detail' || this.screen === 'add' ? 'nav-item nav-active' : 'nav-item'
+			},
+			aiNavClass() {
+				return this.screen === 'ai-chat' || this.screen === 'ai-settings' ? 'nav-item nav-item-ai nav-active' : 'nav-item nav-item-ai'
 			}
 		},
 		onLoad() {
@@ -2120,6 +2267,120 @@
 					if (field === 'answerImage') this.reviewAnswerImageBroken = true
 				}
 				this.toast(label + '无法读取，可在错题详情里更换图片')
+			},
+			showAiChat() {
+				if (!this.aiInitialized) {
+					var history = getAiChatHistory()
+					this.aiMessages = history.messages || []
+					this.aiInitialized = true
+				}
+				this.navigateTo('ai-chat')
+				var self = this
+				this.$nextTick(function() {
+					self.scrollAiToBottom()
+				})
+			},
+			scrollAiToBottom() {
+				var self = this
+				setTimeout(function() {
+					self._aiScrollTop = (self._aiScrollTop || 0) + 99999
+				}, 100)
+			},
+			sendAiMessage() {
+				var text = (this.aiInputText || '').trim()
+				if (!text || this.aiLoading) return
+
+				var prefs = getPreferences()
+				if (!prefs.deepseekApiKey) {
+					this.toast('请先在设置中配置 API Key')
+					return
+				}
+
+				this.aiMessages.push({ role: 'user', content: text })
+				this.aiInputText = ''
+				this.aiLoading = true
+				this.scrollAiToBottom()
+
+				var systemPrompt = buildSystemPrompt(prefs.aiPersonality)
+				var chatMessages = [{ role: 'system', content: systemPrompt }]
+				var historyMessages = this.aiMessages.filter(function(m) { return m.role === 'user' || m.role === 'assistant' })
+				chatMessages = chatMessages.concat(trimMessages(historyMessages, 41))
+
+				var self = this
+				callDeepSeek(chatMessages, prefs.deepseekApiKey, prefs.deepseekBaseUrl, prefs.deepseekModel).then(function(reply) {
+					self.aiMessages.push({ role: 'assistant', content: reply })
+					self.aiLoading = false
+					self.scrollAiToBottom()
+					saveAiChatHistory(self.aiMessages)
+				}).catch(function(err) {
+					self.aiMessages.push({ role: 'assistant', content: '抱歉，出错了：' + err.message })
+					self.aiLoading = false
+					self.scrollAiToBottom()
+					saveAiChatHistory(self.aiMessages)
+				})
+			},
+			sendQuickQuestion(q) {
+				this.aiInputText = q
+				this.sendAiMessage()
+			},
+			clearAiChat() {
+				var self = this
+				uni.showModal({
+					title: '清空对话',
+					content: '确定要清空所有对话记录吗？',
+					success: function(res) {
+						if (res.confirm) {
+							self.aiMessages = []
+							self.aiInitialized = false
+							clearAiChatHistory()
+							self.toast('对话已清空')
+						}
+					}
+				})
+			},
+			showAiSettings() {
+				var prefs = getPreferences()
+				this.aiSettingsForm = {
+					deepseekApiKey: prefs.deepseekApiKey || '',
+					deepseekBaseUrl: prefs.deepseekBaseUrl || 'https://api.deepseek.com',
+					deepseekModel: prefs.deepseekModel || 'deepseek-chat',
+					aiPersonality: prefs.aiPersonality || ''
+				}
+				this.navigateTo('ai-settings')
+			},
+			saveAiSettings() {
+				var apiKey = (this.aiSettingsForm.deepseekApiKey || '').trim()
+				var baseUrl = (this.aiSettingsForm.deepseekBaseUrl || '').trim() || 'https://api.deepseek.com'
+				var model = (this.aiSettingsForm.deepseekModel || '').trim() || 'deepseek-chat'
+				var personality = this.aiSettingsForm.aiPersonality || ''
+				savePreferences({
+					deepseekApiKey: apiKey,
+					deepseekBaseUrl: baseUrl,
+					deepseekModel: model,
+					aiPersonality: personality
+				})
+				this.preferences = getPreferences()
+				this.toast('AI 配置已保存')
+				this.handleBackPress()
+			},
+			formatAiText(text) {
+				return _formatAiText(text)
+			},
+			testAiConnection() {
+				var apiKey = (this.aiSettingsForm.deepseekApiKey || '').trim()
+				if (!apiKey) {
+					this.toast('请先填写 API Key')
+					return
+				}
+				var baseUrl = (this.aiSettingsForm.deepseekBaseUrl || '').trim() || 'https://api.deepseek.com'
+				var model = (this.aiSettingsForm.deepseekModel || '').trim() || 'deepseek-chat'
+				var self = this
+				this.toast('正在测试...')
+				callDeepSeek([{ role: 'user', content: '你好，请回复"连接成功"' }], apiKey, baseUrl, model).then(function(reply) {
+					uni.showModal({ title: '连接成功', content: 'AI 回复：' + reply.substring(0, 100), showCancel: false })
+				}).catch(function(err) {
+					uni.showModal({ title: '连接失败', content: err.message, showCancel: false })
+				})
 			},
 			toast(title) {
 				uni.showToast({
@@ -4004,6 +4265,7 @@
 		max-width: 393px;
 		min-height: 68px;
 		padding: 10px 20px 12px;
+		z-index: 20;
 		border-top-left-radius: 28px;
 		border-top-right-radius: 28px;
 		background: linear-gradient(180deg, #FFFBF5 0%, #FEF3E2 100%);
@@ -4596,5 +4858,389 @@
 		color: #998B7A;
 		line-height: 28px;
 		margin-right: 2px;
+	}
+
+	/* ==================== AI 助手样式 ==================== */
+
+	.ai-screen {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 90px;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		padding-bottom: 0;
+		overflow: hidden;
+		z-index: 10;
+		background-color: #FDF7FF;
+	}
+
+	.ai-screen .compact-topbar {
+		height: 56px;
+		padding-top: 10px;
+	}
+
+	.ai-topbar-actions {
+		display: flex;
+		gap: 16px;
+	}
+
+	/* 聊天区域 */
+	.ai-chat-area {
+		flex: 1;
+		height: 0;
+		overflow: hidden;
+	}
+
+	.ai-chat-inner {
+		padding: 16px 16px 24px;
+		min-height: 100%;
+	}
+
+	/* 欢迎卡片 */
+	.ai-welcome-card {
+		background-color: #FFFFFF;
+		border-radius: 24px;
+		padding: 28px 20px;
+		margin-bottom: 20px;
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.ai-welcome-icon {
+		width: 56px;
+		height: 56px;
+		border-radius: 16px;
+		background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 14px;
+		box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+	}
+
+	.ai-welcome-icon-img {
+		width: 30px;
+		height: 30px;
+	}
+
+	.ai-welcome-title {
+		font-size: 18px;
+		font-weight: 800;
+		color: #1D1B20;
+		margin-bottom: 8px;
+	}
+
+	.ai-welcome-desc {
+		font-size: 13px;
+		color: #766F6A;
+		text-align: center;
+		line-height: 20px;
+		margin-bottom: 20px;
+	}
+
+	/* 快捷提问 */
+	.ai-quick-questions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		justify-content: center;
+	}
+
+	.ai-quick-btn {
+		padding: 8px 16px;
+		border-radius: 20px;
+		background-color: #F5F3FF;
+		border: 1px solid #EDE9FE;
+	}
+
+	.ai-quick-text {
+		font-size: 13px;
+		font-weight: 600;
+		color: #6750A4;
+	}
+
+	/* 消息气泡 */
+	.ai-msg {
+		display: flex;
+		margin-bottom: 16px;
+		align-items: flex-start;
+	}
+
+	.ai-msg-user {
+		justify-content: flex-end;
+	}
+
+	.ai-msg-ai {
+		justify-content: flex-start;
+	}
+
+	.ai-msg-avatar {
+		width: 32px;
+		height: 32px;
+		border-radius: 10px;
+		background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		margin-right: 10px;
+	}
+
+	.ai-msg-avatar-img {
+		width: 18px;
+		height: 18px;
+	}
+
+	.ai-bubble {
+		max-width: 78%;
+		padding: 12px 16px;
+		border-radius: 20px;
+		word-wrap: break-word;
+		word-break: break-all;
+	}
+
+	.ai-bubble-user {
+		background-color: #EA580C;
+		border-bottom-right-radius: 6px;
+	}
+
+	.ai-bubble-user .ai-bubble-text {
+		color: #FFFFFF;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 22px;
+	}
+
+	.ai-bubble-ai {
+		background-color: #FFFFFF;
+		border-bottom-left-radius: 6px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	}
+
+	.ai-bubble-ai .ai-bubble-text {
+		color: #1D1B20;
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 22px;
+	}
+
+	/* 打字动画 */
+	.ai-typing {
+		display: flex;
+		gap: 6px;
+		padding: 4px 0;
+	}
+
+	.ai-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background-color: #A78BFA;
+		animation: ai-bounce 1.4s infinite ease-in-out;
+	}
+
+	.ai-dot:nth-child(1) { animation-delay: 0s; }
+	.ai-dot:nth-child(2) { animation-delay: 0.2s; }
+	.ai-dot:nth-child(3) { animation-delay: 0.4s; }
+
+	@keyframes ai-bounce {
+		0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+		40% { transform: translateY(-8px); opacity: 1; }
+	}
+
+	/* 输入栏 */
+	.ai-input-bar {
+		display: flex;
+		align-items: flex-end;
+		padding: 10px 14px;
+		padding-bottom: calc(10px + env(safe-area-inset-bottom));
+		background-color: #FFFFFF;
+		border-top: 1px solid #F1E2D8;
+		gap: 10px;
+	}
+
+	.ai-input-field {
+		flex: 1;
+		min-height: 40px;
+		max-height: 100px;
+		border-radius: 20px;
+		background-color: #FFF8F2;
+		border: 1px solid #F1E2D8;
+		padding: 10px 16px;
+		font-size: 14px;
+		font-weight: 500;
+		color: #1D1B20;
+		line-height: 20px;
+	}
+
+	.ai-send-btn {
+		width: 60px;
+		height: 40px;
+		border-radius: 20px;
+		background-color: #E7E5E4;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	.ai-send-active {
+		background-color: #EA580C;
+		box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+	}
+
+	.ai-send-text {
+		font-size: 14px;
+		font-weight: 800;
+		color: #FFFFFF;
+	}
+
+	/* 底部导航 AI 图标 */
+	.nav-item-ai {
+		position: relative;
+	}
+
+	.ai-nav-icon-wrap {
+		width: 40px;
+		height: 40px;
+		border-radius: 14px;
+		background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-top: -10px;
+		box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+	}
+
+	.ai-nav-icon-img {
+		width: 22px;
+		height: 22px;
+	}
+
+	.nav-item-ai .nav-label {
+		margin-top: 2px;
+	}
+
+	.nav-item-ai.nav-active .ai-nav-icon-wrap {
+		background: linear-gradient(135deg, #7C3AED, #8B5CF6);
+		box-shadow: 0 4px 18px rgba(139, 92, 246, 0.45);
+	}
+
+	/* AI 性格设定 */
+	.ai-personality-field {
+		width: 100%;
+		min-height: 120px;
+		border-radius: 20px;
+		background-color: #FFF8F2;
+		border: 1px solid #F1E2D8;
+		padding: 14px 16px;
+		font-size: 13px;
+		color: #1D1B20;
+		line-height: 22px;
+		margin-top: 8px;
+	}
+
+	.ai-personality-hint {
+		font-size: 11px;
+		color: #A8A29E;
+		margin-top: 8px;
+		padding: 0 4px;
+	}
+
+	/* AI 富文本渲染 */
+	.ai-rich-text {
+		line-height: 22px;
+	}
+
+	.ai-rich-text b {
+		font-weight: 800;
+		color: #7C3AED;
+	}
+
+	.ai-inline-code {
+		font-size: 12px;
+		background-color: #F5F3FF;
+		color: #6750A4;
+		padding: 1px 6px;
+		border-radius: 4px;
+		font-family: monospace;
+	}
+
+	.ai-code-block {
+		background-color: #F5F3FF;
+		border-radius: 10px;
+		padding: 10px 12px;
+		margin: 6px 0;
+	}
+
+	.ai-code-text {
+		font-size: 12px;
+		color: #4A3728;
+		font-family: monospace;
+		line-height: 20px;
+	}
+
+	/* 公式独立块 */
+	.ai-formula-block {
+		background: linear-gradient(135deg, #FDF4FF, #F5F3FF);
+		border-left: 3px solid #A78BFA;
+		border-radius: 0 12px 12px 0;
+		padding: 12px 16px;
+		margin: 8px 0;
+	}
+
+	.ai-formula-text {
+		font-size: 15px;
+		font-weight: 700;
+		color: #5B21B6;
+		font-family: 'Courier New', Courier, monospace;
+		line-height: 26px;
+		letter-spacing: 0.5px;
+	}
+
+	/* 模型选择卡片 */
+	.ai-model-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 10px;
+		margin-top: 8px;
+	}
+
+	.ai-model-card {
+		background-color: #FFFFFF;
+		border: 1.5px solid #E8E2E0;
+		border-radius: 16px;
+		padding: 14px 12px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.ai-model-active {
+		border-color: #8B5CF6;
+		background-color: #FDF4FF;
+		box-shadow: 0 2px 12px rgba(139, 92, 246, 0.18);
+	}
+
+	.ai-model-active .ai-model-name {
+		color: #7C3AED;
+	}
+
+	.ai-model-name {
+		font-size: 14px;
+		font-weight: 800;
+		color: #44403C;
+	}
+
+	.ai-model-desc {
+		font-size: 11px;
+		color: #A8A29E;
+		text-align: center;
 	}
 </style>

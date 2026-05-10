@@ -21,8 +21,14 @@ const DEFAULT_PREFERENCES = {
 	homeTitle: '复习达人',
 	greetingTitle: '早上好，小明',
 	homeAvatar: '/static/stitch_assets/avatar-home.jpg',
-	statsName: '小明'
+	statsName: '小明',
+	deepseekApiKey: '',
+	deepseekBaseUrl: 'https://api.deepseek.com',
+	deepseekModel: 'deepseek-chat',
+	aiPersonality: ''
 }
+
+const AI_CHAT_KEY = 'mistake_scheduler_ai_chat_v1'
 
 function createId(prefix) {
 	return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 100000)}`
@@ -83,8 +89,10 @@ export function getPreferences() {
 }
 
 export function savePreferences(preferences) {
+	const current = readObject(PREFERENCES_KEY, DEFAULT_PREFERENCES)
 	const next = {
 		...DEFAULT_PREFERENCES,
+		...current,
 		...preferences
 	}
 	uni.setStorageSync(PREFERENCES_KEY, next)
@@ -205,4 +213,19 @@ export function saveCustomOptions(data) {
 	const next = { ...DEFAULT_CUSTOM_OPTIONS, ...data }
 	uni.setStorageSync(CUSTOM_OPTIONS_KEY, next)
 	return next
+}
+
+export function getAiChatHistory() {
+	return readObject(AI_CHAT_KEY, { messages: [], lastUpdated: '' })
+}
+
+export function saveAiChatHistory(messages) {
+	uni.setStorageSync(AI_CHAT_KEY, {
+		messages: messages,
+		lastUpdated: new Date().toISOString()
+	})
+}
+
+export function clearAiChatHistory() {
+	uni.setStorageSync(AI_CHAT_KEY, { messages: [], lastUpdated: '' })
 }
