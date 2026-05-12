@@ -421,104 +421,22 @@
 					</view>
 				</view>
 
-			<view v-if="screen === 'stats'" class="screen screen-lilac">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="avatar small-avatar">
-							<image class="avatar-img" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title small-brand">{{ preferences.statsName }}</text>
-					</view>
-					<text class="gear small-gear" @click="showSettings">⚙</text>
-				</view>
-
-				<view class="page-content stats-content">
-					<view class="user-hero-card soft-card">
-						<view class="user-avatar-ring">
-							<image class="user-avatar-large" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="user-display-name">{{ preferences.statsName }}</text>
-						<text class="user-slogan">考研数学 · 错题复习记录</text>
-						<view class="user-stat-trio">
-							<view class="user-stat-cell">
-								<text class="user-stat-num">{{ totalCount }}</text>
-								<text class="user-stat-label">总错题</text>
-							</view>
-							<view class="user-stat-divider"></view>
-							<view class="user-stat-cell">
-								<text class="user-stat-num">{{ dueCount }}</text>
-								<text class="user-stat-label">待复习</text>
-							</view>
-							<view class="user-stat-divider"></view>
-							<view class="user-stat-cell">
-								<text class="user-stat-num">{{ masteredCount }}</text>
-								<text class="user-stat-label">已掌握</text>
-							</view>
-						</view>
-					</view>
-
-					<view class="insight-card soft-card weekly-card">
-						<view class="weekly-head">
-							<view>
-								<text class="weekly-title">最近7天复习情况</text>
-								<text class="weekly-sub">每天完成后会写入本地复习记录。</text>
-							</view>
-							<view class="weekly-total">
-								<text class="weekly-total-number">{{ records.length }}</text>
-								<text class="weekly-total-label">累计记录</text>
-							</view>
-						</view>
-						<view class="bars-row">
-							<view v-for="bar in weeklyBars" :key="bar.date" class="bar-col">
-								<view class="bar-fill" :style="barHeightStyle(bar)"></view>
-								<text>{{ bar.label }}</text>
-							</view>
-						</view>
-					</view>
-
-					<view class="insight-card soft-card">
-						<text class="section-title">各章节错题分布</text>
-						<view v-for="item in chapterStats" :key="item.name" class="dist-line">
-							<text class="dist-name">{{ item.name }}</text>
-							<view class="dist-track"><view class="dist-fill" :style="distWidthStyle(item)"></view></view>
-							<text class="dist-count">{{ item.count }}</text>
-						</view>
-					</view>
-
-					<view class="insight-card soft-card">
-						<text class="section-title">各错因分布</text>
-						<view v-for="item in errorStats" :key="item.name" class="dist-line">
-							<text class="dist-name">{{ item.name }}</text>
-							<view class="dist-track"><view class="dist-fill dist-fill-red" :style="distWidthStyle(item)"></view></view>
-							<text class="dist-count">{{ item.count }}</text>
-						</view>
-					</view>
-
-					<view class="insight-card soft-card version-card">
-						<text class="section-title">版本更新</text>
-						<text class="profile-line">当前版本 {{ appVersion.name }}（{{ appVersion.code }}）</text>
-						<text class="profile-line version-source">更新源：{{ updateSourceText }}</text>
-						<view v-if="latestVersion.versionCode > appVersion.code" class="version-update-hint">
-							<text class="version-new-label">发现新版 {{ latestVersion.versionName }}</text>
-							<text class="version-changelog">{{ latestVersion.changelog || '暂无更新说明' }}</text>
-							<view class="secondary-button" @click="installLatestVersion(latestVersion)" v-if="!updateDownloading">
-								<text>下载并安装</text>
-							</view>
-							<view v-if="updateDownloading" class="download-status">
-								<view class="progress-track"><view class="progress-fill" :style="updateProgressStyle"></view></view>
-								<text class="download-percent">{{ updateProgress }}%</text>
-							</view>
-						</view>
-						<view class="secondary-button" @click="checkAppUpdate(false)" v-if="!updateDownloading && latestVersion.versionCode <= appVersion.code">
-							<text>{{ updateChecking ? '检查中...' : '检查更新' }}</text>
-						</view>
-					</view>
-
-					<view class="save-button" @click="goReviewReport" style="margin-top: 14px; margin-bottom: 20px;">
-						<text>查看复盘报告</text>
-					</view>
-				</view>
-			</view>
+			<StatsScreen
+				v-if="screen === 'stats'"
+				:mistakes="mistakes"
+				:records="records"
+				:preferences="preferences"
+				:app-version="appVersion"
+				:update-configured="updateConfigured"
+				:update-checking="updateChecking"
+				:update-downloading="updateDownloading"
+				:update-progress="updateProgress"
+				:latest-version="latestVersion"
+				@navigate="navigateTo"
+				@check-update="checkAppUpdate"
+				@install-update="installLatestVersion"
+				@goto-review-report="goReviewReport"
+			/>
 
 			<view v-if="screen === 'profile'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
@@ -582,174 +500,26 @@
 				</view>
 			</view>
 
-			<view v-if="screen === 'settings'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
-						<text class="brand-title small-brand">首页设置</text>
-					</view>
-					<text class="gear small-gear" @click="saveHomeSettings">保存</text>
-				</view>
-
-				<view class="page-content settings-content">
-					<view class="page-heading">
-						<text class="page-title">自定义首页文案</text>
-						<text class="page-subtitle">只影响本机显示，离线保存在本地。</text>
-					</view>
-
-					<view class="settings-card soft-card">
-						<text class="field-label">首页头像</text>
-						<view class="settings-avatar-row" @click="chooseHomeAvatar">
-							<view class="settings-avatar avatar-ring">
-								<image class="avatar-img" :src="settingsForm.homeAvatar" mode="aspectFill"></image>
-							</view>
-							<view class="settings-avatar-copy">
-								<text class="settings-avatar-title">点击上传头像</text>
-								<text class="settings-avatar-sub">支持相册或拍照，保存后首页生效</text>
-							</view>
-						</view>
-
-						<text class="field-label">顶部标题</text>
-						<input class="settings-input" v-model="settingsForm.homeTitle" placeholder="例如：复习达人" />
-
-						<text class="field-label field-space">首页问候语</text>
-						<input class="settings-input" v-model="settingsForm.greetingTitle" placeholder="例如：早上好，小明" />
-
-						<text class="field-label field-space">统计页姓名</text>
-						<input class="settings-input" v-model="settingsForm.statsName" placeholder="例如：小明" />
-					</view>
-
-					<view class="settings-preview soft-card">
-						<text class="preview-label">预览</text>
-						<view class="preview-brand-row">
-							<view class="avatar avatar-ring">
-								<image class="avatar-img" :src="settingsForm.homeAvatar" mode="aspectFill"></image>
-							</view>
-							<text class="brand-title preview-brand">{{ previewHomeTitle }}</text>
-						</view>
-						<text class="home-title preview-greeting">{{ previewGreetingTitle }}</text>
-						<text class="home-subtitle">{{ currentQuote }}</text>
-						<text class="preview-stats-title">{{ previewStatsName }}的学习洞察</text>
-					</view>
-
-					<view class="save-button" @click="saveHomeSettings">
-						<text>保存设置</text>
-					</view>
-					<view class="secondary-button" @click="showQuotesSettings">
-						<text>名句设置</text>
-					</view>
-					<view class="secondary-button" @click="resetHomeSettings">
-						<text>恢复默认</text>
-					</view>
-					<view class="danger-button" @click="resetAiData">
-						<text>重置 AI 数据</text>
-					</view>
-
-					<view class="settings-card soft-card" style="margin-top: 20px;">
-						<text class="field-label">每日目标</text>
-						<text class="page-subtitle" style="margin-bottom: 14px;">设置每天的复习目标数量。</text>
-						<view class="goal-mode-row">
-							<view :class="dailyGoalMode === 'dynamic' ? 'goal-mode-btn goal-mode-active' : 'goal-mode-btn'" @click="dailyGoalMode = 'dynamic'">
-								<text>动态推荐</text>
-							</view>
-							<view :class="dailyGoalMode === 'fixed' ? 'goal-mode-btn goal-mode-active' : 'goal-mode-btn'" @click="dailyGoalMode = 'fixed'">
-								<text>固定数量</text>
-							</view>
-						</view>
-						<view v-if="dailyGoalMode === 'fixed'" style="margin-top: 12px;">
-							<text class="field-label">固定目标数（3-30）</text>
-							<input class="settings-input" v-model.number="dailyGoalFixed" type="number" placeholder="10" />
-						</view>
-						<text v-if="dailyGoalMode === 'dynamic'" class="page-subtitle" style="margin-top: 10px;">
-							动态模式：根据今日到期数和逾期数自动计算，当前推荐 {{ dailyGoalTarget }} 道。
-						</text>
-					</view>
-
-					<view class="settings-card soft-card" style="margin-top: 20px;">
-						<text class="field-label">AI 识别配置</text>
-						<text class="page-subtitle" style="margin-bottom: 14px;">配置通义千问 VL 用于错题图片识别。</text>
-						<text class="field-label">通义千问 API Key</text>
-						<input class="settings-input" v-model="ocrApiKey" placeholder="sk-..." :password="!showOcrKey" />
-						<view class="ocr-key-toggle" @click="showOcrKey = !showOcrKey">
-							<text>{{ showOcrKey ? '隐藏' : '显示' }}</text>
-						</view>
-						<text class="field-label field-space">模型</text>
-						<view class="chip-row">
-							<view :class="ocrModel === 'qwen-vl-plus' ? 'subject-chip subject-active' : 'subject-chip'" @click="ocrModel = 'qwen-vl-plus'">
-								<text>Plus（便宜）</text>
-							</view>
-							<view :class="ocrModel === 'qwen-vl-max' ? 'subject-chip subject-active' : 'subject-chip'" @click="ocrModel = 'qwen-vl-max'">
-								<text>Max（精准）</text>
-							</view>
-						</view>
-						<view class="secondary-button" @click="testOcrKey" style="margin-top: 12px;">
-							<text>{{ ocrTesting ? '测试中...' : '测试连接' }}</text>
-						</view>
-						<text v-if="ocrTestResult" class="ocr-test-result" :class="ocrTestOk ? 'ocr-test-ok' : 'ocr-test-fail'">{{ ocrTestResult }}</text>
-					</view>
-
-					<view class="settings-card soft-card" style="margin-top: 20px;">
-						<text class="field-label">云同步</text>
-						<text class="page-subtitle" style="margin-bottom: 14px;">通过 GitHub Gist 备份和恢复数据。</text>
-						<text class="field-label">GitHub Token</text>
-						<input class="settings-input" v-model="githubToken" placeholder="ghp_..." :password="!showGithubToken" />
-						<view class="ocr-key-toggle" @click="showGithubToken = !showGithubToken">
-							<text>{{ showGithubToken ? '隐藏' : '显示' }}</text>
-						</view>
-						<view class="secondary-button" @click="testGithub" style="margin-top: 6px;">
-							<text>{{ githubTesting ? '测试中...' : '测试连接' }}</text>
-						</view>
-						<text v-if="githubTestResult" class="ocr-test-result" :class="githubTestOk ? 'ocr-test-ok' : 'ocr-test-fail'">{{ githubTestResult }}</text>
-						<view style="margin-top: 16px;">
-							<view class="save-button" @click="doBackup">
-								<text>{{ syncLoading === 'backup' ? '备份中...' : '备份到 GitHub' }}</text>
-							</view>
-							<text v-if="lastBackupTime" class="sync-last-time">上次备份：{{ lastBackupTime }}</text>
-						</view>
-						<view style="margin-top: 12px;">
-							<view class="secondary-button" @click="doRestore">
-								<text>{{ syncLoading === 'restore' ? '恢复中...' : '从 GitHub 恢复' }}</text>
-							</view>
-						</view>
-					</view>
-
-					<view class="settings-card soft-card" style="margin-top: 20px;">
-						<text class="field-label">倒计时设置</text>
-						<text class="page-subtitle" style="margin-bottom: 14px;">首页倒计时的目标日期和显示文字。</text>
-						<text class="field-label field-space">显示文字</text>
-						<input class="settings-input" v-model="countdownLabel" placeholder="例如：距离27年考研还剩下" />
-						<text class="field-label field-space">目标日期</text>
-						<input class="settings-input" v-model="countdownTarget" placeholder="例如：2027-12-25" />
-						<text class="field-label field-space" style="font-size: 12px; color: #A8A29E; margin-top: 6px;">格式：YYYY-MM-DD，当前倒计时 {{ countdownDays }} 天</text>
-					</view>
-					<view class="save-button" @click="saveCountdown" style="margin-top: 12px;">
-						<text>保存倒计时</text>
-					</view>
-
-					<view class="settings-card soft-card" style="margin-top: 20px;">
-						<text class="field-label">学习进度圆环</text>
-						<text class="page-subtitle" style="margin-bottom: 14px;">设置三个进度圆环的名称、当前值和目标值。</text>
-						<view v-for="(ring, idx) in progressRings" :key="idx" class="goal-section">
-							<text class="field-label field-space">圆环 {{ idx + 1 }}</text>
-							<view class="goal-row">
-								<text class="goal-label">名称</text>
-								<input class="settings-input goal-input" v-model="ring.name" placeholder="例如：高数" />
-							</view>
-							<view class="goal-row">
-								<text class="goal-label">当前值</text>
-								<input class="settings-input goal-input" type="number" v-model.number="ring.current" placeholder="0" />
-							</view>
-							<view class="goal-row">
-								<text class="goal-label">目标值</text>
-								<input class="settings-input goal-input" type="number" v-model.number="ring.target" placeholder="10" />
-							</view>
-						</view>
-					</view>
-					<view class="save-button" @click="saveProgressRings" style="margin-top: 12px;">
-						<text>保存学习进度</text>
-					</view>
-				</view>
-			</view>
+			<SettingsScreen
+				v-if="screen === 'settings'"
+				:preferences="preferences"
+				:countdown-target="countdownTarget"
+				:countdown-label="countdownLabel"
+				:progress-rings="progressRings"
+				:daily-goal-mode="dailyGoalMode"
+				:daily-goal-fixed="dailyGoalFixed"
+				:ocr-api-key="ocrApiKey"
+				:ocr-model="ocrModel"
+				:github-token="githubToken"
+				:daily-goal-target="dailyGoalTarget"
+				:quotes-data="quotesData"
+				@navigate="handleSettingsNavigate"
+				@save-settings="handleSaveSettings"
+				@save-countdown="handleSaveCountdown"
+				@save-progress-rings="handleSaveProgressRings"
+				@reset-settings="resetHomeSettings"
+				@reset-ai-data="resetAiData"
+			/>
 
 			<view v-if="screen === 'edit'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
@@ -1016,6 +786,8 @@
 	import TodayListScreen from './screens/TodayListScreen.vue'
 	import LibraryScreen from './screens/LibraryScreen.vue'
 	import DetailScreen from './screens/DetailScreen.vue'
+	import StatsScreen from './screens/StatsScreen.vue'
+	import SettingsScreen from './screens/SettingsScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -1083,7 +855,7 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -1308,28 +1080,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			aiHasMoreMessages() {
 				return this.aiMessages.length > this.aiVisibleCount
 			},
-			weeklyBars() {
-				const bars = []
-				const labels = ['一', '二', '三', '四', '五', '六', '日']
-				for (let index = 6; index >= 0; index--) {
-					const date = addDays(this.currentDate, -index)
-					const count = this.records.filter((record) => record.reviewDate === date).length
-					const day = new Date(date).getDay()
-					bars.push({
-						date,
-						count,
-						label: labels[day === 0 ? 6 : day - 1],
-						height: Math.max(8, Math.min(96, count * 18))
-					})
-				}
-				return bars
-			},
-			chapterStats() {
-				return this.buildDistribution('chapter')
-			},
-			errorStats() {
-				return this.buildDistribution('errorType')
-			},
 			previewHomeTitle() {
 				return this.settingsForm.homeTitle || '复习达人'
 			},
@@ -1500,6 +1250,9 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			},
 			goConclusion() {
 				uni.navigateTo({ url: '/pages/conclusion/conclusion' })
+			},
+			goReviewReport() {
+				uni.navigateTo({ url: '/pages/review-report/review-report' })
 			},
 			showToday() {
 				this.refreshData()
@@ -1791,9 +1544,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 					this.detailOcrLoading = ''
 				}
 			},
-			goReviewReport() {
-				uni.navigateTo({ url: '/pages/review-report/review-report' })
-			},
 			chooseEditQuestionImage() {
 				this.chooseEditImage('questionImage')
 			},
@@ -1993,19 +1743,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				this.toast('已归档')
 				this.handleBackPress()
 			},
-			buildDistribution(field) {
-				const map = {}
-				this.activeMistakes.forEach((item) => {
-					const key = item[field] || '未分类'
-					map[key] = (map[key] || 0) + 1
-				})
-				const max = Math.max(1, ...Object.keys(map).map((key) => map[key]))
-				return Object.keys(map).map((key) => ({
-					name: key,
-					count: map[key],
-					percent: Math.max(8, Math.round((map[key] / max) * 100))
-				}))
-			},
 			priorityLabel(item) {
 				if (getOverdueDays(item, this.currentDate) >= 2 || (item.totalWrongCount || 0) >= 3) return '高'
 				if (getOverdueDays(item, this.currentDate) >= 1 || (item.totalWrongCount || 0) >= 1) return '中'
@@ -2033,12 +1770,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			},
 			noteText(note) {
 				return note || '暂无备注'
-			},
-			barHeightStyle(bar) {
-				return 'height: ' + bar.height + 'px'
-			},
-			distWidthStyle(item) {
-				return 'width: ' + item.percent + '%'
 			},
 			stageLabel(stage) {
 				return getStageLabel(stage)
