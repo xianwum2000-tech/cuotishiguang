@@ -18,287 +18,41 @@
 				@goto-knowledge="goKnowledge"
 			/>
 
-			<view v-if="screen === 'add'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-				</view>
+			<AddScreen
+				v-if="screen === 'add'"
+				:subject-options="subjectOptions"
+				:custom-subjects="customSubjects"
+				:custom-chapters="customChapters"
+				:custom-error-types="customErrorTypes"
+				:error-type-options="errorTypeOptions"
+				:difficulty-options="difficultyOptions"
+				@navigate="handleAddScreenNavigate"
+				@show-detail="showDetail"
+				@data-changed="refreshData"
+			/>
 
-				<view class="page-content add-content">
-					<view class="page-heading">
-						<text class="page-title">新增错题</text>
-						<text class="page-subtitle">上传题目和答案，系统自动安排 2 天后复习</text>
-					</view>
+			<TodayListScreen
+				v-if="screen === 'today'"
+				:mistakes="mistakes"
+				:records="records"
+				:preferences="preferences"
+				:subject-options="subjectOptions"
+				:custom-subjects="customSubjects"
+				@navigate="navigateTo"
+				@start-review="startReview"
+			/>
 
-					<view class="upload-box" @click="chooseQuestionImage">
-						<image
-							v-if="form.questionImage.length > 0"
-							class="upload-preview"
-							:src="form.questionImage"
-							mode="aspectFill"
-							@click.stop="previewSingleImage(form.questionImage)"
-						></image>
-						<view v-if="form.questionImage.length > 0" class="upload-change" @click.stop="chooseQuestionImage">
-							<text>更换</text>
-						</view>
-						<view v-if="form.questionImage.length === 0" class="upload-placeholder">
-							<view class="upload-icon"><text>▣</text></view>
-							<text class="upload-title">上传题目图</text>
-							<text class="upload-desc">支持相册或拍照</text>
-						</view>
-					</view>
-
-					<view v-if="ocrStatus === 'question'" class="ocr-loading">
-						<text>正在识别题目...</text>
-					</view>
-					<view v-if="form.questionText" class="ocr-preview soft-card">
-						<text class="field-label">识别结果</text>
-						<text class="ocr-text">{{ form.questionText }}</text>
-						<view class="ocr-edit-btn" @click="editOcrText('question')">
-							<text>编辑</text>
-						</view>
-					</view>
-
-					<view class="upload-box" @click="chooseAnswerImage">
-						<image
-							v-if="form.answerImage.length > 0"
-							class="upload-preview"
-							:src="form.answerImage"
-							mode="aspectFill"
-							@click.stop="previewSingleImage(form.answerImage)"
-						></image>
-						<view v-if="form.answerImage.length > 0" class="upload-change" @click.stop="chooseAnswerImage">
-							<text>更换</text>
-						</view>
-						<view v-if="form.answerImage.length === 0" class="upload-placeholder">
-							<view class="upload-icon"><text>▤</text></view>
-							<text class="upload-title">上传答案图</text>
-							<text class="upload-desc">复习时默认不会先展示</text>
-						</view>
-					</view>
-
-					<view v-if="ocrStatus === 'answer'" class="ocr-loading">
-						<text>正在识别答案...</text>
-					</view>
-					<view v-if="form.answerText" class="ocr-preview soft-card">
-						<text class="field-label">识别结果</text>
-						<text class="ocr-text">{{ form.answerText }}</text>
-						<view class="ocr-edit-btn" @click="editOcrText('answer')">
-							<text>编辑</text>
-						</view>
-					</view>
-
-					<view class="form-card soft-card">
-						<text class="field-label">选择科目</text>
-						<view class="chip-row">
-							<view
-								v-for="subject in subjectOptionsAll"
-								:key="subject"
-								:class="form.subject === subject ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="selectFormSubject(subject)"
-							>
-								<text>{{ subject }}</text>
-							</view>
-							<view class="subject-chip chip-add" @click="addCustomOption('subject')"><text>+ 自定义</text></view>
-						</view>
-
-						<text class="field-label field-space">选择章节</text>
-						<view class="chip-row">
-							<view
-								v-for="chapter in chaptersForForm"
-								:key="chapter"
-								:class="form.chapter === chapter ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="setFormChapter(chapter)"
-							>
-								<text>{{ chapter }}</text>
-							</view>
-							<view class="subject-chip chip-add" @click="addCustomOption('chapter')"><text>+ 自定义</text></view>
-						</view>
-
-						<text class="field-label field-space">选择错因</text>
-						<view class="chip-row">
-							<view
-								v-for="errorType in errorTypeOptionsAll"
-								:key="errorType"
-								:class="form.errorType === errorType ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="setFormError(errorType)"
-							>
-								<text>{{ errorType }}</text>
-							</view>
-							<view class="subject-chip chip-add" @click="addCustomOption('errorType')"><text>+ 自定义</text></view>
-						</view>
-
-						<text class="field-label field-space">难度</text>
-						<view class="chip-row">
-							<view
-								v-for="difficulty in difficultyOptions"
-								:key="difficulty"
-								:class="form.difficulty === difficulty ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="setFormDifficulty(difficulty)"
-							>
-								<text>{{ difficulty }}</text>
-							</view>
-						</view>
-
-						<text class="field-label field-space">题目来源</text>
-						<input class="settings-input" v-model="form.source" placeholder="例如：1000题 第3章 第15题" />
-
-						<text class="field-label field-space">备注</text>
-						<textarea class="note-field" v-model="form.note" placeholder="例如：换元后忘记乘内函数导数"></textarea>
-					</view>
-
-					<view class="save-button" @click="saveMistake">
-						<text class="save-icon">▣</text>
-						<text>保存错题</text>
-					</view>
-				</view>
-			</view>
-
-			<view v-if="screen === 'today'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-				</view>
-
-				<view class="page-content today-content">
-					<view class="today-head soft-card">
-						<view>
-							<text class="today-title">今天应复习</text>
-							<text class="today-sub">{{ filteredTodayList.length }} 题符合当前筛选</text>
-						</view>
-						<view class="today-start" @click="startFirstReview">
-							<text>开始</text>
-						</view>
-					</view>
-
-					<text class="field-label">按科目筛选</text>
-					<view class="tabs-row">
-						<view
-							v-for="subject in filterSubjects"
-							:key="subject"
-							:class="todaySubject === subject ? 'tab-chip tab-active' : 'tab-chip'"
-							@click="setTodaySubject(subject)"
-						>
-							<text>{{ subject }}</text>
-						</view>
-					</view>
-
-					<text class="field-label">按章节筛选</text>
-					<view class="tabs-row">
-						<view
-							v-for="chapter in filterChapters"
-							:key="chapter"
-							:class="todayChapter === chapter ? 'tab-chip tab-active' : 'tab-chip'"
-							@click="setTodayChapter(chapter)"
-						>
-							<text>{{ chapter }}</text>
-						</view>
-					</view>
-
-					<view v-if="filteredTodayList.length === 0" class="empty-card soft-card">
-						<text class="empty-title">没有待复习错题</text>
-						<text class="empty-sub">任务不会消失，到了复习日期后会自动累计到这里。</text>
-					</view>
-
-					<view
-						v-for="item in filteredTodayList"
-						:key="item.id"
-						class="today-card soft-card"
-						@click="startReview(item)"
-					>
-						<image class="today-thumb" :src="item.questionImage" mode="aspectFill"></image>
-						<view class="today-copy">
-							<text class="today-card-title">{{ item.subject }} · {{ item.chapter }}</text>
-							<text class="today-card-sub">{{ item.errorType }}｜错 {{ item.totalWrongCount }} 次｜{{ formatDueText(item) }}</text>
-						</view>
-						<text class="today-arrow">›</text>
-					</view>
-				</view>
-			</view>
-
-			<view v-if="screen === 'review'" class="screen screen-lilac review-screen">
-				<view class="topbar">
-					<view class="brand-row">
-						<view class="avatar avatar-ring">
-							<image class="avatar-img" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title">复习进行中</text>
-					</view>
-					<text class="gear" @click="showToday">×</text>
-				</view>
-
-				<view v-if="hasActiveReview" class="page-content review-content">
-					<view class="progress-head">
-						<text class="progress-label">今日目标</text>
-						<text class="progress-number">{{ filteredTodayList.length }} / {{ dueCount }}</text>
-					</view>
-					<view class="progress-track">
-						<view class="progress-fill"></view>
-					</view>
-
-					<view class="review-card question-card">
-						<view class="review-meta">
-							<text class="tag-purple">题目</text>
-							<text class="muted">{{ activeReview.subject }} · {{ activeReview.chapter }}</text>
-						</view>
-						<image
-							class="review-image"
-							:src="activeReview.questionImage"
-							mode="aspectFill"
-							@click="previewReviewImage(activeReview.questionImage)"
-							@error="handleImageError('题目图片', 'questionImage')"
-						></image>
-						<view v-if="reviewQuestionImageBroken" class="image-repair-action" @click="showDetail(activeReview)">
-							<text>图片失效，去详情更换</text>
-						</view>
-						<text class="question-text">{{ activeReview.errorType }}｜{{ activeReview.difficulty }}</text>
-						<text v-if="activeReview.note.length > 0" class="review-note">{{ activeReview.note }}</text>
-					</view>
-
-					<view v-if="answerVisible === false" class="reveal-button" @click="revealAnswer">
-						<text>查看答案</text>
-					</view>
-
-					<view v-if="answerVisible" class="review-card answer-card">
-						<view class="review-meta">
-							<text class="tag-grey">正确答案</text>
-						</view>
-						<image
-							class="answer-image"
-							:src="activeReview.answerImage"
-							mode="aspectFill"
-							@click="previewReviewImage(activeReview.answerImage)"
-							@error="handleImageError('答案图片', 'answerImage')"
-						></image>
-						<view v-if="reviewAnswerImageBroken" class="image-repair-action" @click="showDetail(activeReview)">
-							<text>图片失效，去详情更换</text>
-						</view>
-						<view class="answer-note">
-							<text class="answer-text">确认自己的思路后，再选择本次复习结果。</text>
-						</view>
-					</view>
-				</view>
-
-				<view v-if="hasActiveReview === false" class="page-content">
-					<view class="empty-card soft-card">
-						<text class="empty-title">没有正在复习的错题</text>
-						<text class="empty-sub">请从今日复习列表进入单题流程。</text>
-					</view>
-				</view>
-
-				<view v-if="answerVisible && hasActiveReview" class="review-actions">
-					<view class="review-choice wrong" @click="submitReview('wrong')">
-						<text class="choice-mark">×</text>
-						<text class="choice-label">不会</text>
-					</view>
-					<view class="review-choice unsure spaced-choice" @click="submitReview('fuzzy')">
-						<text class="choice-mark">?</text>
-						<text class="choice-label">模糊</text>
-					</view>
-					<view class="review-choice right spaced-choice" @click="submitReview('known')">
-						<text class="choice-mark">✓✓</text>
-						<text class="choice-label">会了</text>
-					</view>
-				</view>
-			</view>
+			<ReviewScreen
+				v-if="screen === 'review'"
+				:key="activeReview.id"
+				:active-review="activeReview"
+				:has-active-review="hasActiveReview"
+				:due-count="dueCount"
+				:filtered-today-list="filteredTodayList"
+				:preferences="preferences"
+				@navigate="handleReviewNavigate"
+				@review-completed="handleReviewCompleted"
+			/>
 
 			<view v-if="screen === 'library'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
@@ -1400,6 +1154,9 @@
 
 <script>
 	import HomeScreen from './screens/HomeScreen.vue'
+	import AddScreen from './screens/AddScreen.vue'
+	import ReviewScreen from './screens/ReviewScreen.vue'
+	import TodayListScreen from './screens/TodayListScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -1412,7 +1169,6 @@
 	import {
 		archiveMistake,
 		completeReview,
-		createMistake,
 		getCustomOptions,
 		getMistakeById,
 		getMistakes,
@@ -1442,21 +1198,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		}
 	}
 
-	function createDefaultForm() {
-		return {
-			questionImage: '',
-			answerImage: '',
-			subject: '高数',
-			chapter: '极限',
-			errorType: '思路错',
-			difficulty: '中等',
-			source: '',
-			note: '',
-			questionText: '',
-			answerText: ''
-		}
-	}
-
 	function createEmptyMistake() {
 		return {
 			id: '',
@@ -1483,7 +1224,7 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	export default {
-		components: { HomeScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -1513,9 +1254,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				activeDetail: createEmptyMistake(),
 				hasActiveReview: false,
 				hasActiveDetail: false,
-				answerVisible: false,
-				reviewQuestionImageBroken: false,
-				reviewAnswerImageBroken: false,
 				todaySubject: '全部',
 				todayChapter: '全部',
 				librarySubject: '全部',
@@ -1529,7 +1267,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				customSubjects: [],
 				customChapters: {},
 				customErrorTypes: [],
-				form: createDefaultForm(),
 				editForm: null,
 				editingMistakeId: null,
 				progressRings: [
@@ -1568,8 +1305,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				ocrTesting: false,
 				ocrTestResult: '',
 				ocrTestOk: false,
-				ocrStatus: '',
-				ocrResult: '',
 				detailQTab: 'text',
 				detailATab: 'text',
 				detailOcrLoading: '',
@@ -1654,11 +1389,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			},
 			priorityList() {
 				return this.dueList.slice(0, 3)
-			},
-			chaptersForForm() {
-				const base = this.getChaptersForSubject(this.form.subject)
-				const custom = this.customChapters[this.form.subject] || []
-				return base.concat(custom)
 			},
 			subjectOptionsAll() {
 				return this.subjectOptions.concat(this.customSubjects)
@@ -1895,6 +1625,13 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			},
 			showAdd() {
 				this.navigateTo('add')
+			},
+			handleAddScreenNavigate(target) {
+				if (target === 'back') {
+					this.handleBackPress()
+				} else {
+					this.navigateTo(target)
+				}
 			},
 			goWatchlist() {
 				uni.navigateTo({ url: '/pages/watchlist/watchlist' })
@@ -2161,20 +1898,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				if (subject === '高数') return ['极限', '导数', '积分', '级数', '多元函数']
 				return this.customChapters[subject] || []
 			},
-			selectFormSubject(subject) {
-				this.form.subject = subject
-				const chapters = this.getChaptersForSubject(subject)
-				this.form.chapter = chapters.length > 0 ? chapters[0] : ''
-			},
-			setFormChapter(chapter) {
-				this.form.chapter = chapter
-			},
-			setFormError(errorType) {
-				this.form.errorType = errorType
-			},
-			setFormDifficulty(difficulty) {
-				this.form.difficulty = difficulty
-			},
 			setTodaySubject(subject) {
 				this.todaySubject = subject
 			},
@@ -2186,68 +1909,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			},
 			setLibraryError(errorType) {
 				this.libraryError = errorType
-			},
-			chooseQuestionImage() {
-				var self = this
-				uni.chooseImage({
-					count: 1,
-					sizeType: ['compressed'],
-					sourceType: ['album', 'camera'],
-					success: async function(res) {
-						if (!res.tempFilePaths || res.tempFilePaths.length === 0) return
-						var tempFilePath = res.tempFilePaths[0]
-						self.imageSaving = true
-						var output = await persistImageFile(tempFilePath)
-						self.form.questionImage = output.path
-						self.imageSaving = false
-						self.autoRecognize('question', output.path)
-					},
-					fail: function() {
-						self.imageSaving = false
-					}
-				})
-			},
-			chooseAnswerImage() {
-				this.chooseImage('answerImage')
-			},
-			async autoRecognize(type, imagePath) {
-				var config = getOcrConfig()
-				if (!config.apiKey) return
-				var self = this
-				this.ocrStatus = type
-				this.ocrResult = ''
-				try {
-					var questionNumber = this.form.source ? extractQuestionNumber(this.form.source) : ''
-					var text = await recognizeImage(imagePath, questionNumber)
-					if (type === 'question') {
-						this.form.questionText = text
-					} else {
-						this.form.answerText = text
-					}
-					this.ocrResult = '识别完成'
-				} catch (e) {
-					this.ocrResult = '识别失败：' + e.message
-				} finally {
-					this.ocrStatus = ''
-				}
-			},
-			editOcrText(type) {
-				var self = this
-				var current = type === 'question' ? this.form.questionText : this.form.answerText
-				uni.showModal({
-					title: '编辑识别结果',
-					editable: true,
-					content: current,
-					success: function(res) {
-						if (res.confirm) {
-							if (type === 'question') {
-								self.form.questionText = res.content
-							} else {
-								self.form.answerText = res.content
-							}
-						}
-					}
-				})
 			},
 			async recognizeDetail(type) {
 				var config = getOcrConfig()
@@ -2322,32 +1983,12 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				})
 			},
 			setImageField(field, filePath) {
-				if (field === 'questionImage') this.form.questionImage = filePath
-				if (field === 'answerImage') this.form.answerImage = filePath
 				if (field === 'homeAvatar') this.settingsForm.homeAvatar = filePath
-			},
-			saveMistake() {
-				if (this.imageSaving) {
-					this.toast('图片正在保存，请稍等')
-					return
-				}
-				if (!this.form.questionImage || !this.form.answerImage) {
-					this.toast('请先上传题目图和答案图')
-					return
-				}
-				const mistake = createMistake({ ...this.form })
-				this.resetForm()
-				this.refreshData()
-				this.toast('已保存，2天后开始复习')
-				this.showDetail(mistake)
-			},
-			resetForm() {
-				this.form = createDefaultForm()
 			},
 			addCustomOption(type) {
 				const self = this
-				const isEdit = self.screen === 'edit' && self.editForm
-				const target = isEdit ? self.editForm : self.form
+				const target = self.editForm
+				if (!target) return
 				const titles = { subject: '自定义科目', chapter: '自定义章节', errorType: '自定义错因' }
 				uni.showModal({
 					title: titles[type] || '自定义',
@@ -2362,7 +2003,7 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 							saveCustomOptions({ subjects: self.customSubjects, chapters: self.customChapters, errorTypes: self.customErrorTypes })
 							target.subject = val
 						} else if (type === 'chapter') {
-							const allChapters = isEdit ? self.editChaptersForForm : self.chaptersForForm
+							const allChapters = self.editChaptersForForm
 							if (allChapters.indexOf(val) >= 0) { self.toast('已存在'); return }
 							if (!self.customChapters[target.subject]) self.customChapters[target.subject] = []
 							self.customChapters[target.subject].push(val)
@@ -2422,41 +2063,32 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			startReview(item) {
 				this.activeReview = item
 				this.hasActiveReview = true
-				this.answerVisible = false
-				this.reviewQuestionImageBroken = false
-				this.reviewAnswerImageBroken = false
 				this.navigateTo('review')
 			},
-			revealAnswer() {
-				this.answerVisible = true
-			},
-			submitReview(result) {
-				if (!this.hasActiveReview) return
-				const currentId = this.activeReview.id
-				const output = completeReview(currentId, result)
-				if (!output) {
-					this.toast('复习记录保存失败')
-					return
-				}
+			handleReviewCompleted({ nextMistake }) {
 				this.refreshData()
-				this.toast('已记录：' + this.resultLabel(result))
-				const next = this.filteredTodayList.find((item) => item.id !== currentId)
-				if (next) {
-					this.activeReview = next
+				if (nextMistake) {
+					this.activeReview = nextMistake
 					this.hasActiveReview = true
-					this.answerVisible = false
-					this.reviewQuestionImageBroken = false
-					this.reviewAnswerImageBroken = false
 				} else {
 					this.activeReview = createEmptyMistake()
 					this.hasActiveReview = false
-					this.answerVisible = false
-					this.reviewQuestionImageBroken = false
-					this.reviewAnswerImageBroken = false
 					if (this.screenHistory.length > 0 && this.screenHistory[this.screenHistory.length - 1] === 'today') {
 						this.screenHistory.pop()
 					}
 					this.screen = 'today'
+				}
+			},
+			handleReviewNavigate(payload) {
+				if (typeof payload === 'string') {
+					if (payload === 'today') {
+						this.refreshData()
+						this.navigateTo('today')
+					} else {
+						this.navigateTo(payload)
+					}
+				} else if (payload && payload.screen === 'detail' && payload.item) {
+					this.showDetail(payload.item)
 				}
 			},
 			showDetail(item) {
@@ -2485,8 +2117,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 						this.activeDetail = updated || this.activeDetail
 						if (this.hasActiveReview && this.activeReview.id === this.activeDetail.id) {
 							this.activeReview = this.activeDetail
-							if (field === 'questionImage') this.reviewQuestionImageBroken = false
-							if (field === 'answerImage') this.reviewAnswerImageBroken = false
 						}
 						this.toast('图片已更新')
 					},
@@ -2563,18 +2193,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			previewMistakeImages(item, current) {
 				const urls = [item.questionImage, item.answerImage]
 				if (!previewImages(urls, current)) this.toast('暂无可预览图片')
-			},
-			previewReviewImage(current) {
-				const urls = [this.activeReview.questionImage]
-				if (this.answerVisible) urls.push(this.activeReview.answerImage)
-				if (!previewImages(urls, current)) this.toast('暂无可预览图片')
-			},
-			handleImageError(label, field) {
-				if (this.screen === 'review') {
-					if (field === 'questionImage') this.reviewQuestionImageBroken = true
-					if (field === 'answerImage') this.reviewAnswerImageBroken = true
-				}
-				this.toast(label + '无法读取，可在错题详情里更换图片')
 			},
 			showAiChat() {
 				if (!this.aiInitialized) {
