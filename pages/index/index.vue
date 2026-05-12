@@ -62,6 +62,11 @@
 						<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
 					</view>
 
+					<view class="watchlist-entry knowledge-entry" @click="goKnowledge">
+						<text class="watchlist-entry-title">不足知识点</text>
+						<text v-if="knowledgePendingCount > 0" class="watchlist-entry-badge">{{ knowledgePendingCount }}</text>
+					</view>
+
 					<view class="countdown-card">
 						<text class="countdown-label">{{ countdownText }}</text>
 						<view class="countdown-num-row">
@@ -551,6 +556,17 @@
 							</view>
 							<view class="app-card-badge">敬请期待</view>
 						</view>
+
+						<view class="app-card app-card-active" @click="goConclusion">
+							<view class="app-card-icon-wrap app-card-icon-green">
+								<text class="app-card-icon-text">结</text>
+							</view>
+							<view class="app-card-info">
+								<text class="app-card-title">二级结论</text>
+								<text class="app-card-desc">总结 · 速查</text>
+							</view>
+							<image class="app-card-arrow-img" src="/static/icons/arrow.svg" mode="aspectFit"></image>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -995,7 +1011,7 @@
 			<view v-if="screen === 'settings'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
 					<view class="brand-row">
-						<view class="back-button" @click="showStats"><text>‹</text></view>
+						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
 						<text class="brand-title small-brand">首页设置</text>
 					</view>
 					<text class="gear small-gear" @click="saveHomeSettings">保存</text>
@@ -1245,6 +1261,30 @@
 
 				<!-- 输入区域 -->
 				<view class="ai-input-bar">
+					<view class="ai-math-toolbar">
+						<scroll-view scroll-x class="ai-math-scroll">
+							<view class="ai-math-buttons">
+								<view class="ai-math-btn" @click="insertMath('ln()')"><text>ln</text></view>
+								<view class="ai-math-btn" @click="insertMath('e^{}')"><text>eˣ</text></view>
+								<view class="ai-math-btn" @click="insertMath('x^n')"><text>xⁿ</text></view>
+								<view class="ai-math-btn" @click="insertMath('√()')"><text>√</text></view>
+								<view class="ai-math-btn" @click="insertMath('∫_{a}^{b} f(x)dx')"><text>∫</text></view>
+								<view class="ai-math-btn" @click="insertMath('lim_{x→∞}')"><text>lim</text></view>
+								<view class="ai-math-btn" @click="insertMath('∑_{n=1}^{∞}')"><text>∑</text></view>
+								<view class="ai-math-btn" @click="insertMath('π')"><text>π</text></view>
+								<view class="ai-math-btn" @click="insertMath('∞')"><text>∞</text></view>
+								<view class="ai-math-btn" @click="insertMath('≤')"><text>≤</text></view>
+								<view class="ai-math-btn" @click="insertMath('≥')"><text>≥</text></view>
+								<view class="ai-math-btn" @click="insertMath('≠')"><text>≠</text></view>
+								<view class="ai-math-btn" @click="insertMath('dx')"><text>dx</text></view>
+								<view class="ai-math-btn" @click="insertMath('dy/dx')"><text>dy/dx</text></view>
+								<view class="ai-math-btn" @click="insertMath('∂/∂x')"><text>∂</text></view>
+								<view class="ai-math-btn" @click="insertMath('±')"><text>±</text></view>
+								<view class="ai-math-btn" @click="insertMath('×')"><text>×</text></view>
+								<view class="ai-math-btn" @click="insertMath('÷')"><text>÷</text></view>
+							</view>
+						</scroll-view>
+					</view>
 					<textarea class="ai-input-field" v-model="aiInputText" placeholder="输入你的问题..." :disabled="aiLoading" :auto-height="true" :maxlength="2000" @confirm="sendAiMessage" confirm-type="send"></textarea>
 					<view v-if="aiLoading" class="ai-send-btn ai-cancel-btn" @click="cancelAiMessage">
 						<text class="ai-send-text">取消</text>
@@ -1459,6 +1499,7 @@
 				countdownTarget: '2027-12-25',
 				countdownLabel: '距离27年考研还剩下',
 				watchlistItems: [],
+				knowledgeItems: [],
 				aiMessages: [],
 				aiInputText: '',
 				aiLoading: false,
@@ -1511,6 +1552,9 @@
 			},
 			watchlistPendingCount() {
 				return this.watchlistItems.filter(item => !item.done).length
+			},
+			knowledgePendingCount() {
+				return this.knowledgeItems.filter(item => !item.done).length
 			},
 			countdownDays() {
 				void this._tick
@@ -1714,6 +1758,10 @@
 					const wl = uni.getStorageSync('mistake_scheduler_watchlist_v1')
 					this.watchlistItems = Array.isArray(wl) ? wl : []
 				} catch (e) { this.watchlistItems = [] }
+				try {
+					const kn = uni.getStorageSync('mistake_scheduler_knowledge_v1')
+					this.knowledgeItems = Array.isArray(kn) ? kn : []
+				} catch (e) { this.knowledgeItems = [] }
 			},
 			async migrateStoredImages() {
 				if (this.imageMigrationDone) return
@@ -1755,23 +1803,26 @@
 			goWatchlist() {
 				uni.navigateTo({ url: '/pages/watchlist/watchlist' })
 			},
+			goKnowledge() {
+				uni.navigateTo({ url: '/pages/knowledge/knowledge' })
+			},
+			goConclusion() {
+				uni.navigateTo({ url: '/pages/conclusion/conclusion' })
+			},
 			showToday() {
 				this.refreshData()
 				this.navigateTo('today')
 			},
 			showLibrary() {
 				this.refreshData()
-				this.screenHistory = []
-				this.screen = 'library'
+				this.navigateTo('library')
 			},
 			showStats() {
 				this.refreshData()
-				this.screenHistory = []
-				this.screen = 'stats'
+				this.navigateTo('stats')
 			},
 			showApps() {
-				this.screenHistory = []
-				this.screen = 'apps'
+				this.navigateTo('apps')
 			},
 			showFormulas() {
 				this.navigateTo('formulas')
@@ -2383,6 +2434,10 @@
 				this.aiLoading = false
 				this._aiRequestTime = 0
 			},
+			insertMath(symbol) {
+				var input = this.aiInputText || ''
+				this.aiInputText = input + symbol
+			},
 			sendQuickQuestion(q) {
 				this.aiInputText = q
 				this.sendAiMessage()
@@ -2959,6 +3014,11 @@
 
 	.watchlist-entry:active {
 		transform: scale(0.97);
+	}
+
+	.knowledge-entry {
+		background: linear-gradient(145deg, #8B5CF6 0%, #7C3AED 100%);
+		box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3), 0 2px 6px rgba(0, 0, 0, 0.06);
 	}
 
 	.watchlist-entry-title {
@@ -4530,6 +4590,16 @@
 		color: #A8A29E;
 	}
 
+	.app-card-icon-green {
+		background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+		color: #059669;
+	}
+
+	.app-card-icon-text {
+		font-size: 18px;
+		font-weight: 900;
+	}
+
 	.app-card-icon-img {
 		width: 28px;
 		height: 28px;
@@ -4994,8 +5064,8 @@
 	}
 
 	.ai-screen .compact-topbar {
-		height: 56px;
-		padding-top: 10px;
+		height: 86px;
+		padding-top: 40px;
 	}
 
 	.ai-topbar-actions {
@@ -5184,15 +5254,61 @@
 		40% { transform: translateY(-8px); opacity: 1; }
 	}
 
+	/* 数学符号工具栏 */
+	.ai-math-toolbar {
+		padding: 6px 0;
+		border-bottom: 1px solid #F1E2D8;
+		margin-bottom: 8px;
+	}
+
+	.ai-math-scroll {
+		white-space: nowrap;
+	}
+
+	.ai-math-buttons {
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+		padding: 0 4px;
+	}
+
+	.ai-math-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 40px;
+		height: 34px;
+		padding: 0 10px;
+		border-radius: 8px;
+		background-color: #FEF9F0;
+		border: 1px solid #F1E2D8;
+		flex-shrink: 0;
+	}
+
+	.ai-math-btn text {
+		font-size: 15px;
+		font-weight: 600;
+		color: #6750A4;
+	}
+
 	/* 输入栏 */
 	.ai-input-bar {
 		display: flex;
-		align-items: flex-end;
+		flex-direction: column;
 		padding: 10px 14px;
 		padding-bottom: calc(10px + env(safe-area-inset-bottom));
 		background-color: #FFFFFF;
 		border-top: 1px solid #F1E2D8;
-		gap: 10px;
+	}
+
+	.ai-input-bar .ai-input-field {
+		width: 100%;
+	}
+
+	.ai-input-bar .ai-send-btn,
+	.ai-input-bar .ai-cancel-btn {
+		align-self: flex-end;
+		margin-top: 8px;
 	}
 
 	.ai-input-field {
@@ -5337,6 +5453,56 @@
 		font-family: 'Courier New', Courier, monospace;
 		line-height: 26px;
 		letter-spacing: 0.5px;
+	}
+
+	/* 行内公式 */
+	.ai-inline-formula {
+		font-size: 14px;
+		font-weight: 700;
+		color: #6D28D9;
+		background-color: #F5F3FF;
+		padding: 1px 6px;
+		border-radius: 4px;
+		font-family: 'Courier New', Courier, monospace;
+	}
+
+	/* 上下标 */
+	.ai-rich-text sup {
+		font-size: 0.75em;
+		vertical-align: super;
+		color: #6D28D9;
+	}
+
+	.ai-rich-text sub {
+		font-size: 0.75em;
+		vertical-align: sub;
+		color: #6D28D9;
+	}
+
+	/* 分数 */
+	.ai-frac {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		vertical-align: middle;
+		margin: 0 3px;
+	}
+
+	.ai-frac-num {
+		font-size: 12px;
+		font-weight: 700;
+		color: #6D28D9;
+		border-bottom: 1.5px solid #6D28D9;
+		padding: 0 4px 1px;
+		line-height: 1.2;
+	}
+
+	.ai-frac-den {
+		font-size: 12px;
+		font-weight: 700;
+		color: #6D28D9;
+		padding: 1px 4px 0;
+		line-height: 1.2;
 	}
 
 	/* 模型选择卡片 */
