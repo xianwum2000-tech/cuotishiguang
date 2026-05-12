@@ -66,107 +66,18 @@
 				@add-mistake="showAdd"
 			/>
 
-			<view v-if="screen === 'detail'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
-						<text class="brand-title small-brand">错题详情</text>
-					</view>
-					<view class="detail-topbar-actions">
-						<text class="gear small-gear" @click="enterEdit">编辑</text>
-						<text class="gear small-gear" @click="archiveActiveDetail">归档</text>
-					</view>
-				</view>
-
-				<view v-if="hasActiveDetail" class="page-content detail-content">
-					<view class="detail-card soft-card">
-						<text class="mistake-title">{{ activeDetail.subject }} · {{ activeDetail.chapter }}</text>
-						<text class="mistake-desc">错因：{{ activeDetail.errorType }}｜难度：{{ activeDetail.difficulty }}</text>
-						<text v-if="activeDetail.source" class="mistake-desc">来源：{{ activeDetail.source }}</text>
-						<text class="mistake-desc">下次复习：{{ activeDetail.nextReviewDate }}｜{{ stageLabel(activeDetail.reviewStage) }}</text>
-					</view>
-
-					<view class="detail-card soft-card">
-						<view class="detail-tab-row">
-							<text class="field-label">题目</text>
-							<view class="detail-tabs">
-								<view :class="detailQTab === 'text' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailQTab = 'text'">
-									<text>文本</text>
-								</view>
-								<view :class="detailQTab === 'image' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailQTab = 'image'">
-									<text>原图</text>
-								</view>
-							</view>
-						</view>
-						<view v-if="detailQTab === 'text' && activeDetail.questionText" class="ocr-text-display">
-							<text>{{ activeDetail.questionText }}</text>
-						</view>
-						<view v-if="detailQTab === 'text' && !activeDetail.questionText" class="ocr-empty">
-							<text>暂无识别文本</text>
-							<view class="ocr-recognize-btn" @click="recognizeDetail('question')">
-								<text>{{ detailOcrLoading === 'question' ? '识别中...' : '立即识别' }}</text>
-							</view>
-						</view>
-						<image v-if="detailQTab === 'image'" class="detail-image" :src="activeDetail.questionImage" mode="aspectFill" @click="previewMistakeImages(activeDetail, activeDetail.questionImage)"></image>
-						<view class="detail-image-actions" v-if="detailQTab === 'image'">
-							<view class="detail-image-action" @click="previewMistakeImages(activeDetail, activeDetail.questionImage)">
-								<text>放大查看</text>
-							</view>
-							<view class="detail-image-action muted-action" @click="replaceDetailImage('questionImage')">
-								<text>更换图片</text>
-							</view>
-						</view>
-					</view>
-
-					<view class="detail-card soft-card">
-						<view class="detail-tab-row">
-							<text class="field-label">答案</text>
-							<view class="detail-tabs">
-								<view :class="detailATab === 'text' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailATab = 'text'">
-									<text>文本</text>
-								</view>
-								<view :class="detailATab === 'image' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailATab = 'image'">
-									<text>原图</text>
-								</view>
-							</view>
-						</view>
-						<view v-if="detailATab === 'text' && activeDetail.answerText" class="ocr-text-display">
-							<text>{{ activeDetail.answerText }}</text>
-						</view>
-						<view v-if="detailATab === 'text' && !activeDetail.answerText" class="ocr-empty">
-							<text>暂无识别文本</text>
-							<view class="ocr-recognize-btn" @click="recognizeDetail('answer')">
-								<text>{{ detailOcrLoading === 'answer' ? '识别中...' : '立即识别' }}</text>
-							</view>
-						</view>
-						<image v-if="detailATab === 'image'" class="detail-image" :src="activeDetail.answerImage" mode="aspectFill" @click="previewMistakeImages(activeDetail, activeDetail.answerImage)"></image>
-						<view class="detail-image-actions" v-if="detailATab === 'image'">
-							<view class="detail-image-action" @click="previewMistakeImages(activeDetail, activeDetail.answerImage)">
-								<text>放大查看</text>
-							</view>
-							<view class="detail-image-action muted-action" @click="replaceDetailImage('answerImage')">
-								<text>更换图片</text>
-							</view>
-						</view>
-					</view>
-
-					<view class="detail-card soft-card">
-						<text class="field-label">备注</text>
-						<text class="detail-note">{{ noteText(activeDetail.note) }}</text>
-					</view>
-
-					<view class="detail-card soft-card">
-						<text class="field-label">复习记录</text>
-						<view v-if="detailRecords.length === 0" class="record-line">
-							<text class="record-main">暂无复习记录</text>
-						</view>
-						<view v-for="record in detailRecords" :key="record.id" class="record-line">
-							<text class="record-main">{{ record.reviewDate }} · {{ resultLabel(record.result) }}</text>
-							<text class="record-sub">{{ stageLabel(record.stageBefore) }} → {{ stageLabel(record.stageAfter) }}，下次 {{ record.nextReviewDate }}</text>
-						</view>
-					</view>
-				</view>
-			</view>
+			<DetailScreen
+				v-if="screen === 'detail'"
+				:active-detail="activeDetail"
+				:has-active-detail="hasActiveDetail"
+				:detail-records="detailRecords"
+				:preferences="preferences"
+				@navigate="navigateTo"
+				@archive="archiveActiveDetail"
+				@edit="enterEdit"
+				@replace-image="replaceDetailImage"
+				@preview-images="previewMistakeImages"
+			/>
 
 			<view v-if="screen === 'apps'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
