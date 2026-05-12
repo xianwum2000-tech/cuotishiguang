@@ -148,6 +148,17 @@
 						</view>
 					</view>
 
+					<view v-if="ocrStatus === 'question'" class="ocr-loading">
+						<text>正在识别题目...</text>
+					</view>
+					<view v-if="form.questionText" class="ocr-preview soft-card">
+						<text class="field-label">识别结果</text>
+						<text class="ocr-text">{{ form.questionText }}</text>
+						<view class="ocr-edit-btn" @click="editOcrText('question')">
+							<text>编辑</text>
+						</view>
+					</view>
+
 					<view class="upload-box" @click="chooseAnswerImage">
 						<image
 							v-if="form.answerImage.length > 0"
@@ -163,6 +174,17 @@
 							<view class="upload-icon"><text>▤</text></view>
 							<text class="upload-title">上传答案图</text>
 							<text class="upload-desc">复习时默认不会先展示</text>
+						</view>
+					</view>
+
+					<view v-if="ocrStatus === 'answer'" class="ocr-loading">
+						<text>正在识别答案...</text>
+					</view>
+					<view v-if="form.answerText" class="ocr-preview soft-card">
+						<text class="field-label">识别结果</text>
+						<text class="ocr-text">{{ form.answerText }}</text>
+						<view class="ocr-edit-btn" @click="editOcrText('answer')">
+							<text>编辑</text>
 						</view>
 					</view>
 
@@ -466,15 +488,28 @@
 					</view>
 
 					<view class="detail-card soft-card">
-						<text class="field-label">题目图片</text>
-						<image
-							class="detail-image"
-							:src="activeDetail.questionImage"
-							mode="aspectFill"
-							@click="previewMistakeImages(activeDetail, activeDetail.questionImage)"
-							@error="handleImageError('题目图片', 'questionImage')"
-						></image>
-						<view class="detail-image-actions">
+						<view class="detail-tab-row">
+							<text class="field-label">题目</text>
+							<view class="detail-tabs">
+								<view :class="detailQTab === 'text' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailQTab = 'text'">
+									<text>文本</text>
+								</view>
+								<view :class="detailQTab === 'image' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailQTab = 'image'">
+									<text>原图</text>
+								</view>
+							</view>
+						</view>
+						<view v-if="detailQTab === 'text' && activeDetail.questionText" class="ocr-text-display">
+							<text>{{ activeDetail.questionText }}</text>
+						</view>
+						<view v-if="detailQTab === 'text' && !activeDetail.questionText" class="ocr-empty">
+							<text>暂无识别文本</text>
+							<view class="ocr-recognize-btn" @click="recognizeDetail('question')">
+								<text>{{ detailOcrLoading === 'question' ? '识别中...' : '立即识别' }}</text>
+							</view>
+						</view>
+						<image v-if="detailQTab === 'image'" class="detail-image" :src="activeDetail.questionImage" mode="aspectFill" @click="previewMistakeImages(activeDetail, activeDetail.questionImage)"></image>
+						<view class="detail-image-actions" v-if="detailQTab === 'image'">
 							<view class="detail-image-action" @click="previewMistakeImages(activeDetail, activeDetail.questionImage)">
 								<text>放大查看</text>
 							</view>
@@ -485,15 +520,28 @@
 					</view>
 
 					<view class="detail-card soft-card">
-						<text class="field-label">答案图片</text>
-						<image
-							class="detail-image"
-							:src="activeDetail.answerImage"
-							mode="aspectFill"
-							@click="previewMistakeImages(activeDetail, activeDetail.answerImage)"
-							@error="handleImageError('答案图片', 'answerImage')"
-						></image>
-						<view class="detail-image-actions">
+						<view class="detail-tab-row">
+							<text class="field-label">答案</text>
+							<view class="detail-tabs">
+								<view :class="detailATab === 'text' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailATab = 'text'">
+									<text>文本</text>
+								</view>
+								<view :class="detailATab === 'image' ? 'detail-tab detail-tab-active' : 'detail-tab'" @click="detailATab = 'image'">
+									<text>原图</text>
+								</view>
+							</view>
+						</view>
+						<view v-if="detailATab === 'text' && activeDetail.answerText" class="ocr-text-display">
+							<text>{{ activeDetail.answerText }}</text>
+						</view>
+						<view v-if="detailATab === 'text' && !activeDetail.answerText" class="ocr-empty">
+							<text>暂无识别文本</text>
+							<view class="ocr-recognize-btn" @click="recognizeDetail('answer')">
+								<text>{{ detailOcrLoading === 'answer' ? '识别中...' : '立即识别' }}</text>
+							</view>
+						</view>
+						<image v-if="detailATab === 'image'" class="detail-image" :src="activeDetail.answerImage" mode="aspectFill" @click="previewMistakeImages(activeDetail, activeDetail.answerImage)"></image>
+						<view class="detail-image-actions" v-if="detailATab === 'image'">
 							<view class="detail-image-action" @click="previewMistakeImages(activeDetail, activeDetail.answerImage)">
 								<text>放大查看</text>
 							</view>
@@ -956,6 +1004,10 @@
 						<view class="secondary-button" @click="checkAppUpdate(false)" v-if="!updateDownloading && latestVersion.versionCode <= appVersion.code">
 							<text>{{ updateChecking ? '检查中...' : '检查更新' }}</text>
 						</view>
+					</view>
+
+					<view class="save-button" @click="goReviewReport" style="margin-top: 14px; margin-bottom: 20px;">
+						<text>查看复盘报告</text>
 					</view>
 				</view>
 			</view>
@@ -1464,6 +1516,7 @@
 		completeReview,
 		createMistake,
 		getCustomOptions,
+		getMistakeById,
 		getMistakes,
 		getPreferences,
 		getQuotes,
@@ -1479,7 +1532,7 @@
 	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
 	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/updater.js'
-import { getOcrConfig, testOcrApiKey } from '@/utils/ocr.js'
+import { getOcrConfig, testOcrApiKey, recognizeImage, extractQuestionNumber } from '@/utils/ocr.js'
 import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 
 	function createDefaultPreferences() {
@@ -1500,7 +1553,9 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 			errorType: '思路错',
 			difficulty: '中等',
 			source: '',
-			note: ''
+			note: '',
+			questionText: '',
+			answerText: ''
 		}
 	}
 
@@ -1614,6 +1669,11 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 				ocrTesting: false,
 				ocrTestResult: '',
 				ocrTestOk: false,
+				ocrStatus: '',
+				ocrResult: '',
+				detailQTab: 'text',
+				detailATab: 'text',
+				detailOcrLoading: '',
 				showGithubToken: false,
 				githubTesting: false,
 				githubTestResult: '',
@@ -2229,10 +2289,91 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 				this.libraryError = errorType
 			},
 			chooseQuestionImage() {
-				this.chooseImage('questionImage')
+				var self = this
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['compressed'],
+					sourceType: ['album', 'camera'],
+					success: async function(res) {
+						if (!res.tempFilePaths || res.tempFilePaths.length === 0) return
+						var tempFilePath = res.tempFilePaths[0]
+						self.imageSaving = true
+						var output = await persistImageFile(tempFilePath)
+						self.form.questionImage = output.path
+						self.imageSaving = false
+						self.autoRecognize('question', output.path)
+					},
+					fail: function() {
+						self.imageSaving = false
+					}
+				})
 			},
 			chooseAnswerImage() {
 				this.chooseImage('answerImage')
+			},
+			async autoRecognize(type, imagePath) {
+				var config = getOcrConfig()
+				if (!config.apiKey) return
+				var self = this
+				this.ocrStatus = type
+				this.ocrResult = ''
+				try {
+					var questionNumber = this.form.source ? extractQuestionNumber(this.form.source) : ''
+					var text = await recognizeImage(imagePath, questionNumber)
+					if (type === 'question') {
+						this.form.questionText = text
+					} else {
+						this.form.answerText = text
+					}
+					this.ocrResult = '识别完成'
+				} catch (e) {
+					this.ocrResult = '识别失败：' + e.message
+				} finally {
+					this.ocrStatus = ''
+				}
+			},
+			editOcrText(type) {
+				var self = this
+				var current = type === 'question' ? this.form.questionText : this.form.answerText
+				uni.showModal({
+					title: '编辑识别结果',
+					editable: true,
+					content: current,
+					success: function(res) {
+						if (res.confirm) {
+							if (type === 'question') {
+								self.form.questionText = res.content
+							} else {
+								self.form.answerText = res.content
+							}
+						}
+					}
+				})
+			},
+			async recognizeDetail(type) {
+				var config = getOcrConfig()
+				if (!config.apiKey) {
+					uni.showToast({ title: '请先在设置中配置通义千问 API Key', icon: 'none' })
+					return
+				}
+				var self = this
+				this.detailOcrLoading = type
+				try {
+					var image = type === 'question' ? this.activeDetail.questionImage : this.activeDetail.answerImage
+					var questionNumber = this.activeDetail.source ? extractQuestionNumber(this.activeDetail.source) : ''
+					var text = await recognizeImage(image, questionNumber)
+					var patch = type === 'question' ? { questionText: text } : { answerText: text }
+					updateMistake(this.activeDetail.id, patch)
+					this.activeDetail = getMistakeById(this.activeDetail.id)
+					uni.showToast({ title: '识别完成', icon: 'success' })
+				} catch (e) {
+					uni.showToast({ title: '识别失败：' + e.message, icon: 'none' })
+				} finally {
+					this.detailOcrLoading = ''
+				}
+			},
+			goReviewReport() {
+				uni.navigateTo({ url: '/pages/review-report/review-report' })
 			},
 			chooseEditQuestionImage() {
 				this.chooseEditImage('questionImage')
@@ -2423,6 +2564,8 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 				this.refreshData()
 				this.activeDetail = this.mistakes.find((mistake) => mistake.id === item.id) || item
 				this.hasActiveDetail = true
+				this.detailQTab = item.questionText ? 'text' : 'image'
+				this.detailATab = item.answerText ? 'text' : 'image'
 				this.navigateTo('detail')
 			},
 			replaceDetailImage(field) {
@@ -5851,5 +5994,94 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 		color: #A8A29E;
 		margin-top: 6px;
 		text-align: center;
+	}
+	.ocr-loading {
+		padding: 10px;
+		text-align: center;
+		margin-bottom: 10px;
+	}
+	.ocr-loading text {
+		font-size: 13px;
+		color: #8B5CF6;
+	}
+	.ocr-preview {
+		padding: 12px;
+		margin-bottom: 10px;
+	}
+	.ocr-text {
+		font-size: 13px;
+		color: #44403C;
+		line-height: 1.6;
+		display: block;
+		margin-top: 6px;
+	}
+	.ocr-edit-btn {
+		margin-top: 8px;
+		padding: 4px 12px;
+		border-radius: 8px;
+		background: #EDE9FE;
+		display: inline-block;
+	}
+	.ocr-edit-btn text {
+		font-size: 12px;
+		color: #6D28D9;
+		font-weight: 600;
+	}
+	.detail-tab-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.detail-tabs {
+		display: flex;
+		gap: 6px;
+	}
+	.detail-tab {
+		padding: 4px 12px;
+		border-radius: 8px;
+		background: #F5F0EB;
+	}
+	.detail-tab text {
+		font-size: 12px;
+		color: #78716C;
+		font-weight: 600;
+	}
+	.detail-tab-active {
+		background: #EDE9FE;
+	}
+	.detail-tab-active text {
+		color: #6D28D9;
+	}
+	.ocr-text-display {
+		margin-top: 10px;
+		padding: 12px;
+		background: #FEF9F0;
+		border-radius: 10px;
+	}
+	.ocr-text-display text {
+		font-size: 13px;
+		color: #44403C;
+		line-height: 1.6;
+	}
+	.ocr-empty {
+		margin-top: 10px;
+		text-align: center;
+		padding: 20px;
+	}
+	.ocr-empty text {
+		font-size: 13px;
+		color: #A8A29E;
+	}
+	.ocr-recognize-btn {
+		margin-top: 10px;
+		padding: 8px 20px;
+		border-radius: 10px;
+		background: linear-gradient(145deg, #8B5CF6, #7C3AED);
+		display: inline-block;
+	}
+	.ocr-recognize-btn text {
+		font-size: 13px;
+		color: #FFFFFF;
+		font-weight: 600;
 	}
 </style>
