@@ -285,11 +285,8 @@
 		getReviewRecords,
 		savePreferences,
 		updateMistake,
-		getAiChatHistory,
-		saveAiChatHistory,
 		clearAiChatHistory
 	} from '@/utils/storage/storage.js'
-	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai/ai.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
 	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/app/updater.js'
 import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/ocr.js'
@@ -530,14 +527,6 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 			detailRecords() {
 				if (!this.hasActiveDetail) return []
 				return this.records.filter((record) => record.questionId === this.activeDetail.id)
-			},
-			visibleAiMessages() {
-				var msgs = this.aiMessages
-				if (msgs.length <= this.aiVisibleCount) return msgs
-				return msgs.slice(msgs.length - this.aiVisibleCount)
-			},
-			aiHasMoreMessages() {
-				return this.aiMessages.length > this.aiVisibleCount
 			},
 			homeNavClass() {
 				return this.screen === 'home' || this.screen === 'settings' ? 'nav-item nav-active' : 'nav-item'
@@ -1068,125 +1057,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				if (!previewImages(urls, current)) this.toast('暂无可预览图片')
 			},
 			showAiChat() {
-				if (!this.aiInitialized) {
-					var history = getAiChatHistory()
-					this.aiMessages = history.messages || []
-					this.aiInitialized = true
-					this.aiVisibleCount = 50
-				}
-
-				// 检测超时死请求：App 切后台后请求回调可能丢失，aiLoading 卡在 true
-				if (this.aiLoading && this._aiRequestTime > 0 && Date.now() - this._aiRequestTime > 35000) {
-					this.aiLoading = false
-					this._aiAbort = null
-					this._aiRequestTime = 0
-				}
-
 				this.navigateTo('ai-chat')
-				var self = this
-				this.$nextTick(function() {
-					self.scrollAiToBottom()
-				})
-			},
-			loadMoreAiMessages() {
-				this.aiVisibleCount += 50
-			},
-			scrollAiToBottom() {
-				var self = this
-				setTimeout(function() {
-					self._aiScrollTop = (self._aiScrollTop || 0) + 99999
-				}, 100)
-			},
-			sendAiMessage() {
-				var text = (this.aiInputText || '').trim()
-				if (!text || this.aiLoading) return
-
-				var prefs = getPreferences()
-				if (!prefs.deepseekApiKey) {
-					this.toast('请先在设置中配置 API Key')
-					return
-				}
-
-				this.aiMessages.push({ role: 'user', content: text })
-				this.aiInputText = ''
-				this.aiLoading = true
-				this._aiRequestTime = Date.now()
-				this.scrollAiToBottom()
-
-				var self = this
-				var savedPersonality = prefs.aiPersonality
-				var savedApiKey = prefs.deepseekApiKey
-				var savedBaseUrl = prefs.deepseekBaseUrl
-				var savedModel = prefs.deepseekModel
-
-				// 用 setTimeout 释放主线程，防止 buildSystemPrompt 阻塞 UI
-				setTimeout(function() {
-					var systemPrompt = buildSystemPrompt(savedPersonality)
-					var chatMessages = [{ role: 'system', content: systemPrompt }]
-					var historyMessages = self.aiMessages.filter(function(m) { return m.role === 'user' || m.role === 'assistant' })
-					chatMessages = chatMessages.concat(trimMessages(historyMessages, 41))
-
-					var aiPromise = callDeepSeek(chatMessages, savedApiKey, savedBaseUrl, savedModel)
-					self._aiAbort = aiPromise.abort || null
-
-					aiPromise.then(function(reply) {
-						if (reply === '[已取消]') {
-							self.aiLoading = false
-							self._aiAbort = null
-							self._aiRequestTime = 0
-							return
-						}
-						self.aiMessages.push({ role: 'assistant', content: reply })
-						self.aiLoading = false
-						self._aiAbort = null
-						self._aiRequestTime = 0
-						self.scrollAiToBottom()
-						saveAiChatHistory(self.aiMessages)
-					}).catch(function(err) {
-						self.aiMessages.push({ role: 'assistant', content: '抱歉，出错了：' + err.message })
-						self.aiLoading = false
-						self._aiAbort = null
-						self._aiRequestTime = 0
-						self.scrollAiToBottom()
-						saveAiChatHistory(self.aiMessages)
-					})
-				}, 50)
-			},
-			cancelAiMessage() {
-				if (this._aiAbort) {
-					this._aiAbort()
-					this._aiAbort = null
-				}
-				this.aiLoading = false
-				this._aiRequestTime = 0
-			},
-			insertMath(symbol) {
-				var input = this.aiInputText || ''
-				this.aiInputText = input + symbol
-			},
-			sendQuickQuestion(q) {
-				this.aiInputText = q
-				this.sendAiMessage()
-			},
-			clearAiChat() {
-				var self = this
-				uni.showModal({
-					title: '清空对话',
-					content: '确定要清空所有对话记录吗？',
-					success: function(res) {
-						if (res.confirm) {
-							if (self._aiAbort) {
-								self._aiAbort()
-								self._aiAbort = null
-							}
-							self.aiLoading = false
-							self.aiMessages = []
-							self.aiInitialized = false
-							clearAiChatHistory()
-							self.toast('对话已清空')
-						}
-					}
-				})
 			},
 			showAiSettings() {
 				var prefs = getPreferences()
@@ -1200,9 +1071,6 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 			},
 			handleSaveAiSettings(form) {
 				this.preferences = getPreferences()
-			},
-			formatAiText(text) {
-				return _formatAiText(text)
 			},
 			resetAiData() {
 				var self = this
