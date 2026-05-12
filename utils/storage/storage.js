@@ -1,5 +1,5 @@
-import { createInitialSchedule, calculateNextReview, REVIEW_RESULTS } from './scheduler.js'
-import { todayKey } from './date.js'
+import { createInitialSchedule, calculateNextReview, REVIEW_RESULTS } from '../review/scheduler.js'
+import { todayKey } from '../date.js'
 
 const MISTAKES_KEY = 'mistake_scheduler_mistakes_v1'
 const RECORDS_KEY = 'mistake_scheduler_review_records_v1'

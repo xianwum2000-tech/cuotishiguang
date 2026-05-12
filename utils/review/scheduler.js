@@ -1,4 +1,4 @@
-import { addDays, compareDateKeys, daysBetween, todayKey } from './date.js'
+import { addDays, compareDateKeys, daysBetween, todayKey } from '../date.js'
 
 export const REVIEW_RESULTS = {
 	WRONG: 'wrong',

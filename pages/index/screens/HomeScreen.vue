@@ -101,7 +101,7 @@
 
 <script>
 	import { todayKey } from '@/utils/date.js'
-	import { getDueMistakes, getOverdueMistakes, getOverdueDays, sortMistakesByPriority, getStageLabel } from '@/utils/scheduler.js'
+	import { getDueMistakes, getOverdueMistakes, getOverdueDays, sortMistakesByPriority, getStageLabel } from '@/utils/review/scheduler.js'
 
 	var TICK_INTERVAL = 60000
 

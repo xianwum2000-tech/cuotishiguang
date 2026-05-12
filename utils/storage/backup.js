@@ -1,5 +1,5 @@
 import { getMistakes, getReviewRecords, getPreferences, getQuotes } from './storage.js'
-import { todayKey } from './date.js'
+import { todayKey } from '../date.js'
 
 export function exportAllData() {
 	try {

@@ -1,4 +1,4 @@
-import { getMistakes, getReviewRecords, getPreferences, getQuotes, savePreferences } from './storage.js'
+import { getMistakes, getReviewRecords, getPreferences, getQuotes, savePreferences } from '../storage/storage.js'
 
 var GIST_DESC = '错题拾光备份'
 var GIST_FILENAME = 'cuotishiguang-backup.json'

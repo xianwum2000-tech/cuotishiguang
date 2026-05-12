@@ -118,7 +118,7 @@
 </template>
 
 <script>
-	import { createMistake, updateMistake, saveCustomOptions, getCustomOptions } from '@/utils/storage.js'
+	import { createMistake, updateMistake, saveCustomOptions, getCustomOptions } from '@/utils/storage/storage.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
 
 	const DEFAULT_CHAPTERS = {

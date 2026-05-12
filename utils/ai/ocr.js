@@ -1,4 +1,4 @@
-import { getPreferences } from './storage.js'
+import { getPreferences } from '../storage/storage.js'
 
 var OCR_SYSTEM_PROMPT = '你是一个数学公式识别助手。请识别图片中的数学题目内容。\n' +
   '要求：\n' +

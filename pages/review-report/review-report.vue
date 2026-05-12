@@ -80,7 +80,7 @@
 
 <script>
 import { todayKey, addDays } from '@/utils/date.js'
-import { getMistakes, getReviewRecords } from '@/utils/storage.js'
+import { getMistakes, getReviewRecords } from '@/utils/storage/storage.js'
 
 export default {
   data() {

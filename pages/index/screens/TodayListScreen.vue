@@ -63,7 +63,7 @@
 
 <script>
 	import { todayKey } from '@/utils/date.js'
-	import { getDueMistakes, getOverdueDays, getStageLabel } from '@/utils/scheduler.js'
+	import { getDueMistakes, getOverdueDays, getStageLabel } from '@/utils/review/scheduler.js'
 
 	export default {
 		name: 'TodayListScreen',

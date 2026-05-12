@@ -77,8 +77,8 @@
 </template>
 
 <script>
-import { archiveMistake, updateMistake } from '@/utils/storage.js'
-import { getStageLabel, getResultLabel, getOverdueDays } from '@/utils/scheduler.js'
+import { archiveMistake, updateMistake } from '@/utils/storage/storage.js'
+import { getStageLabel, getResultLabel, getOverdueDays } from '@/utils/review/scheduler.js'
 import { previewImages, persistImageFile } from '@/utils/file.js'
 import { todayKey } from '@/utils/date.js'
 

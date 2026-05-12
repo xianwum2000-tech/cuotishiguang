@@ -88,8 +88,8 @@
 
 <script>
 	import { todayKey } from '@/utils/date.js'
-	import { completeReview } from '@/utils/storage.js'
-	import { getResultLabel, getStageLabel, getOverdueDays } from '@/utils/scheduler.js'
+	import { completeReview } from '@/utils/storage/storage.js'
+	import { getResultLabel, getStageLabel, getOverdueDays } from '@/utils/review/scheduler.js'
 	import { previewImages } from '@/utils/file.js'
 
 	export default {

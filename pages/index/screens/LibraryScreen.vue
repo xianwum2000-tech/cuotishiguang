@@ -68,7 +68,7 @@
 
 <script>
 	import { todayKey } from '@/utils/date.js'
-	import { getOverdueDays, sortMistakesByPriority, getStageLabel } from '@/utils/scheduler.js'
+	import { getOverdueDays, sortMistakesByPriority, getStageLabel } from '@/utils/review/scheduler.js'
 
 	export default {
 		name: 'LibraryScreen',

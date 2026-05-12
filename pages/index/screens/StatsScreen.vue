@@ -97,7 +97,7 @@
 
 <script>
 	import { todayKey, addDays } from '@/utils/date.js'
-	import { getDueMistakes } from '@/utils/scheduler.js'
+	import { getDueMistakes } from '@/utils/review/scheduler.js'
 
 	export default {
 		name: 'StatsScreen',

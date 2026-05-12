@@ -1,6 +1,6 @@
-import { getMistakes, getReviewRecords } from './storage.js'
-import { getDueMistakes, getOverdueMistakes } from './scheduler.js'
-import { todayKey } from './date.js'
+import { getMistakes, getReviewRecords } from '../storage/storage.js'
+import { getDueMistakes, getOverdueMistakes } from '../review/scheduler.js'
+import { todayKey } from '../date.js'
 
 const STAGE_LABELS = {
 	new: '新错题',

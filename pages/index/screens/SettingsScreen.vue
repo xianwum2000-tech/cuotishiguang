@@ -135,9 +135,9 @@
 </template>
 
 <script>
-	import { savePreferences, saveQuotes, getPreferences } from '@/utils/storage.js'
+	import { savePreferences, saveQuotes, getPreferences } from '@/utils/storage/storage.js'
 	import { persistImageFile } from '@/utils/file.js'
-	import { getUpdateRuntimeInfo } from '@/utils/updater.js'
+	import { getUpdateRuntimeInfo } from '@/utils/app/updater.js'
 
 	function getTodayQuote(quotesData) {
 		var quotes = quotesData.quotes || []

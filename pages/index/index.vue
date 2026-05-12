@@ -1510,7 +1510,7 @@
 		getStageLabel,
 		getOverdueDays,
 		sortMistakesByPriority
-	} from '@/utils/scheduler.js'
+	} from '@/utils/review/scheduler.js'
 	import {
 		archiveMistake,
 		completeReview,
@@ -1528,12 +1528,12 @@
 		getAiChatHistory,
 		saveAiChatHistory,
 		clearAiChatHistory
-	} from '@/utils/storage.js'
-	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai.js'
+	} from '@/utils/storage/storage.js'
+	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai/ai.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
-	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/updater.js'
-import { getOcrConfig, testOcrApiKey, recognizeImage, extractQuestionNumber } from '@/utils/ocr.js'
-import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
+	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/app/updater.js'
+import { getOcrConfig, testOcrApiKey, recognizeImage, extractQuestionNumber } from '@/utils/ai/ocr.js'
+import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/sync.js'
 
 	function createDefaultPreferences() {
 		return {
