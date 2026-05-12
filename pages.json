@@ -13,6 +13,41 @@
 				"navigationStyle": "custom",
 				"navigationBarTitleText": "错题讲解清单"
 			}
+		},
+		{
+			"path": "pages/knowledge/knowledge",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "不足知识点"
+			}
+		},
+		{
+			"path": "pages/knowledge/detail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "知识点详情"
+			}
+		},
+		{
+			"path": "pages/conclusion/conclusion",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "二级结论"
+			}
+		},
+		{
+			"path": "pages/conclusion/detail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "结论详情"
+			}
+		},
+		{
+			"path": "pages/review-report/review-report",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "学习复盘"
+			}
 		}
 	],
 	"globalStyle": {
