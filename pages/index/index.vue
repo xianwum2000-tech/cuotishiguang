@@ -686,7 +686,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, AppsScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen },
 		data() {
 			return {
 				_tick: Date.now(),
