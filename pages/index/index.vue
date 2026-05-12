@@ -156,33 +156,12 @@
 				@check-update="checkAppUpdate"
 			/>
 
-			<view v-if="screen === 'quotes-settings'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
-						<text class="brand-title small-brand">名句设置</text>
-					</view>
-					<text class="gear small-gear" @click="saveQuoteSettings">保存</text>
-				</view>
-				<view class="page-content settings-content">
-					<view class="page-heading">
-						<text class="page-title">每日名句轮换</text>
-						<text class="page-subtitle">设置首页问候语每天轮换的句子。</text>
-					</view>
-					<view class="settings-card soft-card">
-						<text class="field-label">轮换间隔（天）</text>
-						<input class="settings-input" v-model="quoteSettingsForm.quoteDays" type="number" placeholder="1" />
-						<text class="field-label field-space">名句列表</text>
-						<view v-for="(quote, index) in quoteSettingsForm.quotes" :key="index" class="quote-line">
-							<input class="quote-input" v-model="quoteSettingsForm.quotes[index]" />
-							<text class="quote-delete" @click="removeQuote(index)">×</text>
-						</view>
-						<view class="secondary-button" @click="addQuote">
-							<text>＋ 添加名句</text>
-						</view>
-					</view>
-				</view>
-			</view>
+			<QuotesSettingsScreen
+				v-if="screen === 'quotes-settings'"
+				:quotes-data="quotesData"
+				@navigate="navigateTo"
+				@save-quotes="handleSaveQuotes"
+			/>
 
 			<SettingsScreen
 				v-if="screen === 'settings'"
@@ -414,6 +393,8 @@
 	import PropertiesScreen from './screens/PropertiesScreen.vue'
 	import ScalingScreen from './screens/ScalingScreen.vue'
 	import TheoremsScreen from './screens/TheoremsScreen.vue'
+	import QuotesSettingsScreen from './screens/QuotesSettingsScreen.vue'
+	import AiSettingsScreen from './screens/AiSettingsScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -433,7 +414,6 @@
 		getQuotes,
 		getReviewRecords,
 		savePreferences,
-		saveQuotes,
 		updateMistake,
 		getAiChatHistory,
 		saveAiChatHistory,
@@ -479,7 +459,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen, PropertiesScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen, PropertiesScreen, IntegralsScreen, DerivativesScreen, QuotesSettingsScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -503,7 +483,6 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				},
 				preferences: createDefaultPreferences(),
 				quotesData: getQuotes(),
-				quoteSettingsForm: getQuotes(),
 				activeReview: createEmptyMistake(),
 				activeDetail: createEmptyMistake(),
 				hasActiveReview: false,
@@ -896,25 +875,9 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				this.navigateTo('profile')
 			},
 			showQuotesSettings() {
-				this.quoteSettingsForm = JSON.parse(JSON.stringify(this.quotesData))
 				this.navigateTo('quotes-settings')
 			},
-			addQuote() {
-				this.quoteSettingsForm.quotes.push('')
-			},
-			removeQuote(index) {
-				if (this.quoteSettingsForm.quotes.length <= 1) return
-				this.quoteSettingsForm.quotes.splice(index, 1)
-			},
-			saveQuoteSettings() {
-				const days = Math.max(1, parseInt(this.quoteSettingsForm.quoteDays) || 1)
-				const quotes = this.quoteSettingsForm.quotes.filter(q => q.trim())
-				if (quotes.length === 0) {
-					this.toast('至少保留一条名句')
-					return
-				}
-				const data = { quoteDays: days, quotes }
-				saveQuotes(data)
+			handleSaveQuotes(data) {
 				this.quotesData = data
 				this.toast('名句设置已保存')
 				this.handleBackPress()
