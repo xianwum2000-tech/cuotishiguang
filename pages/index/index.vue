@@ -198,153 +198,22 @@
 			/>
 
 			<!-- AI 聊天屏幕 -->
-			<view v-if="screen === 'ai-chat'" class="screen screen-lilac ai-screen">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
-						<text class="brand-title small-brand">AI 助手</text>
-					</view>
-					<view class="ai-topbar-actions">
-						<text class="gear small-gear" @click="clearAiChat">清空</text>
-						<text class="gear small-gear" @click="showAiSettings">设置</text>
-					</view>
-				</view>
-				<scroll-view class="ai-chat-area" scroll-y :scroll-top="_aiScrollTop || 0" :scroll-with-animation="true">
-					<view class="ai-chat-inner">
-						<!-- 欢迎消息 -->
-						<view v-if="aiMessages.length === 0" class="ai-welcome-card">
-							<view class="ai-welcome-icon">
-								<image class="ai-welcome-icon-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
-							</view>
-							<text class="ai-welcome-title">你好，我是 AI 助手</text>
-							<text class="ai-welcome-desc">我了解你的所有错题记录，可以帮你分析薄弱环节、推荐复习重点，也能回答数学问题。</text>
-							<view class="ai-quick-questions">
-								<view class="ai-quick-btn" @click="sendQuickQuestion('分析我的薄弱章节')">
-									<text class="ai-quick-text">分析薄弱章节</text>
-								</view>
-								<view class="ai-quick-btn" @click="sendQuickQuestion('推荐今日复习重点')">
-									<text class="ai-quick-text">今日复习重点</text>
-								</view>
-								<view class="ai-quick-btn" @click="sendQuickQuestion('我的错因分布有什么规律？')">
-									<text class="ai-quick-text">错因分析</text>
-								</view>
-								<view class="ai-quick-btn" @click="sendQuickQuestion('给我一些考研数学复习建议')">
-									<text class="ai-quick-text">复习建议</text>
-								</view>
-							</view>
-						</view>
-
-						<!-- 加载更多 -->
-						<view v-if="aiHasMoreMessages" class="ai-load-more" @click="loadMoreAiMessages">
-							<text class="ai-load-more-text">加载更早的消息</text>
-						</view>
-
-						<!-- 消息列表 -->
-						<view v-for="(msg, idx) in visibleAiMessages" :key="idx" :class="msg.role === 'user' ? 'ai-msg ai-msg-user' : 'ai-msg ai-msg-ai'">
-							<view v-if="msg.role === 'assistant'" class="ai-msg-avatar">
-								<image class="ai-msg-avatar-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
-							</view>
-							<view :class="msg.role === 'user' ? 'ai-bubble ai-bubble-user' : 'ai-bubble ai-bubble-ai'">
-								<text v-if="msg.role === 'user'" class="ai-bubble-text" :selectable="true">{{ msg.content }}</text>
-								<rich-text v-else class="ai-bubble-text ai-rich-text" :selectable="true" :nodes="formatAiText(msg.content)"></rich-text>
-							</view>
-						</view>
-
-						<!-- 加载动画 -->
-						<view v-if="aiLoading" class="ai-msg ai-msg-ai">
-							<view class="ai-msg-avatar">
-								<image class="ai-msg-avatar-img" src="/static/icons/ai.svg" mode="aspectFit"></image>
-							</view>
-							<view class="ai-bubble ai-bubble-ai">
-								<view class="ai-typing">
-									<view class="ai-dot"></view>
-									<view class="ai-dot"></view>
-									<view class="ai-dot"></view>
-								</view>
-							</view>
-						</view>
-					</view>
-				</scroll-view>
-
-				<!-- 输入区域 -->
-				<view class="ai-input-bar">
-					<view class="ai-math-toolbar">
-						<scroll-view scroll-x class="ai-math-scroll">
-							<view class="ai-math-buttons">
-								<view class="ai-math-btn" @click="insertMath('ln()')"><text>ln</text></view>
-								<view class="ai-math-btn" @click="insertMath('e^{}')"><text>eˣ</text></view>
-								<view class="ai-math-btn" @click="insertMath('x^n')"><text>xⁿ</text></view>
-								<view class="ai-math-btn" @click="insertMath('√()')"><text>√</text></view>
-								<view class="ai-math-btn" @click="insertMath('∫_{a}^{b} f(x)dx')"><text>∫</text></view>
-								<view class="ai-math-btn" @click="insertMath('lim_{x→∞}')"><text>lim</text></view>
-								<view class="ai-math-btn" @click="insertMath('∑_{n=1}^{∞}')"><text>∑</text></view>
-								<view class="ai-math-btn" @click="insertMath('π')"><text>π</text></view>
-								<view class="ai-math-btn" @click="insertMath('∞')"><text>∞</text></view>
-								<view class="ai-math-btn" @click="insertMath('≤')"><text>≤</text></view>
-								<view class="ai-math-btn" @click="insertMath('≥')"><text>≥</text></view>
-								<view class="ai-math-btn" @click="insertMath('≠')"><text>≠</text></view>
-								<view class="ai-math-btn" @click="insertMath('dx')"><text>dx</text></view>
-								<view class="ai-math-btn" @click="insertMath('dy/dx')"><text>dy/dx</text></view>
-								<view class="ai-math-btn" @click="insertMath('∂/∂x')"><text>∂</text></view>
-								<view class="ai-math-btn" @click="insertMath('±')"><text>±</text></view>
-								<view class="ai-math-btn" @click="insertMath('×')"><text>×</text></view>
-								<view class="ai-math-btn" @click="insertMath('÷')"><text>÷</text></view>
-							</view>
-						</scroll-view>
-					</view>
-					<textarea class="ai-input-field" v-model="aiInputText" placeholder="输入你的问题..." :disabled="aiLoading" :auto-height="true" :maxlength="2000" @confirm="sendAiMessage" confirm-type="send"></textarea>
-					<view v-if="aiLoading" class="ai-send-btn ai-cancel-btn" @click="cancelAiMessage">
-						<text class="ai-send-text">取消</text>
-					</view>
-					<view v-else :class="aiInputText.trim() ? 'ai-send-btn ai-send-active' : 'ai-send-btn'" @click="sendAiMessage">
-						<text class="ai-send-text">发送</text>
-					</view>
-				</view>
-			</view>
+			<AiChatScreen
+				v-if="screen === 'ai-chat'"
+				:preferences="preferences"
+				@navigate="navigateTo"
+			/>
 
 			<!-- AI 设置屏幕 -->
-			<view v-if="screen === 'ai-settings'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="back-button" @click="handleBackPress"><text>‹</text></view>
-						<text class="brand-title small-brand">AI 配置</text>
-					</view>
-					<text class="gear small-gear" @click="saveAiSettings">保存</text>
-				</view>
-				<view class="page-content" style="padding-top: 20px;">
-					<view class="settings-card soft-card">
-						<text class="field-label">API Key</text>
-						<input class="settings-input" v-model="aiSettingsForm.deepseekApiKey" placeholder="输入你的 DeepSeek API Key" type="password" />
-
-						<text class="field-label field-space">API Base URL</text>
-						<input class="settings-input" v-model="aiSettingsForm.deepseekBaseUrl" placeholder="https://api.deepseek.com" />
-
-						<text class="field-label field-space">选择模型</text>
-						<view class="ai-model-grid">
-							<view v-for="m in aiModelOptions" :key="m.id"
-								:class="aiSettingsForm.deepseekModel === m.id ? 'ai-model-card ai-model-active' : 'ai-model-card'"
-								@click="aiSettingsForm.deepseekModel = m.id"
-							>
-								<text class="ai-model-name">{{ m.name }}</text>
-								<text class="ai-model-desc">{{ m.desc }}</text>
-							</view>
-						</view>
-					</view>
-
-					<view class="settings-card soft-card">
-						<text class="field-label">AI 性格设定</text>
-						<textarea class="ai-personality-field" v-model="aiSettingsForm.aiPersonality" placeholder="自定义 AI 的性格和回答风格，例如：&#10;&#10;请用轻松幽默的语气回答，多举例子帮助理解。&#10;每次回答结尾给我留一道练习题。&#10;回答要详细，推导过程要完整。" :maxlength="500"></textarea>
-						<text class="ai-personality-hint">留空则使用默认风格。设定后 AI 会按你写的风格来回答。</text>
-					</view>
-
-					<view class="save-button" @click="saveAiSettings">
-						<text>保存配置</text>
-					</view>
-					<view class="secondary-button" @click="testAiConnection">
-						<text>测试连接</text>
-					</view>
-				</view>
-			</view>
+			<AiSettingsScreen
+				v-if="screen === 'ai-settings'"
+				:preferences="preferences"
+				:ai-settings-form="aiSettingsForm"
+				:ai-model-options="aiModelOptions"
+				@navigate="navigateTo"
+				@save-ai-settings="handleSaveAiSettings"
+				@reset-ai-data="resetAiData"
+			/>
 
 			<view v-if="screen === 'home' || screen === 'library' || screen === 'ai-chat' || screen === 'ai-settings' || screen === 'apps' || screen === 'stats'" class="bottom-nav">
 				<view :class="homeNavClass" @click="showHome">
@@ -395,6 +264,7 @@
 	import TheoremsScreen from './screens/TheoremsScreen.vue'
 	import QuotesSettingsScreen from './screens/QuotesSettingsScreen.vue'
 	import AiSettingsScreen from './screens/AiSettingsScreen.vue'
+	import AiChatScreen from './screens/AiChatScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -459,7 +329,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen, PropertiesScreen, IntegralsScreen, DerivativesScreen, QuotesSettingsScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen, PropertiesScreen, IntegralsScreen, DerivativesScreen, QuotesSettingsScreen, AiSettingsScreen, AiChatScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -1328,39 +1198,11 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				}
 				this.navigateTo('ai-settings')
 			},
-			saveAiSettings() {
-				var apiKey = (this.aiSettingsForm.deepseekApiKey || '').trim()
-				var baseUrl = (this.aiSettingsForm.deepseekBaseUrl || '').trim() || 'https://api.deepseek.com'
-				var model = (this.aiSettingsForm.deepseekModel || '').trim() || 'deepseek-chat'
-				var personality = this.aiSettingsForm.aiPersonality || ''
-				savePreferences({
-					deepseekApiKey: apiKey,
-					deepseekBaseUrl: baseUrl,
-					deepseekModel: model,
-					aiPersonality: personality
-				})
+			handleSaveAiSettings(form) {
 				this.preferences = getPreferences()
-				this.toast('AI 配置已保存')
-				this.handleBackPress()
 			},
 			formatAiText(text) {
 				return _formatAiText(text)
-			},
-			testAiConnection() {
-				var apiKey = (this.aiSettingsForm.deepseekApiKey || '').trim()
-				if (!apiKey) {
-					this.toast('请先填写 API Key')
-					return
-				}
-				var baseUrl = (this.aiSettingsForm.deepseekBaseUrl || '').trim() || 'https://api.deepseek.com'
-				var model = (this.aiSettingsForm.deepseekModel || '').trim() || 'deepseek-chat'
-				var self = this
-				this.toast('正在测试...')
-				callDeepSeek([{ role: 'user', content: '你好，请回复"连接成功"' }], apiKey, baseUrl, model).then(function(reply) {
-					uni.showModal({ title: '连接成功', content: 'AI 回复：' + reply.substring(0, 100), showCancel: false })
-				}).catch(function(err) {
-					uni.showModal({ title: '连接失败', content: err.message, showCancel: false })
-				})
 			},
 			resetAiData() {
 				var self = this
