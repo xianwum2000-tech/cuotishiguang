@@ -500,86 +500,18 @@
 				@reset-ai-data="resetAiData"
 			/>
 
-			<view v-if="screen === 'edit'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="back-button" @click="cancelEdit"><text>‹</text></view>
-						<text class="brand-title small-brand">编辑错题</text>
-					</view>
-					<text class="gear small-gear" @click="saveEdit">保存</text>
-				</view>
-
-				<view v-if="editForm" class="page-content add-content">
-					<view class="upload-box" @click="chooseEditQuestionImage">
-						<image v-if="editForm.questionImage.length > 0" class="upload-preview" :src="editForm.questionImage" mode="aspectFill" @click.stop="previewSingleImage(editForm.questionImage)"></image>
-						<view v-if="editForm.questionImage.length > 0" class="upload-change" @click.stop="chooseEditQuestionImage"><text>更换</text></view>
-						<view v-if="editForm.questionImage.length === 0" class="upload-placeholder">
-							<view class="upload-icon"><text>▣</text></view>
-							<text class="upload-title">上传题目图</text>
-						</view>
-					</view>
-
-					<view class="upload-box" @click="chooseEditAnswerImage">
-						<image v-if="editForm.answerImage.length > 0" class="upload-preview" :src="editForm.answerImage" mode="aspectFill" @click.stop="previewSingleImage(editForm.answerImage)"></image>
-						<view v-if="editForm.answerImage.length > 0" class="upload-change" @click.stop="chooseEditAnswerImage"><text>更换</text></view>
-						<view v-if="editForm.answerImage.length === 0" class="upload-placeholder">
-							<view class="upload-icon"><text>▤</text></view>
-							<text class="upload-title">上传答案图</text>
-						</view>
-					</view>
-
-					<view class="form-card soft-card">
-						<text class="field-label">选择科目</text>
-						<view class="chip-row">
-							<view v-for="subject in subjectOptionsAll" :key="subject"
-								:class="editForm.subject === subject ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="editForm.subject = subject">
-								<text>{{ subject }}</text>
-							</view>
-							<view class="subject-chip chip-add" @click="addCustomOption('subject')"><text>+ 自定义</text></view>
-						</view>
-
-						<text class="field-label field-space">选择章节</text>
-						<view class="chip-row">
-							<view v-for="chapter in editChaptersForForm" :key="chapter"
-								:class="editForm.chapter === chapter ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="editForm.chapter = chapter">
-								<text>{{ chapter }}</text>
-							</view>
-							<view class="subject-chip chip-add" @click="addCustomOption('chapter')"><text>+ 自定义</text></view>
-						</view>
-
-						<text class="field-label field-space">选择错因</text>
-						<view class="chip-row">
-							<view v-for="errorType in errorTypeOptionsAll" :key="errorType"
-								:class="editForm.errorType === errorType ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="editForm.errorType = errorType">
-								<text>{{ errorType }}</text>
-							</view>
-							<view class="subject-chip chip-add" @click="addCustomOption('errorType')"><text>+ 自定义</text></view>
-						</view>
-
-						<text class="field-label field-space">难度</text>
-						<view class="chip-row">
-							<view v-for="difficulty in difficultyOptions" :key="difficulty"
-								:class="editForm.difficulty === difficulty ? 'subject-chip subject-active' : 'subject-chip'"
-								@click="editForm.difficulty = difficulty">
-								<text>{{ difficulty }}</text>
-							</view>
-						</view>
-
-						<text class="field-label field-space">题目来源</text>
-						<input class="settings-input" v-model="editForm.source" placeholder="例如：1000题 第3章 第15题" />
-
-						<text class="field-label field-space">备注</text>
-						<textarea class="note-field" v-model="editForm.note" placeholder="例如：换元后忘记乘内函数导数"></textarea>
-					</view>
-
-					<view class="save-button" @click="saveEdit">
-						<text>保存修改</text>
-					</view>
-				</view>
-			</view>
+			<EditScreen
+				v-if="screen === 'edit'"
+				:initial-mistake="editingMistake"
+				:subject-options="subjectOptions"
+				:custom-subjects="customSubjects"
+				:custom-chapters="customChapters"
+				:custom-error-types="customErrorTypes"
+				:error-type-options="errorTypeOptions"
+				:difficulty-options="difficultyOptions"
+				@navigate="handleEditNavigate"
+				@data-changed="handleEditDataChanged"
+			/>
 
 			<!-- AI 聊天屏幕 -->
 			<view v-if="screen === 'ai-chat'" class="screen screen-lilac ai-screen">
@@ -767,6 +699,7 @@
 	import DetailScreen from './screens/DetailScreen.vue'
 	import StatsScreen from './screens/StatsScreen.vue'
 	import SettingsScreen from './screens/SettingsScreen.vue'
+	import EditScreen from './screens/EditScreen.vue'
 	import ProfileScreen from './screens/ProfileScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
@@ -786,7 +719,6 @@
 		getPreferences,
 		getQuotes,
 		getReviewRecords,
-		saveCustomOptions,
 		savePreferences,
 		saveQuotes,
 		updateMistake,
@@ -834,7 +766,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -876,7 +808,6 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				customSubjects: [],
 				customChapters: {},
 				customErrorTypes: [],
-				editForm: null,
 				editingMistakeId: null,
 				progressRings: [
 					{ name: '高数', current: 0, target: 10 },
@@ -995,11 +926,9 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 			errorTypeOptionsAll() {
 				return this.errorTypeOptions.concat(this.customErrorTypes)
 			},
-			editChaptersForForm() {
-				if (!this.editForm) return []
-				const base = this.getChaptersForSubject(this.editForm.subject)
-				const custom = this.customChapters[this.editForm.subject] || []
-				return base.concat(custom)
+			editingMistake() {
+				if (!this.editingMistakeId) return null
+				return getMistakeById(this.editingMistakeId)
 			},
 			filterSubjects() {
 				return ['全部'].concat(this.subjectOptionsAll)
@@ -1444,96 +1373,24 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 					this.detailOcrLoading = ''
 				}
 			},
-			chooseEditQuestionImage() {
-				this.chooseEditImage('questionImage')
-			},
-			chooseEditAnswerImage() {
-				this.chooseEditImage('answerImage')
-			},
-			chooseEditImage(field) {
-				if (!this.editForm) return
-				const self = this
-				uni.chooseImage({
-					count: 1,
-					sizeType: ['compressed'],
-					sourceType: ['album', 'camera'],
-					success: async (res) => {
-						if (!res.tempFilePaths || res.tempFilePaths.length === 0) return
-						self.imageSaving = true
-						const output = await persistImageFile(res.tempFilePaths[0])
-						self.editForm[field] = output.path
-						self.imageSaving = false
-						self.toast('图片已更换')
-					}
-				})
-			},
-			addCustomOption(type) {
-				const self = this
-				const target = self.editForm
-				if (!target) return
-				const titles = { subject: '自定义科目', chapter: '自定义章节', errorType: '自定义错因' }
-				uni.showModal({
-					title: titles[type] || '自定义',
-					editable: true,
-					placeholderText: '请输入关键词',
-					success(res) {
-						if (!res.confirm || !res.content || !res.content.trim()) return
-						const val = res.content.trim()
-						if (type === 'subject') {
-							if (self.subjectOptionsAll.indexOf(val) >= 0) { self.toast('已存在'); return }
-							self.customSubjects.push(val)
-							saveCustomOptions({ subjects: self.customSubjects, chapters: self.customChapters, errorTypes: self.customErrorTypes })
-							target.subject = val
-						} else if (type === 'chapter') {
-							const allChapters = self.editChaptersForForm
-							if (allChapters.indexOf(val) >= 0) { self.toast('已存在'); return }
-							if (!self.customChapters[target.subject]) self.customChapters[target.subject] = []
-							self.customChapters[target.subject].push(val)
-							saveCustomOptions({ subjects: self.customSubjects, chapters: self.customChapters, errorTypes: self.customErrorTypes })
-							target.chapter = val
-						} else if (type === 'errorType') {
-							if (self.errorTypeOptionsAll.indexOf(val) >= 0) { self.toast('已存在'); return }
-							self.customErrorTypes.push(val)
-							saveCustomOptions({ subjects: self.customSubjects, chapters: self.customChapters, errorTypes: self.customErrorTypes })
-							target.errorType = val
-						}
-						self.toast('已添加')
-					}
-				})
-			},
 			enterEdit() {
 				if (!this.hasActiveDetail) return
-				this.editForm = {
-					questionImage: this.activeDetail.questionImage,
-					answerImage: this.activeDetail.answerImage,
-					subject: this.activeDetail.subject,
-					chapter: this.activeDetail.chapter,
-					errorType: this.activeDetail.errorType,
-					difficulty: this.activeDetail.difficulty,
-					source: this.activeDetail.source || '',
-					note: this.activeDetail.note || ''
-				}
 				this.editingMistakeId = this.activeDetail.id
 				this.navigateTo('edit')
 			},
-			saveEdit() {
-				if (!this.editingMistakeId || !this.editForm) return
-				if (!this.editForm.questionImage || !this.editForm.answerImage) {
-					this.toast('请先上传题目图和答案图')
-					return
+			handleEditNavigate(target) {
+				if (target === 'back') {
+					this.editingMistakeId = null
+					this.handleBackPress()
+				} else {
+					this.navigateTo(target)
 				}
-				const updated = updateMistake(this.editingMistakeId, { ...this.editForm })
-				this.refreshData()
-				this.activeDetail = updated || this.activeDetail
-				this.editForm = null
-				this.editingMistakeId = null
-				this.toast('已更新')
-				this.handleBackPress()
 			},
-			cancelEdit() {
-				this.editForm = null
-				this.editingMistakeId = null
-				this.handleBackPress()
+			handleEditDataChanged(updated) {
+				this.refreshData()
+				if (updated) {
+					this.activeDetail = updated
+				}
 			},
 			startFirstReview() {
 				if (this.filteredTodayList.length === 0) {
