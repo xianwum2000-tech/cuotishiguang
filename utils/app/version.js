@@ -1,6 +1,6 @@
 export const APP_VERSION = {
-	name: '1.5.0',
-	code: 150,
+	name: '1.5.1',
+	code: 151,
 	packageName: 'com.cuotishiguang.app',
 	channel: 'github-release'
 }

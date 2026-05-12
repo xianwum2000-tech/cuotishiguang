@@ -1,9 +1,9 @@
 {
-  "versionName": "1.5.0",
-  "versionCode": 150,
+  "versionName": "1.5.1",
+  "versionCode": 151,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.0/cuotishiguang-1.5.0.apk",
-  "changelog": "1. 导航修复：统一 screenHistory 栈管理，返回键行为正确\n2. 每日目标：首页环形进度卡片，支持动态推荐/固定数量模式\n3. OCR 识别：通义千问 VL 识别印刷体错题图片，自动/手动触发\n4. 学习复盘：独立页面，周/月维度趋势图+分布图+文字分析\n5. 云同步：GitHub Gist 手动备份/恢复\n6. 目录重组：utils/ 按职责分组（storage/review/ai/sync/app）",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.1/cuotishiguang-1.5.1.apk",
+  "changelog": "1. 架构重构：index.vue 从 6261 行精简至 3645 行\n2. 提取 21 个屏幕组件，代码更易维护\n3. CSS 外置到 global.css\n4. 修复 CSS 引入路径问题",
   "force": false,
   "publishedAt": "2026-05-12"
 }
