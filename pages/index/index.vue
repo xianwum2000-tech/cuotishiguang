@@ -17,6 +17,20 @@
 						<text class="home-subtitle">{{ currentQuote }}</text>
 					</view>
 
+					<view class="daily-goal-card" :class="{ 'daily-goal-done': dailyGoalCompleted }">
+						<view class="daily-goal-ring-wrap">
+							<view class="daily-goal-ring-fill" :style="{ background: goalConicGradient }"></view>
+							<view class="daily-goal-ring-inner">
+								<text v-if="!dailyGoalCompleted" class="daily-goal-ring-text">{{ todayCompletedCount }}/{{ dailyGoalTarget }}</text>
+								<text v-else class="daily-goal-ring-check">✓</text>
+							</view>
+						</view>
+						<view class="daily-goal-copy">
+							<text class="daily-goal-title">今日目标</text>
+							<text class="daily-goal-sub">{{ dailyGoalCompleted ? '目标已达成！' : '还差 ' + (dailyGoalTarget - todayCompletedCount) + ' 道' }}</text>
+						</view>
+					</view>
+
 					<view class="status-grid">
 						<view class="stat-card stat-primary">
 							<text class="stat-label stat-label-light">今日待复习</text>
@@ -1072,6 +1086,26 @@
 					</view>
 
 					<view class="settings-card soft-card" style="margin-top: 20px;">
+						<text class="field-label">每日目标</text>
+						<text class="page-subtitle" style="margin-bottom: 14px;">设置每天的复习目标数量。</text>
+						<view class="goal-mode-row">
+							<view :class="dailyGoalMode === 'dynamic' ? 'goal-mode-btn goal-mode-active' : 'goal-mode-btn'" @click="dailyGoalMode = 'dynamic'">
+								<text>动态推荐</text>
+							</view>
+							<view :class="dailyGoalMode === 'fixed' ? 'goal-mode-btn goal-mode-active' : 'goal-mode-btn'" @click="dailyGoalMode = 'fixed'">
+								<text>固定数量</text>
+							</view>
+						</view>
+						<view v-if="dailyGoalMode === 'fixed'" style="margin-top: 12px;">
+							<text class="field-label">固定目标数（3-30）</text>
+							<input class="settings-input" v-model.number="dailyGoalFixed" type="number" placeholder="10" />
+						</view>
+						<text v-if="dailyGoalMode === 'dynamic'" class="page-subtitle" style="margin-top: 10px;">
+							动态模式：根据今日到期数和逾期数自动计算，当前推荐 {{ dailyGoalTarget }} 道。
+						</text>
+					</view>
+
+					<view class="settings-card soft-card" style="margin-top: 20px;">
 						<text class="field-label">倒计时设置</text>
 						<text class="page-subtitle" style="margin-bottom: 14px;">首页倒计时的目标日期和显示文字。</text>
 						<text class="field-label field-space">显示文字</text>
@@ -1938,7 +1972,9 @@
 					homeTitle,
 					greetingTitle,
 					homeAvatar: this.settingsForm.homeAvatar || defaults.homeAvatar,
-					statsName
+					statsName,
+					dailyGoalMode: this.dailyGoalMode,
+					dailyGoalFixed: parseInt(this.dailyGoalFixed) || 10
 				})
 				this.toast('首页文案已保存')
 				this.handleBackPress()
@@ -2741,6 +2777,92 @@
 	.greeting-block {
 		padding-top: 6px;
 		padding-bottom: 16px;
+	}
+
+	/* Daily Goal Card */
+	.daily-goal-card {
+		background: #FFFFFF;
+		border-radius: 14px;
+		padding: 14px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 14px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+	}
+	.daily-goal-done {
+		border: 2px solid #10B981;
+	}
+	.daily-goal-ring-wrap {
+		width: 52px;
+		height: 52px;
+		border-radius: 50%;
+		position: relative;
+	}
+	.daily-goal-ring-fill {
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+	}
+	.daily-goal-ring-inner {
+		position: absolute;
+		top: 4px;
+		left: 4px;
+		right: 4px;
+		bottom: 4px;
+		border-radius: 50%;
+		background: #FEF9F0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.daily-goal-ring-text {
+		font-size: 13px;
+		font-weight: 700;
+		color: #292524;
+	}
+	.daily-goal-ring-check {
+		font-size: 20px;
+		color: #10B981;
+	}
+	.daily-goal-copy {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+	.daily-goal-title {
+		font-size: 14px;
+		font-weight: 600;
+		color: #292524;
+	}
+	.daily-goal-sub {
+		font-size: 12px;
+		color: #A8A29E;
+	}
+	.goal-mode-row {
+		display: flex;
+		gap: 10px;
+	}
+	.goal-mode-btn {
+		flex: 1;
+		padding: 10px;
+		border-radius: 12px;
+		background: #FEF9F0;
+		border: 1px solid #F1E2D8;
+		text-align: center;
+	}
+	.goal-mode-btn text {
+		font-size: 13px;
+		font-weight: 600;
+		color: #78716C;
+	}
+	.goal-mode-active {
+		background: #EDE9FE;
+		border-color: #C4B5FD;
+	}
+	.goal-mode-active text {
+		color: #6D28D9;
 	}
 
 	.home-title {
