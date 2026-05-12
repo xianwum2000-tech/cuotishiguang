@@ -1,9 +1,9 @@
 {
-  "versionName": "1.4.6",
-  "versionCode": 146,
+  "versionName": "1.5.0",
+  "versionCode": 150,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.4.6/cuotishiguang-1.4.6.apk",
-  "changelog": "1. 新增二级结论功能（应用中心）\n2. 结论卡片支持图片、效果、使用范围、好用程度\n3. 点击卡片进入详情页编辑",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.0/cuotishiguang-1.5.0.apk",
+  "changelog": "1. 导航修复：统一 screenHistory 栈管理，返回键行为正确\n2. 每日目标：首页环形进度卡片，支持动态推荐/固定数量模式\n3. OCR 识别：通义千问 VL 识别印刷体错题图片，自动/手动触发\n4. 学习复盘：独立页面，周/月维度趋势图+分布图+文字分析\n5. 云同步：GitHub Gist 手动备份/恢复\n6. 目录重组：utils/ 按职责分组（storage/review/ai/sync/app）",
   "force": false,
-  "publishedAt": "2026-05-11"
+  "publishedAt": "2026-05-12"
 }
