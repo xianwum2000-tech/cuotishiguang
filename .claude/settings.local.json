@@ -75,7 +75,9 @@
       "WebFetch(domain:help.aliyun.com)",
       "Bash(sed 's/<[^>]*>//g')",
       "Bash(rm -f main.uts utils/date.uts utils/models.uts utils/scheduler.uts utils/storage.uts)",
-      "Bash(rmdir tools *)"
+      "Bash(rmdir tools *)",
+      "Bash(mv apk/*.apk docs/apk/)",
+      "Bash(mv cuotishiguang-*.apk docs/apk/)"
     ]
   }
 }
