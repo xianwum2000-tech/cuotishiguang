@@ -438,39 +438,18 @@
 				@goto-review-report="goReviewReport"
 			/>
 
-			<view v-if="screen === 'profile'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<view class="brand-row">
-						<view class="avatar small-avatar">
-							<image class="avatar-img" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title small-brand">我的</text>
-					</view>
-				</view>
-				<view class="page-content">
-					<view class="profile-card soft-card">
-						<text class="page-title">本地错题调度器</text>
-						<text class="page-subtitle">离线可用 · 无账号 · 无题库 · 无 AI 识别</text>
-					</view>
-
-					<view class="profile-card soft-card">
-						<text class="page-title">版本管理</text>
-						<text class="page-subtitle">当前版本 {{ appVersion.name }}（{{ appVersion.code }}）</text>
-						<text class="profile-line">包名：{{ appVersion.packageName }}</text>
-						<text class="profile-line">更新源：{{ updateSourceText }}</text>
-						<view v-if="latestVersion.versionCode > 0" class="update-note">
-							<text>发现新版 {{ latestVersion.versionName }}：{{ latestVersion.changelog || '暂无更新说明' }}</text>
-						</view>
-						<view v-if="updateDownloading" class="update-progress">
-							<view class="update-progress-fill" :style="updateProgressStyle"></view>
-						</view>
-						<text v-if="updateDownloading" class="profile-line">正在下载 {{ updateProgress }}%</text>
-						<view class="secondary-button" @click="checkAppUpdate(false)">
-							<text>{{ updateChecking ? '检查中...' : '检查更新' }}</text>
-						</view>
-					</view>
-				</view>
-			</view>
+			<ProfileScreen
+				v-if="screen === 'profile'"
+				:preferences="preferences"
+				:app-version="appVersion"
+				:update-configured="updateConfigured"
+				:update-checking="updateChecking"
+				:update-downloading="updateDownloading"
+				:update-progress="updateProgress"
+				:latest-version="latestVersion"
+				@navigate="navigateTo"
+				@check-update="checkAppUpdate"
+			/>
 
 			<view v-if="screen === 'quotes-settings'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
@@ -788,6 +767,7 @@
 	import DetailScreen from './screens/DetailScreen.vue'
 	import StatsScreen from './screens/StatsScreen.vue'
 	import SettingsScreen from './screens/SettingsScreen.vue'
+	import ProfileScreen from './screens/ProfileScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -854,7 +834,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -1067,12 +1047,6 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 			},
 			aiHasMoreMessages() {
 				return this.aiMessages.length > this.aiVisibleCount
-			},
-			updateSourceText() {
-				return this.updateConfigured ? 'GitHub Releases' : '未配置 GitHub 仓库'
-			},
-			updateProgressStyle() {
-				return 'width: ' + this.updateProgress + '%'
 			},
 			homeNavClass() {
 				return this.screen === 'home' || this.screen === 'settings' ? 'nav-item nav-active' : 'nav-item'
