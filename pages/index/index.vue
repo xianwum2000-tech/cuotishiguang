@@ -79,105 +79,23 @@
 				@preview-images="previewMistakeImages"
 			/>
 
-			<view v-if="screen === 'apps'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="brand-title small-brand">应用中心</text>
-				</view>
-				<view class="page-content apps-content">
-					<view class="apps-grid">
-						<view class="app-card app-card-active" @click="showFormulas">
-							<view class="app-card-icon-wrap app-card-icon-orange">
-								<image class="app-card-icon-img" src="/static/icons/formula.svg" mode="aspectFit"></image>
-							</view>
-							<view class="app-card-info">
-								<text class="app-card-title">公式手册</text>
-								<text class="app-card-desc">极限 · 导数 · 积分</text>
-							</view>
-							<image class="app-card-arrow-img" src="/static/icons/arrow.svg" mode="aspectFit"></image>
-						</view>
+			<AppsScreen
+				v-if="screen === 'apps'"
+				@navigate="navigateTo"
+				@show-formulas="showFormulas"
+				@show-theorems="showTheorems"
+				@show-scaling="showScaling"
+				@show-properties="showProperties"
+				@go-conclusion="goConclusion"
+			/>
 
-						<view class="app-card app-card-active" @click="showTheorems">
-							<view class="app-card-icon-wrap app-card-icon-purple">
-								<image class="app-card-icon-img" src="/static/icons/theorem.svg" mode="aspectFit"></image>
-							</view>
-							<view class="app-card-info">
-								<text class="app-card-title">定理合集</text>
-								<text class="app-card-desc">中值 · 积分 · 级数</text>
-							</view>
-							<image class="app-card-arrow-img" src="/static/icons/arrow.svg" mode="aspectFit"></image>
-						</view>
-
-						<view class="app-card app-card-disabled">
-							<view class="app-card-icon-wrap app-card-icon-gray">
-								<image class="app-card-icon-img" src="/static/icons/scale.svg" mode="aspectFit"></image>
-							</view>
-							<view class="app-card-info">
-								<text class="app-card-title">特殊放缩</text>
-								<text class="app-card-desc">即将上线</text>
-							</view>
-							<view class="app-card-badge">敬请期待</view>
-						</view>
-
-						<view class="app-card app-card-disabled">
-							<view class="app-card-icon-wrap app-card-icon-gray">
-								<image class="app-card-icon-img" src="/static/icons/property.svg" mode="aspectFit"></image>
-							</view>
-							<view class="app-card-info">
-								<text class="app-card-title">各类性质</text>
-								<text class="app-card-desc">即将上线</text>
-							</view>
-							<view class="app-card-badge">敬请期待</view>
-						</view>
-
-						<view class="app-card app-card-active" @click="goConclusion">
-							<view class="app-card-icon-wrap app-card-icon-green">
-								<text class="app-card-icon-text">结</text>
-							</view>
-							<view class="app-card-info">
-								<text class="app-card-title">二级结论</text>
-								<text class="app-card-desc">总结 · 速查</text>
-							</view>
-							<image class="app-card-arrow-img" src="/static/icons/arrow.svg" mode="aspectFit"></image>
-						</view>
-					</view>
-				</view>
-			</view>
-
-			<view v-if="screen === 'formulas'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<view class="topbar-title-wrap">
-						<text class="brand-title small-brand">公式手册</text>
-						<text class="topbar-subtitle">极限 · 导数 · 积分</text>
-					</view>
-					<text></text>
-				</view>
-				<view class="page-content formulas-content">
-					<view class="formula-category-grid">
-						<view class="formula-category-card formula-card-limits" @click="showLimits">
-							<view class="formula-card-icon-circle formula-icon-orange">
-								<text class="formula-category-icon">∞</text>
-							</view>
-							<text class="formula-category-title">极限</text>
-							<text class="formula-category-desc">等价无穷小 · 洛必达 · 泰勒</text>
-						</view>
-						<view class="formula-category-card formula-card-derivatives" @click="showDerivatives">
-							<view class="formula-card-icon-circle formula-icon-purple">
-								<text class="formula-category-icon">d</text>
-							</view>
-							<text class="formula-category-title">导数</text>
-							<text class="formula-category-desc">基本导数 · 求导法则 · 高阶</text>
-						</view>
-						<view class="formula-category-card formula-card-integrals" @click="showIntegrals">
-							<view class="formula-card-icon-circle formula-icon-green">
-								<text class="formula-category-icon">∫</text>
-							</view>
-							<text class="formula-category-title">积分</text>
-							<text class="formula-category-desc">不定积分 · 定积分 · 技巧</text>
-						</view>
-					</view>
-				</view>
-			</view>
+			<FormulasScreen
+				v-if="screen === 'formulas'"
+				@navigate="navigateTo"
+				@show-limits="showLimits"
+				@show-derivatives="showDerivatives"
+				@show-integrals="showIntegrals"
+			/>
 
 				<view v-if="screen === 'limits'" class="screen screen-cream">
 					<view class="topbar compact-topbar">
@@ -701,6 +619,8 @@
 	import SettingsScreen from './screens/SettingsScreen.vue'
 	import EditScreen from './screens/EditScreen.vue'
 	import ProfileScreen from './screens/ProfileScreen.vue'
+	import FormulasScreen from './screens/FormulasScreen.vue'
+	import AppsScreen from './screens/AppsScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -766,7 +686,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, AppsScreen },
 		data() {
 			return {
 				_tick: Date.now(),
