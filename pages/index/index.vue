@@ -1,123 +1,22 @@
 <template>
 	<view class="app">
 		<view class="phone">
-			<view v-if="screen === 'home'" class="screen screen-cream">
-				<view class="topbar">
-					<view class="brand-row">
-						<view class="avatar avatar-ring">
-							<image class="avatar-img" :src="preferences.homeAvatar" mode="aspectFill"></image>
-						</view>
-						<text class="brand-title">{{ preferences.homeTitle }}</text>
-					</view>
-				</view>
-
-				<view class="page-content home-content">
-					<view class="greeting-block">
-						<text class="home-title">{{ preferences.greetingTitle }}</text>
-						<text class="home-subtitle">{{ currentQuote }}</text>
-					</view>
-
-					<view class="daily-goal-card" :class="{ 'daily-goal-done': dailyGoalCompleted }">
-						<view class="daily-goal-ring-wrap">
-							<view class="daily-goal-ring-fill" :style="{ background: goalConicGradient }"></view>
-							<view class="daily-goal-ring-inner">
-								<text v-if="!dailyGoalCompleted" class="daily-goal-ring-text">{{ todayCompletedCount }}/{{ dailyGoalTarget }}</text>
-								<text v-else class="daily-goal-ring-check">✓</text>
-							</view>
-						</view>
-						<view class="daily-goal-copy">
-							<text class="daily-goal-title">今日目标</text>
-							<text class="daily-goal-sub">{{ dailyGoalCompleted ? '目标已达成！' : '还差 ' + (dailyGoalTarget - todayCompletedCount) + ' 道' }}</text>
-						</view>
-					</view>
-
-					<view class="status-grid">
-						<view class="stat-card stat-primary">
-							<text class="stat-label stat-label-light">今日待复习</text>
-							<text class="stat-number stat-number-light">{{ dueCount }}</text>
-						</view>
-						<view class="stat-card stat-surface stat-middle" @click="goWatchlist">
-							<text class="stat-label stat-label-red">错题讲解</text>
-							<text class="stat-number stat-number-red">{{ watchlistPendingCount }}</text>
-						</view>
-						<view class="stat-card stat-surface">
-							<text class="stat-label stat-label-muted">错题总数</text>
-							<text class="stat-number stat-number-dark">{{ totalCount }}</text>
-						</view>
-					</view>
-
-					<view class="study-actions">
-						<view class="add-mistake-button" @click="showAdd">
-							<text class="add-symbol">＋</text>
-							<text class="add-text">新增错题</text>
-						</view>
-						<view class="review-start-button" @click="showToday">
-							<image class="review-icon-img" src="/static/icons/review.svg" mode="aspectFit"></image>
-							<text class="review-start-text">进入复习</text>
-						</view>
-					</view>
-
-					<view class="progress-ring-row">
-						<view class="progress-ring-item" v-for="(ring, idx) in progressRings" :key="idx">
-							<view class="progress-ring-wrap">
-								<view class="progress-ring-fill" :style="{ background: ringConic(ring) }"></view>
-								<view class="progress-ring-inner">
-									<text class="progress-ring-value">{{ ring.current }}</text>
-									<text class="progress-ring-slash">/</text>
-									<text class="progress-ring-target">{{ ring.target }}</text>
-								</view>
-							</view>
-							<text class="progress-ring-name">{{ ring.name }}</text>
-						</view>
-					</view>
-
-					<view class="watchlist-entry" @click="goWatchlist">
-						<text class="watchlist-entry-title">错题讲解清单</text>
-						<text v-if="watchlistPendingCount > 0" class="watchlist-entry-badge">{{ watchlistPendingCount }}</text>
-					</view>
-
-					<view class="watchlist-entry knowledge-entry" @click="goKnowledge">
-						<text class="watchlist-entry-title">不足知识点</text>
-						<text v-if="knowledgePendingCount > 0" class="watchlist-entry-badge">{{ knowledgePendingCount }}</text>
-					</view>
-
-					<view class="countdown-card">
-						<text class="countdown-label">{{ countdownText }}</text>
-						<view class="countdown-num-row">
-							<text class="countdown-days">{{ countdownDays }}</text>
-							<text class="countdown-unit">天</text>
-						</view>
-					</view>
-
-					<view class="section-head">
-						<text class="section-title">建议优先级</text>
-						<text class="section-link" @click="showToday">查看全部</text>
-					</view>
-
-					<view v-if="priorityList.length === 0" class="empty-card soft-card">
-						<text class="empty-title">今天暂无复习任务</text>
-						<text class="empty-sub">新增错题后，系统会从 2 天后开始自动安排复习。</text>
-					</view>
-
-					<view
-						v-for="item in priorityList"
-						:key="item.id"
-						:class="priorityCardClass(item)"
-						@click="startReview(item)"
-					>
-						<view :class="priorityIconClass(item)">
-							<text>{{ priorityLabel(item) }}</text>
-						</view>
-						<view class="priority-copy">
-							<text class="priority-title">{{ item.subject }} · {{ item.chapter }}</text>
-							<text class="priority-meta">错因：{{ item.errorType }}｜{{ stageLabel(item.reviewStage) }}</text>
-						</view>
-						<view class="priority-pill">
-							<text>{{ formatDueText(item) }}</text>
-						</view>
-					</view>
-				</view>
-			</view>
+			<HomeScreen
+				v-if="screen === 'home'"
+				:mistakes="mistakes"
+				:records="records"
+				:preferences="preferences"
+				:quotes-data="quotesData"
+				:progress-rings="progressRings"
+				:countdown-target="countdownTarget"
+				:countdown-label="countdownLabel"
+				:watchlist-items="watchlistItems"
+				:knowledge-items="knowledgeItems"
+				@navigate="navigateTo"
+				@start-review="startReview"
+				@goto-watchlist="goWatchlist"
+				@goto-knowledge="goKnowledge"
+			/>
 
 			<view v-if="screen === 'add'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
@@ -1500,6 +1399,7 @@
 </template>
 
 <script>
+	import HomeScreen from './screens/HomeScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -1583,6 +1483,7 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	export default {
+		components: { HomeScreen },
 		data() {
 			return {
 				_tick: Date.now(),
