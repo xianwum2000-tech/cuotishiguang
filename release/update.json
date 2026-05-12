@@ -1,9 +1,9 @@
 {
-  "versionName": "1.4.4",
-  "versionCode": 144,
+  "versionName": "1.4.6",
+  "versionCode": 146,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.4.4/cuotishiguang-1.4.4.apk",
-  "changelog": "1. 用户设置页新增重置 AI 数据功能（双重确认）\n2. 重置时保留 API 配置，仅清除聊天记录",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.4.6/cuotishiguang-1.4.6.apk",
+  "changelog": "1. 新增二级结论功能（应用中心）\n2. 结论卡片支持图片、效果、使用范围、好用程度\n3. 点击卡片进入详情页编辑",
   "force": false,
-  "publishedAt": "2026-05-10"
+  "publishedAt": "2026-05-11"
 }

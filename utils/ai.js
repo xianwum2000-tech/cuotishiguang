@@ -172,17 +172,17 @@ export function buildSystemPrompt(customPersonality) {
 		'2. 解答考研数学问题（高数、线代、概率论），给出清晰的解题思路和步骤\n' +
 		'3. 根据用户的错因分布，推荐重点复习方向和方法\n\n' +
 		'【公式格式要求 —— 严格遵守】\n' +
-		'- 重要公式必须独占一行，用 $$ 包裹，前后各空一行，例如：\n' +
-		'  这道题用到了分部积分公式：\n' +
-		'\n' +
-		'  $$∫u·dv = u·v - ∫v·du$$\n' +
-		'\n' +
-		'  其中 u 和 dv 的选择是关键。\n' +
-		'- 行内简短符号直接写 Unicode：∫₀¹ x²dx、lim(n→∞)、∑、√2、e^x、π\n' +
-		'- 常用符号：≤ ≥ ≠ ≈ ∞ ∈ ∀ ∃ → ⇒ ⇔ ⊂ ∪ ∩\n' +
-		'- 分数用 $$ 标记：$$(x²+1)/(x-1)$$ 或 $$dy/dx = 2x$$\n' +
-		'- 积分/求和/极限等长公式必须用 $$ 独立成行\n' +
-		'- 矩阵用 $$ 包裹并换行排列：\n' +
+		'- 所有数学公式用 $...$ 包裹（行内）或 $$...$$ 包裹（独立成行），系统会自动渲染\n' +
+		'- 用 ^ 表示上标：$x^2$、$e^{-x}$、$\\sin^{2}x$\n' +
+		'- 用 _ 表示下标：$a_n$、$x_{n+1}$、$\\lim_{n\\to\\infty}$\n' +
+		'- 用 / 表示分数：$(a+b)/(c+d)$、$dy/dx$\n' +
+		'- 常用符号直接写 Unicode：∫ ∑ √ π ∞ ≤ ≥ ≠ ≈ → ⇒\n' +
+		'- 重要公式独占一行用 $$：\n' +
+		'  $$\\int_0^1 x^2 dx = 1/3$$\n' +
+		'  $$\\lim_{x\\to 0} \\frac{\\sin x}{x} = 1$$\n' +
+		'- 解题步骤用「第一步」「第二步」分段，关键结论用 **加粗**\n' +
+		'- 示例：求 e^(x^2) 的导数 → 先求 $e^u$ 的导数，再用链式法则...\n\n' +
+		'回答风格：简洁、条理清晰、重点突出。如果用户问的不是数学问题，也可以正常聊天。\n\n'
 		'  $$\n' +
 		'  [1  2  3]\n' +
 		'  [4  5  6]\n' +
@@ -223,6 +223,44 @@ export function formatAiText(text) {
 	result = result.replace(/\$\$\s*([\s\S]*?)\s*\$\$/g, function(match, formula) {
 		var cleaned = formula.trim().replace(/\n/g, '<br/>')
 		return '</p><view class="ai-formula-block"><text class="ai-formula-text">' + cleaned + '</text></view><p>'
+	})
+
+	// $...$ 行内公式
+	result = result.replace(/\$([^$\n]+?)\$/g, function(match, formula) {
+		return '<text class="ai-inline-formula">' + formula + '</text>'
+	})
+
+	// 数学表达式识别（仅在普通文本中）
+
+	// 上标：x^n, e^{...}, x^{...}
+	result = result.replace(/([a-zA-Z0-9π∞\)\]])\^(\{[^}]+\})/g, function(match, base, exp) {
+		var inner = exp.slice(1, -1)
+		return base + '<sup>' + inner + '</sup>'
+	})
+	result = result.replace(/([a-zA-Z0-9π∞\)\]])\^([a-zA-Z0-9]+)/g, function(match, base, exp) {
+		return base + '<sup>' + exp + '</sup>'
+	})
+
+	// 下标：x_n, x_{...}
+	result = result.replace(/([a-zA-Z0-9π∞\)\]])_(\{[^}]+\})/g, function(match, base, sub) {
+		var inner = sub.slice(1, -1)
+		return base + '<sub>' + inner + '</sub>'
+	})
+	result = result.replace(/([a-zA-Z0-9π∞\)\]])_([a-zA-Z0-9]+)/g, function(match, base, sub) {
+		return base + '<sub>' + sub + '</sub>'
+	})
+
+	// 分数：(a)/(b) → 竖排分数
+	result = result.replace(/\(([^)]+)\)\/\(([^)]+)\)/g, function(match, num, den) {
+		return '<text class="ai-frac"><text class="ai-frac-num">' + num + '</text><text class="ai-frac-den">' + den + '</text></text>'
+	})
+
+	// 简单分数：dy/dx, ∂y/∂x 等导数形式
+	result = result.replace(/(d[a-zA-Z])\/(d[a-zA-Z])/g, function(match, num, den) {
+		return '<text class="ai-frac"><text class="ai-frac-num">' + num + '</text><text class="ai-frac-den">' + den + '</text></text>'
+	})
+	result = result.replace(/(∂[a-zA-Z])\/(∂[a-zA-Z])/g, function(match, num, den) {
+		return '<text class="ai-frac"><text class="ai-frac-num">' + num + '</text><text class="ai-frac-den">' + den + '</text></text>'
 	})
 
 	// **加粗**
