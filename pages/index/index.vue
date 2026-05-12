@@ -129,41 +129,15 @@
 				</view>
 			</view>
 
-				<view v-if="screen === 'scaling'" class="screen screen-cream">
-					<view class="topbar compact-topbar">
-						<text class="back-arrow" @click="handleBackPress">← 返回</text>
-						<view class="topbar-title-wrap">
-							<text class="brand-title small-brand">特殊放缩</text>
-							<text class="topbar-subtitle">常用放缩 · 不等式</text>
-						</view>
-						<text></text>
-					</view>
-					<view class="page-content formulas-content">
-						<view class="formulas-placeholder soft-card">
-							<text class="formulas-placeholder-icon">↔</text>
-							<text class="formulas-placeholder-title">特殊放缩公式</text>
-							<text class="formulas-placeholder-sub">内容即将上线</text>
-						</view>
-					</view>
-				</view>
+				<ScalingScreen
+					v-if="screen === 'scaling'"
+					@navigate="navigateTo"
+				/>
 
-				<view v-if="screen === 'properties'" class="screen screen-cream">
-					<view class="topbar compact-topbar">
-						<text class="back-arrow" @click="handleBackPress">← 返回</text>
-						<view class="topbar-title-wrap">
-							<text class="brand-title small-brand">各类性质</text>
-							<text class="topbar-subtitle">连续 · 可导 · 可积</text>
-						</view>
-						<text></text>
-					</view>
-					<view class="page-content formulas-content">
-						<view class="formulas-placeholder soft-card">
-							<text class="formulas-placeholder-icon">◆</text>
-							<text class="formulas-placeholder-title">函数各类性质</text>
-							<text class="formulas-placeholder-sub">内容即将上线</text>
-						</view>
-					</view>
-				</view>
+				<PropertiesScreen
+					v-if="screen === 'properties'"
+					@navigate="handlePropertiesScreenNavigate"
+				/>
 
 			<StatsScreen
 				v-if="screen === 'stats'"
@@ -450,6 +424,9 @@
 	import IntegralsScreen from './screens/IntegralsScreen.vue'
 	import DerivativesScreen from './screens/DerivativesScreen.vue'
 	import LimitsScreen from './screens/LimitsScreen.vue'
+	import PropertiesScreen from './screens/PropertiesScreen.vue'
+	import ScalingScreen from './screens/ScalingScreen.vue'
+	import TheoremsScreen from './screens/TheoremsScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -515,7 +492,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen },
 		data() {
 			return {
 				_tick: Date.now(),
@@ -866,6 +843,13 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				this.navigateTo('add')
 			},
 			handleAddScreenNavigate(target) {
+				if (target === 'back') {
+					this.handleBackPress()
+				} else {
+					this.navigateTo(target)
+				}
+			},
+			handlePropertiesScreenNavigate(target) {
 				if (target === 'back') {
 					this.handleBackPress()
 				} else {
