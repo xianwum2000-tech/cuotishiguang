@@ -54,71 +54,17 @@
 				@review-completed="handleReviewCompleted"
 			/>
 
-			<view v-if="screen === 'library'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="gear small-gear" @click="showAdd">＋</text>
-				</view>
-
-				<view class="page-content library-content">
-					<view class="search-row">
-						<view class="search-box">
-							<text class="search-icon">⌕</text>
-							<input class="search-input" v-model="libraryKeyword" placeholder="搜索章节、错因、备注..." />
-						</view>
-						<view class="filter-button" @click="showAdd">
-							<text>＋</text>
-						</view>
-					</view>
-
-					<view class="tabs-row">
-						<view
-							v-for="subject in filterSubjects"
-							:key="subject"
-							:class="librarySubject === subject ? 'tab-chip tab-active' : 'tab-chip'"
-							@click="setLibrarySubject(subject)"
-						>
-							<text>{{ subject }}</text>
-						</view>
-					</view>
-					<view class="tabs-row">
-						<view
-							v-for="errorType in filterErrors"
-							:key="errorType"
-							:class="libraryError === errorType ? 'tab-chip tab-active' : 'tab-chip'"
-							@click="setLibraryError(errorType)"
-						>
-							<text>{{ errorType }}</text>
-						</view>
-					</view>
-
-					<view v-if="libraryList.length === 0" class="empty-card soft-card">
-						<text class="empty-title">错题库还是空的</text>
-						<text class="empty-sub">新增错题后，会在这里看到全部本地记录。</text>
-					</view>
-
-					<view
-						v-for="item in libraryList"
-						:key="item.id"
-						class="mistake-card soft-card"
-						@click="showDetail(item)"
-					>
-						<view class="mistake-image-wrap">
-							<image
-								class="mistake-image"
-								:src="item.questionImage"
-								mode="aspectFill"
-								@click.stop="previewMistakeImages(item, item.questionImage)"
-							></image>
-							<view class="due-pill"><text>{{ formatDueText(item) }}</text></view>
-						</view>
-						<view class="mistake-copy">
-							<text class="mini-subject">{{ item.subject }}</text>
-							<text class="mistake-title">{{ item.chapter }} · {{ item.errorType }}</text>
-							<text class="mistake-desc">{{ noteText(item.note) }}</text>
-						</view>
-					</view>
-				</view>
-			</view>
+			<LibraryScreen
+				v-if="screen === 'library'"
+				:mistakes="mistakes"
+				:subject-options="subjectOptions"
+				:custom-subjects="customSubjects"
+				:error-type-options="errorTypeOptions"
+				:custom-error-types="customErrorTypes"
+				@navigate="navigateTo"
+				@show-detail="showDetail"
+				@add-mistake="showAdd"
+			/>
 
 			<view v-if="screen === 'detail'" class="screen screen-cream">
 				<view class="topbar compact-topbar">
@@ -1157,6 +1103,8 @@
 	import AddScreen from './screens/AddScreen.vue'
 	import ReviewScreen from './screens/ReviewScreen.vue'
 	import TodayListScreen from './screens/TodayListScreen.vue'
+	import LibraryScreen from './screens/LibraryScreen.vue'
+	import DetailScreen from './screens/DetailScreen.vue'
 	import { addDays, daysBetween, todayKey } from '@/utils/date.js'
 	import {
 		getDueMistakes,
@@ -1224,7 +1172,7 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen },
 		data() {
 			return {
 				_tick: Date.now(),
