@@ -6084,4 +6084,178 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		color: #FFFFFF;
 		font-weight: 600;
 	}
+
+	/* ===== UI 动画 ===== */
+
+	/* 1. 卡片淡入 */
+	@keyframes cardFadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.soft-card,
+	.stat-card,
+	.daily-goal-card,
+	.watchlist-entry,
+	.countdown-card,
+	.priority-card {
+		animation: cardFadeIn 0.5s ease forwards;
+	}
+
+	.stat-card:nth-child(2) { animation-delay: 0.1s; }
+	.stat-card:nth-child(3) { animation-delay: 0.2s; }
+
+	/* 2. 进度环动画 */
+	@keyframes ringFill {
+		from { opacity: 0; transform: scale(0.8); }
+		to { opacity: 1; transform: scale(1); }
+	}
+
+	.progress-ring-item {
+		animation: ringFill 0.6s ease forwards;
+	}
+
+	.progress-ring-item:nth-child(1) { animation-delay: 0.1s; }
+	.progress-ring-item:nth-child(2) { animation-delay: 0.2s; }
+	.progress-ring-item:nth-child(3) { animation-delay: 0.3s; }
+
+	/* 3. 按钮反馈增强 */
+	.save-button,
+	.review-start-button,
+	.add-mistake-button {
+		position: relative;
+		overflow: hidden;
+		transition: all 0.2s ease;
+	}
+
+	.save-button:active,
+	.review-start-button:active {
+		transform: scale(0.96);
+		box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+	}
+
+	.add-mistake-button:active {
+		transform: scale(0.97);
+	}
+
+	/* 4. 底部导航弹跳 */
+	@keyframes navBounce {
+		0%, 100% { transform: scale(1); }
+		50% { transform: scale(1.15); }
+	}
+
+	.nav-active .nav-icon-img {
+		animation: navBounce 0.4s ease;
+	}
+
+	.nav-item {
+		transition: all 0.2s ease;
+	}
+
+	.nav-item:active {
+		transform: scale(0.92);
+	}
+
+	/* 5. 屏幕切换过渡 */
+	.screen {
+		animation: screenSlideIn 0.3s ease;
+	}
+
+	@keyframes screenSlideIn {
+		from {
+			opacity: 0;
+			transform: translateX(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	/* 6. 复习卡片 3D 翻转 */
+	.review-card {
+		perspective: 1000px;
+		transition: transform 0.6s ease;
+		transform-style: preserve-3d;
+	}
+
+	/* 7. 列表项入场 */
+	@keyframes listItemIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.today-card,
+	.mistake-card {
+		animation: listItemIn 0.4s ease forwards;
+	}
+
+	.today-card:nth-child(1) { animation-delay: 0.05s; }
+	.today-card:nth-child(2) { animation-delay: 0.1s; }
+	.today-card:nth-child(3) { animation-delay: 0.15s; }
+	.today-card:nth-child(4) { animation-delay: 0.2s; }
+	.today-card:nth-child(5) { animation-delay: 0.25s; }
+
+	/* 8. 倒计时数字脉冲 */
+	@keyframes countdownPulse {
+		0%, 100% { transform: scale(1); }
+		50% { transform: scale(1.05); }
+	}
+
+	.countdown-days {
+		animation: countdownPulse 2s ease-in-out infinite;
+	}
+
+	/* 9. 每日目标完成动画 */
+	@keyframes goalComplete {
+		0% { transform: scale(1); }
+		50% { transform: scale(1.1); }
+		100% { transform: scale(1); }
+	}
+
+	.daily-goal-done {
+		animation: goalComplete 0.5s ease;
+	}
+
+	/* 10. 空状态动画 */
+	@keyframes emptyBounce {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-5px); }
+	}
+
+	.empty-card {
+		animation: emptyBounce 3s ease-in-out infinite;
+	}
+
+	/* 11. 标签页切换 */
+	.tab-chip,
+	.subject-chip {
+		transition: all 0.2s ease;
+	}
+
+	.tab-chip:active,
+	.subject-chip:active {
+		transform: scale(0.95);
+	}
+
+	/* 12. 搜索框聚焦 */
+	.search-input {
+		transition: all 0.3s ease;
+	}
+
+	.search-input:focus {
+		box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+	}
 </style>
