@@ -711,7 +711,6 @@
 						</view>
 
 						
-
 <view class="formula-group-card">
 							<text class="formula-group-title">重要极限</text>
 							<view class="formula-card-grid">
@@ -722,7 +721,6 @@
 						</view>
 
 						
-
 <view class="formula-group-card">
 							<text class="formula-group-title">洛必达法则</text>
 							<view class="formula-card-grid">
@@ -2884,149 +2882,8 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 <style>
 	@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap");
 
-	page {
-		background-color: #FEF9F0;
-	}
+	@import "@/pages/styles/global.css";
 
-	view,
-	text,
-	input,
-	textarea {
-		box-sizing: border-box;
-		font-family: Lexend, "PingFang SC", "Microsoft YaHei", sans-serif;
-		letter-spacing: 0;
-	}
-
-	.app {
-		min-height: 873px;
-		background-color: #FDF7FF;
-	}
-
-	.phone {
-		position: relative;
-		width: 100%;
-		max-width: 393px;
-		min-height: 873px;
-		margin: 0 auto;
-		overflow-x: hidden;
-		color: #1D1B20;
-		background-color: #FEF9F0;
-	}
-
-	.screen {
-		width: 100%;
-		min-height: 873px;
-		padding-bottom: 116px;
-	}
-
-	.screen-cream {
-		background-color: #FEF9F0;
-	}
-
-	.screen-lilac {
-		background-color: #FDF7FF;
-	}
-
-	.topbar {
-		width: 100%;
-		height: 96px;
-		padding: 45px 20px 10px;
-		background: linear-gradient(180deg, #FEF3E2 0%, #FEF9F0 100%);
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.compact-topbar {
-		height: 108px;
-		padding-top: 36px;
-	}
-
-	.brand-row {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.avatar {
-		width: 40px;
-		height: 40px;
-		border-radius: 999px;
-		overflow: hidden;
-		background-color: #FFFFFF;
-		margin-right: 12px;
-	}
-
-	.small-avatar {
-		width: 32px;
-		height: 32px;
-		margin-right: 10px;
-	}
-
-	.avatar-ring {
-		border: 2.5px solid transparent;
-		background-image: linear-gradient(#FFFFFF, #FFFFFF), linear-gradient(135deg, #F97316, #EC8358, #8B5CF6);
-		background-origin: border-box;
-		background-clip: content-box, border-box;
-		box-shadow: 0 2px 12px rgba(249, 115, 22, 0.2);
-	}
-
-	.avatar-img {
-		width: 100%;
-		height: 100%;
-	}
-
-	.brand-title {
-		font-size: 19px;
-		line-height: 24px;
-		font-weight: 900;
-		color: #1C1917;
-	}
-
-	.small-brand {
-		font-size: 15px;
-		font-weight: 800;
-	}
-
-	.topbar-title-wrap {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.topbar-subtitle {
-		font-size: 11px;
-		color: #A8A29E;
-		margin-top: 2px;
-		letter-spacing: 1px;
-	}
-
-	.gear {
-		min-width: 36px;
-		height: 36px;
-		text-align: center;
-		line-height: 36px;
-		color: #6750A4;
-		font-size: 24px;
-		font-weight: 700;
-	}
-
-	.small-gear {
-		font-size: 16px;
-	}
-
-	.back-arrow {
-		font-size: 15px;
-		font-weight: 800;
-		color: #6750A4;
-		padding: 6px 0;
-	}
-
-	.page-content {
-		padding-left: 20px;
-		padding-right: 20px;
-	}
 
 	.home-content {
 		padding-top: 10px;
@@ -3037,91 +2894,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		padding-bottom: 16px;
 	}
 
-	/* Daily Goal Card */
-	.daily-goal-card {
-		background: #FFFFFF;
-		border-radius: 14px;
-		padding: 14px;
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		margin-bottom: 14px;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-	}
-	.daily-goal-done {
-		border: 2px solid #10B981;
-	}
-	.daily-goal-ring-wrap {
-		width: 52px;
-		height: 52px;
-		border-radius: 50%;
-		position: relative;
-	}
-	.daily-goal-ring-fill {
-		width: 100%;
-		height: 100%;
-		border-radius: 50%;
-	}
-	.daily-goal-ring-inner {
-		position: absolute;
-		top: 4px;
-		left: 4px;
-		right: 4px;
-		bottom: 4px;
-		border-radius: 50%;
-		background: #FEF9F0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.daily-goal-ring-text {
-		font-size: 13px;
-		font-weight: 700;
-		color: #292524;
-	}
-	.daily-goal-ring-check {
-		font-size: 20px;
-		color: #10B981;
-	}
-	.daily-goal-copy {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-	}
-	.daily-goal-title {
-		font-size: 14px;
-		font-weight: 600;
-		color: #292524;
-	}
-	.daily-goal-sub {
-		font-size: 12px;
-		color: #A8A29E;
-	}
-	.goal-mode-row {
-		display: flex;
-		gap: 10px;
-	}
-	.goal-mode-btn {
-		flex: 1;
-		padding: 10px;
-		border-radius: 12px;
-		background: #FEF9F0;
-		border: 1px solid #F1E2D8;
-		text-align: center;
-	}
-	.goal-mode-btn text {
-		font-size: 13px;
-		font-weight: 600;
-		color: #78716C;
-	}
-	.goal-mode-active {
-		background: #EDE9FE;
-		border-color: #C4B5FD;
-	}
-	.goal-mode-active text {
-		color: #6D28D9;
-	}
 
 	.home-title {
 		display: block;
@@ -3139,10 +2911,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		color: #766F6A;
 	}
 
-	.soft-card {
-		background-color: #FFFFFF;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-	}
 
 	.status-grid {
 		display: flex;
@@ -3151,87 +2919,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		margin-top: 28px;
 	}
 
-	.stat-card {
-		flex: 1;
-		height: 124px;
-		border-radius: 28px;
-		padding: 22px 8px 14px 16px;
-		overflow: hidden;
-		position: relative;
-		transition: transform 0.2s ease;
-	}
-
-	.stat-card:active {
-		transform: scale(0.96);
-	}
-
-	.stat-primary,
-	.stat-middle {
-		margin-right: 10px;
-	}
-
-	.stat-primary {
-		background: linear-gradient(145deg, #F97316 0%, #EC8358 100%);
-		box-shadow: 0 8px 24px rgba(249, 115, 22, 0.3);
-	}
-
-	.stat-primary::after {
-		content: '';
-		position: absolute;
-		top: -20px;
-		right: -20px;
-		width: 80px;
-		height: 80px;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.1);
-	}
-
-	.stat-surface {
-		background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
-		border: 1px solid rgba(241, 226, 216, 0.5);
-	}
-
-	.stat-label {
-		display: block;
-		font-size: 15px;
-		line-height: 20px;
-		font-weight: 700;
-		white-space: nowrap;
-	}
-
-	.stat-label-light {
-		color: rgba(255, 255, 255, 0.85);
-	}
-
-	.stat-label-red {
-		color: #EF4444;
-	}
-
-	.stat-label-muted {
-		color: #A8A29E;
-	}
-
-	.stat-number {
-		display: block;
-		margin-top: 16px;
-		font-size: 46px;
-		line-height: 48px;
-		font-weight: 900;
-	}
-
-	.stat-number-light {
-		color: #FFFFFF;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
-
-	.stat-number-red {
-		color: #EF4444;
-	}
-
-	.stat-number-dark {
-		color: #292524;
-	}
 
 	.study-actions {
 		display: flex;
@@ -3463,56 +3150,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		padding: 0 7px;
 	}
 
-	.section-head {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 16px;
-	}
-
-	.section-title {
-		font-size: 20px;
-		line-height: 28px;
-		font-weight: 700;
-		color: #1D1B20;
-	}
-
-	.section-link {
-		font-size: 12px;
-		line-height: 16px;
-		font-weight: 700;
-		color: #EA580C;
-		padding: 4px 10px;
-		border-radius: 8px;
-		background-color: #FFF7ED;
-	}
-
-	.empty-card {
-		border-radius: 20px;
-		padding: 28px 22px;
-		margin-bottom: 14px;
-		background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF5 100%);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-		border: 1px solid rgba(241, 226, 216, 0.5);
-		text-align: center;
-	}
-
-	.empty-title {
-		display: block;
-		font-size: 17px;
-		line-height: 24px;
-		font-weight: 800;
-		color: #292524;
-	}
-
-	.empty-sub {
-		display: block;
-		margin-top: 8px;
-		font-size: 13px;
-		line-height: 20px;
-		color: #A8A29E;
-	}
 
 	.priority-card {
 		height: 96px;
@@ -3725,71 +3362,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		margin-top: 16px;
 	}
 
-	.field-label {
-		display: block;
-		font-size: 11px;
-		line-height: 16px;
-		font-weight: 800;
-		color: #494551;
-		margin-bottom: 10px;
-	}
-
-	.field-space {
-		margin-top: 18px;
-	}
-
-	.chip-row,
-	.tabs-row {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		margin-bottom: 8px;
-	}
-
-	.subject-chip,
-	.tab-chip {
-		height: 34px;
-		padding-left: 14px;
-		padding-right: 14px;
-		border-radius: 999px;
-		background-color: #FFFFFF;
-		border: 1px solid #E8E2E0;
-		box-shadow: 0 3px 9px rgba(0, 0, 0, 0.04);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-right: 8px;
-		margin-bottom: 8px;
-	}
-
-	.subject-chip text,
-	.tab-chip text {
-		font-size: 12px;
-		font-weight: 800;
-		color: #6B6370;
-	}
-
-	.subject-active,
-	.tab-active {
-		background-color: #EA580C;
-		border-color: #EA580C;
-	}
-
-	.subject-active text,
-	.tab-active text {
-		color: #FFFFFF;
-	}
-
-	.chip-add {
-		border-style: dashed;
-		border-color: #D6D3D1;
-		background-color: transparent;
-	}
-
-	.chip-add text {
-		color: #A8A29E;
-		font-weight: 600;
-	}
 
 	.detail-topbar-actions {
 		display: flex;
@@ -3798,16 +3370,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		gap: 12px;
 	}
 
-	.note-field {
-		width: 100%;
-		height: 96px;
-		border-radius: 26px;
-		background-color: #FFFFFF;
-		border: 0;
-		padding: 16px 18px;
-		font-size: 13px;
-		color: #1D1B20;
-	}
 
 	.settings-card,
 	.settings-preview {
@@ -3816,18 +3378,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		margin-top: 16px;
 	}
 
-	.settings-input {
-		width: 100%;
-		height: 50px;
-		border-radius: 24px;
-		background-color: #FFF8F2;
-		border: 1px solid #F1E2D8;
-		padding-left: 16px;
-		padding-right: 16px;
-		font-size: 15px;
-		font-weight: 700;
-		color: #1D1B20;
-	}
 
 	.goal-row {
 		display: flex;
@@ -3926,62 +3476,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		color: #EC8358;
 	}
 
-	.save-button,
-	.reveal-button {
-		height: 58px;
-		border-radius: 30px;
-		background-color: #EA580C;
-		box-shadow: 0 8px 20px rgba(234, 88, 12, 0.22);
-		margin-top: 22px;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.save-button text,
-	.reveal-button text {
-		font-size: 15px;
-		line-height: 20px;
-		font-weight: 800;
-		color: #FFFFFF;
-	}
-
-	.secondary-button {
-		height: 54px;
-		border-radius: 28px;
-		background-color: #FFFFFF;
-		border: 1px solid #F1E2D8;
-		margin-top: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.secondary-button text {
-		font-size: 14px;
-		line-height: 20px;
-		font-weight: 800;
-		color: #6750A4;
-	}
-
-	.danger-button {
-		height: 54px;
-		border-radius: 28px;
-		background-color: #FFFFFF;
-		border: 1px solid #FCA5A5;
-		margin-top: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.danger-button text {
-		font-size: 14px;
-		line-height: 20px;
-		font-weight: 800;
-		color: #EF4444;
-	}
 
 	.save-icon {
 		margin-right: 8px;
@@ -4277,58 +3771,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		color: #4F4551;
 	}
 
-	.search-row {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin-bottom: 16px;
-	}
-
-	.search-box {
-		flex: 1;
-		height: 50px;
-		border-radius: 26px;
-		background-color: #FFFFFF;
-		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		padding-left: 16px;
-		padding-right: 16px;
-		margin-right: 14px;
-	}
-
-	.search-icon {
-		width: 20px;
-		color: #A4AFBF;
-		font-size: 19px;
-		font-weight: 700;
-	}
-
-	.search-input {
-		flex: 1;
-		height: 48px;
-		font-size: 12px;
-		margin-left: 10px;
-	}
-
-	.filter-button {
-		width: 48px;
-		height: 48px;
-		border-radius: 999px;
-		background-color: #FFFFFF;
-		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.filter-button text {
-		font-size: 18px;
-		line-height: 18px;
-		color: #506070;
-		font-weight: 800;
-	}
 
 	.mistake-card {
 		border-radius: 20px;
@@ -4403,21 +3845,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		color: #506070;
 	}
 
-	.back-button {
-		width: 32px;
-		height: 32px;
-		border-radius: 999px;
-		background-color: #FFFFFF;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-right: 10px;
-	}
-
-	.back-button text {
-		font-size: 24px;
-		color: #6750A4;
-	}
 
 	.detail-image {
 		width: 100%;
@@ -4854,81 +4281,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		background-color: #EA580C;
 	}
 
-	.bottom-nav {
-		position: fixed;
-		left: 50%;
-		bottom: 0;
-		transform: translateX(-50%);
-		width: 100%;
-		max-width: 393px;
-		min-height: 68px;
-		padding: 10px 20px 12px;
-		z-index: 20;
-		border-top-left-radius: 28px;
-		border-top-right-radius: 28px;
-		background: linear-gradient(180deg, #FFFBF5 0%, #FEF3E2 100%);
-		box-shadow: 0 -8px 32px rgba(154, 52, 18, 0.08), 0 -2px 8px rgba(0, 0, 0, 0.04);
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-around;
-		z-index: 20;
-		border-top: 1px solid rgba(255, 237, 213, 0.8);
-	}
-
-	.nav-item {
-		min-width: 56px;
-		height: 52px;
-		border-radius: 16px;
-		padding: 6px 12px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		color: #A8A29E;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		position: relative;
-	}
-
-	.nav-item:active {
-		transform: scale(0.92);
-	}
-
-	.nav-active {
-		color: #9A3412;
-		background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-		box-shadow: 0 4px 12px rgba(154, 52, 18, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-	}
-
-	.nav-active::before {
-		content: '';
-		position: absolute;
-		top: -10px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 20px;
-		height: 3px;
-		background: linear-gradient(90deg, #EC8358, #F97316);
-		border-radius: 0 0 4px 4px;
-		opacity: 0.9;
-	}
-
-	.nav-icon-img {
-		width: 22px;
-		height: 22px;
-	}
-
-	.nav-active .nav-icon-img {
-		filter: drop-shadow(0 1px 2px rgba(154, 52, 18, 0.3));
-	}
-
-	.nav-label {
-		margin-top: 2px;
-		font-size: 10px;
-		line-height: 12px;
-		font-weight: 600;
-		letter-spacing: 0.5px;
-	}
 
 	.apps-content {
 		padding-top: 20px;
@@ -5671,10 +5023,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	.ai-dot:nth-child(2) { animation-delay: 0.2s; }
 	.ai-dot:nth-child(3) { animation-delay: 0.4s; }
 
-	@keyframes ai-bounce {
-		0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-		40% { transform: translateY(-8px); opacity: 1; }
-	}
 
 	/* 数学符号工具栏 */
 	.ai-math-toolbar {
@@ -5775,35 +5123,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	/* 底部导航 AI 图标 */
-	.nav-item-ai {
-		position: relative;
-	}
-
-	.ai-nav-icon-wrap {
-		width: 40px;
-		height: 40px;
-		border-radius: 14px;
-		background: linear-gradient(135deg, #8B5CF6, #A78BFA);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-top: -10px;
-		box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
-	}
-
-	.ai-nav-icon-img {
-		width: 22px;
-		height: 22px;
-	}
-
-	.nav-item-ai .nav-label {
-		margin-top: 2px;
-	}
-
-	.nav-item-ai.nav-active .ai-nav-icon-wrap {
-		background: linear-gradient(135deg, #7C3AED, #8B5CF6);
-		box-shadow: 0 4px 18px rgba(139, 92, 246, 0.45);
-	}
 
 	/* AI 性格设定 */
 	.ai-personality-field {
@@ -5968,136 +5287,10 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		text-align: center;
 	}
 
-	.ocr-key-toggle {
-		margin-top: 6px;
-		margin-bottom: 10px;
-	}
-	.ocr-key-toggle text {
-		font-size: 12px;
-		color: #8B5CF6;
-	}
-	.ocr-test-result {
-		display: block;
-		margin-top: 8px;
-		font-size: 13px;
-		font-weight: 600;
-	}
-	.ocr-test-ok {
-		color: #10B981;
-	}
-	.ocr-test-fail {
-		color: #EF4444;
-	}
-	.sync-last-time {
-		display: block;
-		font-size: 12px;
-		color: #A8A29E;
-		margin-top: 6px;
-		text-align: center;
-	}
-	.ocr-loading {
-		padding: 10px;
-		text-align: center;
-		margin-bottom: 10px;
-	}
-	.ocr-loading text {
-		font-size: 13px;
-		color: #8B5CF6;
-	}
-	.ocr-preview {
-		padding: 12px;
-		margin-bottom: 10px;
-	}
-	.ocr-text {
-		font-size: 13px;
-		color: #44403C;
-		line-height: 1.6;
-		display: block;
-		margin-top: 6px;
-	}
-	.ocr-edit-btn {
-		margin-top: 8px;
-		padding: 4px 12px;
-		border-radius: 8px;
-		background: #EDE9FE;
-		display: inline-block;
-	}
-	.ocr-edit-btn text {
-		font-size: 12px;
-		color: #6D28D9;
-		font-weight: 600;
-	}
-	.detail-tab-row {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-	.detail-tabs {
-		display: flex;
-		gap: 6px;
-	}
-	.detail-tab {
-		padding: 4px 12px;
-		border-radius: 8px;
-		background: #F5F0EB;
-	}
-	.detail-tab text {
-		font-size: 12px;
-		color: #78716C;
-		font-weight: 600;
-	}
-	.detail-tab-active {
-		background: #EDE9FE;
-	}
-	.detail-tab-active text {
-		color: #6D28D9;
-	}
-	.ocr-text-display {
-		margin-top: 10px;
-		padding: 12px;
-		background: #FEF9F0;
-		border-radius: 10px;
-	}
-	.ocr-text-display text {
-		font-size: 13px;
-		color: #44403C;
-		line-height: 1.6;
-	}
-	.ocr-empty {
-		margin-top: 10px;
-		text-align: center;
-		padding: 20px;
-	}
-	.ocr-empty text {
-		font-size: 13px;
-		color: #A8A29E;
-	}
-	.ocr-recognize-btn {
-		margin-top: 10px;
-		padding: 8px 20px;
-		border-radius: 10px;
-		background: linear-gradient(145deg, #8B5CF6, #7C3AED);
-		display: inline-block;
-	}
-	.ocr-recognize-btn text {
-		font-size: 13px;
-		color: #FFFFFF;
-		font-weight: 600;
-	}
 
 	/* ===== UI 动画 ===== */
 
 	/* 1. 卡片淡入 */
-	@keyframes cardFadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
 
 	.soft-card,
 	.stat-card,
@@ -6112,10 +5305,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	.stat-card:nth-child(3) { animation-delay: 0.2s; }
 
 	/* 2. 进度环动画 */
-	@keyframes ringFill {
-		from { opacity: 0; transform: scale(0.8); }
-		to { opacity: 1; transform: scale(1); }
-	}
 
 	.progress-ring-item {
 		animation: ringFill 0.6s ease forwards;
@@ -6145,10 +5334,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	/* 4. 底部导航弹跳 */
-	@keyframes navBounce {
-		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.15); }
-	}
 
 	.nav-active .nav-icon-img {
 		animation: navBounce 0.4s ease;
@@ -6167,16 +5352,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 		animation: screenSlideIn 0.3s ease;
 	}
 
-	@keyframes screenSlideIn {
-		from {
-			opacity: 0;
-			transform: translateX(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
 
 	/* 6. 复习卡片 3D 翻转 */
 	.review-card {
@@ -6186,16 +5361,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	}
 
 	/* 7. 列表项入场 */
-	@keyframes listItemIn {
-		from {
-			opacity: 0;
-			transform: translateY(10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
 
 	.today-card,
 	.mistake-card {
@@ -6209,31 +5374,18 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 	.today-card:nth-child(5) { animation-delay: 0.25s; }
 
 	/* 8. 倒计时数字脉冲 */
-	@keyframes countdownPulse {
-		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.05); }
-	}
 
 	.countdown-days {
 		animation: countdownPulse 2s ease-in-out infinite;
 	}
 
 	/* 9. 每日目标完成动画 */
-	@keyframes goalComplete {
-		0% { transform: scale(1); }
-		50% { transform: scale(1.1); }
-		100% { transform: scale(1); }
-	}
 
 	.daily-goal-done {
 		animation: goalComplete 0.5s ease;
 	}
 
 	/* 10. 空状态动画 */
-	@keyframes emptyBounce {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-5px); }
-	}
 
 	.empty-card {
 		animation: emptyBounce 3s ease-in-out infinite;
