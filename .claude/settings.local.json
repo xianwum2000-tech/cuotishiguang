@@ -77,7 +77,12 @@
       "Bash(rm -f main.uts utils/date.uts utils/models.uts utils/scheduler.uts utils/storage.uts)",
       "Bash(rmdir tools *)",
       "Bash(mv apk/*.apk docs/apk/)",
-      "Bash(mv cuotishiguang-*.apk docs/apk/)"
+      "Bash(mv cuotishiguang-*.apk docs/apk/)",
+      "Bash(claude plugins *)",
+      "Bash(xargs grep -l \"storage\\\\.\\\\|getStorageSync\\\\|setStorageSync\")",
+      "Bash(rm -f pages/index/screens/*.vue)",
+      "Bash(ls pages/index/screens/)",
+      "Bash(echo \"Exit: $?\")"
     ]
   }
 }
