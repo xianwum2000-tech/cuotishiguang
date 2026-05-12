@@ -1106,6 +1106,54 @@
 					</view>
 
 					<view class="settings-card soft-card" style="margin-top: 20px;">
+						<text class="field-label">AI 识别配置</text>
+						<text class="page-subtitle" style="margin-bottom: 14px;">配置通义千问 VL 用于错题图片识别。</text>
+						<text class="field-label">通义千问 API Key</text>
+						<input class="settings-input" v-model="ocrApiKey" placeholder="sk-..." :password="!showOcrKey" />
+						<view class="ocr-key-toggle" @click="showOcrKey = !showOcrKey">
+							<text>{{ showOcrKey ? '隐藏' : '显示' }}</text>
+						</view>
+						<text class="field-label field-space">模型</text>
+						<view class="chip-row">
+							<view :class="ocrModel === 'qwen-vl-plus' ? 'subject-chip subject-active' : 'subject-chip'" @click="ocrModel = 'qwen-vl-plus'">
+								<text>Plus（便宜）</text>
+							</view>
+							<view :class="ocrModel === 'qwen-vl-max' ? 'subject-chip subject-active' : 'subject-chip'" @click="ocrModel = 'qwen-vl-max'">
+								<text>Max（精准）</text>
+							</view>
+						</view>
+						<view class="secondary-button" @click="testOcrKey" style="margin-top: 12px;">
+							<text>{{ ocrTesting ? '测试中...' : '测试连接' }}</text>
+						</view>
+						<text v-if="ocrTestResult" class="ocr-test-result" :class="ocrTestOk ? 'ocr-test-ok' : 'ocr-test-fail'">{{ ocrTestResult }}</text>
+					</view>
+
+					<view class="settings-card soft-card" style="margin-top: 20px;">
+						<text class="field-label">云同步</text>
+						<text class="page-subtitle" style="margin-bottom: 14px;">通过 GitHub Gist 备份和恢复数据。</text>
+						<text class="field-label">GitHub Token</text>
+						<input class="settings-input" v-model="githubToken" placeholder="ghp_..." :password="!showGithubToken" />
+						<view class="ocr-key-toggle" @click="showGithubToken = !showGithubToken">
+							<text>{{ showGithubToken ? '隐藏' : '显示' }}</text>
+						</view>
+						<view class="secondary-button" @click="testGithub" style="margin-top: 6px;">
+							<text>{{ githubTesting ? '测试中...' : '测试连接' }}</text>
+						</view>
+						<text v-if="githubTestResult" class="ocr-test-result" :class="githubTestOk ? 'ocr-test-ok' : 'ocr-test-fail'">{{ githubTestResult }}</text>
+						<view style="margin-top: 16px;">
+							<view class="save-button" @click="doBackup">
+								<text>{{ syncLoading === 'backup' ? '备份中...' : '备份到 GitHub' }}</text>
+							</view>
+							<text v-if="lastBackupTime" class="sync-last-time">上次备份：{{ lastBackupTime }}</text>
+						</view>
+						<view style="margin-top: 12px;">
+							<view class="secondary-button" @click="doRestore">
+								<text>{{ syncLoading === 'restore' ? '恢复中...' : '从 GitHub 恢复' }}</text>
+							</view>
+						</view>
+					</view>
+
+					<view class="settings-card soft-card" style="margin-top: 20px;">
 						<text class="field-label">倒计时设置</text>
 						<text class="page-subtitle" style="margin-bottom: 14px;">首页倒计时的目标日期和显示文字。</text>
 						<text class="field-label field-space">显示文字</text>
@@ -1431,6 +1479,8 @@
 	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
 	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/updater.js'
+import { getOcrConfig, testOcrApiKey } from '@/utils/ocr.js'
+import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync.js'
 
 	function createDefaultPreferences() {
 		return {
@@ -1560,6 +1610,16 @@
 				ocrApiKey: '',
 				ocrModel: 'qwen-vl-plus',
 				githubToken: '',
+				showOcrKey: false,
+				ocrTesting: false,
+				ocrTestResult: '',
+				ocrTestOk: false,
+				showGithubToken: false,
+				githubTesting: false,
+				githubTestResult: '',
+				githubTestOk: false,
+				lastBackupTime: '',
+				syncLoading: '',
 				_aiScrollTop: 0,
 				_aiAbort: null,
 				_aiRequestTime: 0
@@ -1829,6 +1889,7 @@
 				this.ocrApiKey = prefs.ocrApiKey || ''
 				this.ocrModel = prefs.ocrModel || 'qwen-vl-plus'
 				this.githubToken = prefs.githubToken || ''
+				this.lastBackupTime = uni.getStorageSync('mistake_scheduler_last_backup') || ''
 				this.refreshTodayCompletedCount()
 			},
 			refreshTodayCompletedCount() {
@@ -1974,10 +2035,64 @@
 					homeAvatar: this.settingsForm.homeAvatar || defaults.homeAvatar,
 					statsName,
 					dailyGoalMode: this.dailyGoalMode,
-					dailyGoalFixed: parseInt(this.dailyGoalFixed) || 10
+					dailyGoalFixed: parseInt(this.dailyGoalFixed) || 10,
+					ocrApiKey: this.ocrApiKey,
+					ocrModel: this.ocrModel,
+					githubToken: this.githubToken
 				})
 				this.toast('首页文案已保存')
 				this.handleBackPress()
+			},
+			async testOcrKey() {
+				this.ocrTesting = true
+				this.ocrTestResult = ''
+				var result = await testOcrApiKey(this.ocrApiKey)
+				this.ocrTesting = false
+				this.ocrTestOk = result.success
+				this.ocrTestResult = result.success ? '连接成功！' : result.error
+			},
+			async testGithub() {
+				this.githubTesting = true
+				this.githubTestResult = ''
+				var result = await testGitHubToken(this.githubToken)
+				this.githubTesting = false
+				this.githubTestOk = result.success
+				this.githubTestResult = result.success ? '连接成功！' : result.error
+			},
+			async doBackup() {
+				this.syncLoading = 'backup'
+				var result = await backupToGist()
+				this.syncLoading = ''
+				if (result.success) {
+					this.lastBackupTime = result.time
+					uni.showToast({ title: '备份成功', icon: 'success' })
+				} else {
+					uni.showToast({ title: '备份失败：' + result.error, icon: 'none' })
+				}
+			},
+			doRestore() {
+				var self = this
+				uni.showModal({
+					title: '确认恢复',
+					content: '将从 GitHub 恢复数据，覆盖本地数据。建议先备份当前数据。确定继续？',
+					success: async function(res) {
+						if (!res.confirm) return
+						self.syncLoading = 'restore'
+						var result = await restoreFromGist()
+						self.syncLoading = ''
+						if (result.success) {
+							var { saveMistakes, saveReviewRecords, savePreferences, saveQuotes } = require('@/utils/storage.js')
+							saveMistakes(result.data.mistakes || [])
+							saveReviewRecords(result.data.records || [])
+							savePreferences(result.data.preferences || {})
+							saveQuotes(result.data.quotes || {})
+							self.refreshData()
+							uni.showToast({ title: '恢复成功', icon: 'success' })
+						} else {
+							uni.showToast({ title: '恢复失败：' + result.error, icon: 'none' })
+						}
+					}
+				})
 			},
 			resetHomeSettings() {
 				this.settingsForm = createDefaultPreferences()
@@ -5707,6 +5822,34 @@
 	.ai-model-desc {
 		font-size: 11px;
 		color: #A8A29E;
+		text-align: center;
+	}
+
+	.ocr-key-toggle {
+		margin-top: 6px;
+		margin-bottom: 10px;
+	}
+	.ocr-key-toggle text {
+		font-size: 12px;
+		color: #8B5CF6;
+	}
+	.ocr-test-result {
+		display: block;
+		margin-top: 8px;
+		font-size: 13px;
+		font-weight: 600;
+	}
+	.ocr-test-ok {
+		color: #10B981;
+	}
+	.ocr-test-fail {
+		color: #EF4444;
+	}
+	.sync-last-time {
+		display: block;
+		font-size: 12px;
+		color: #A8A29E;
+		margin-top: 6px;
 		text-align: center;
 	}
 </style>
