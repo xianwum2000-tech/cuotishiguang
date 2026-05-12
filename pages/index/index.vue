@@ -1431,6 +1431,9 @@
 			difficulty: '',
 			source: '',
 			note: '',
+			questionText: '',
+			answerText: '',
+			ocrStatus: '',
 			createdAt: '',
 			updatedAt: '',
 			reviewStage: 'new',
@@ -1517,6 +1520,12 @@
 					{ id: 'deepseek-chat', name: 'V3 Chat', desc: '标准 · 够用实惠' },
 					{ id: 'deepseek-reasoner', name: 'R1 推理', desc: '深度推理 · 严谨' }
 				],
+				dailyGoalMode: 'dynamic',
+				dailyGoalFixed: 10,
+				todayCompletedCount: 0,
+				ocrApiKey: '',
+				ocrModel: 'qwen-vl-plus',
+				githubToken: '',
 				_aiScrollTop: 0,
 				_aiAbort: null,
 				_aiRequestTime: 0
@@ -1571,6 +1580,24 @@
 			},
 			masteredCount() {
 				return this.activeMistakes.filter((item) => item.reviewStage === 'pass3' && item.lastReviewResult === 'known').length
+			},
+			dailyGoalTarget() {
+				if (this.dailyGoalMode === 'fixed') {
+					return Math.max(3, Math.min(30, this.dailyGoalFixed))
+				}
+				var due = this.dueCount
+				var overdue = this.overdueCount
+				return Math.max(3, Math.min(30, due + Math.ceil(overdue * 0.2)))
+			},
+			dailyGoalProgress() {
+				return Math.min(this.todayCompletedCount, this.dailyGoalTarget)
+			},
+			dailyGoalCompleted() {
+				return this.todayCompletedCount >= this.dailyGoalTarget
+			},
+			goalConicGradient() {
+				var pct = this.dailyGoalTarget > 0 ? Math.min(100, Math.round(this.todayCompletedCount / this.dailyGoalTarget * 100)) : 0
+				return 'conic-gradient(#F59E0B 0% ' + pct + '%, #E7E5E4 ' + pct + '% 100%)'
 			},
 			priorityList() {
 				return this.dueList.slice(0, 3)
@@ -1762,6 +1789,21 @@
 					const kn = uni.getStorageSync('mistake_scheduler_knowledge_v1')
 					this.knowledgeItems = Array.isArray(kn) ? kn : []
 				} catch (e) { this.knowledgeItems = [] }
+				var prefs = getPreferences()
+				this.dailyGoalMode = prefs.dailyGoalMode || 'dynamic'
+				this.dailyGoalFixed = prefs.dailyGoalFixed || 10
+				this.ocrApiKey = prefs.ocrApiKey || ''
+				this.ocrModel = prefs.ocrModel || 'qwen-vl-plus'
+				this.githubToken = prefs.githubToken || ''
+				this.refreshTodayCompletedCount()
+			},
+			refreshTodayCompletedCount() {
+				var today = todayKey()
+				var prev = this.todayCompletedCount
+				this.todayCompletedCount = this.records.filter(function(r) { return r.reviewDate === today }).length
+				if (prev < this.dailyGoalTarget && this.todayCompletedCount >= this.dailyGoalTarget) {
+					uni.showToast({ title: '今日目标已达成！', icon: 'success' })
+				}
 			},
 			async migrateStoredImages() {
 				if (this.imageMigrationDone) return

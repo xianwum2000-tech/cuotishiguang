@@ -25,7 +25,13 @@ const DEFAULT_PREFERENCES = {
 	deepseekApiKey: '',
 	deepseekBaseUrl: 'https://api.deepseek.com',
 	deepseekModel: 'deepseek-chat',
-	aiPersonality: ''
+	aiPersonality: '',
+	dailyGoalMode: 'dynamic',
+	dailyGoalFixed: 10,
+	ocrApiKey: '',
+	ocrModel: 'qwen-vl-plus',
+	githubToken: '',
+	githubGistId: ''
 }
 
 const AI_CHAT_KEY = 'mistake_scheduler_ai_chat_v1'
@@ -112,6 +118,9 @@ export function createMistake(payload) {
 		difficulty: payload.difficulty || '中等',
 		source: payload.source || '',
 		note: payload.note || '',
+		questionText: payload.questionText || '',
+		answerText: payload.answerText || '',
+		ocrStatus: payload.ocrStatus || '',
 		createdAt: now,
 		updatedAt: now,
 		reviewStage: schedule.reviewStage,
