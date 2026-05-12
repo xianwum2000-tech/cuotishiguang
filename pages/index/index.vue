@@ -111,23 +111,10 @@
 					@navigate="navigateTo"
 				/>
 
-<view v-if="screen === 'theorems'" class="screen screen-cream">
-				<view class="topbar compact-topbar">
-					<text class="back-arrow" @click="handleBackPress">← 返回</text>
-					<view class="topbar-title-wrap">
-						<text class="brand-title small-brand">定理合集</text>
-						<text class="topbar-subtitle">中值 · 积分 · 级数</text>
-					</view>
-					<text></text>
-				</view>
-				<view class="page-content formulas-content">
-					<view class="formulas-placeholder soft-card">
-						<text class="formulas-placeholder-icon">◈</text>
-						<text class="formulas-placeholder-title">考研数学定理</text>
-						<text class="formulas-placeholder-sub">定理内容即将上线</text>
-					</view>
-				</view>
-			</view>
+				<TheoremsScreen
+					v-if="screen === 'theorems'"
+					@navigate="navigateTo"
+				/>
 
 				<ScalingScreen
 					v-if="screen === 'scaling'"
@@ -492,7 +479,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 	}
 
 	export default {
-		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen },
+		components: { HomeScreen, AddScreen, ReviewScreen, TodayListScreen, LibraryScreen, DetailScreen, StatsScreen, SettingsScreen, ProfileScreen, EditScreen, FormulasScreen, AppsScreen, LimitsScreen, TheoremsScreen, ScalingScreen, PropertiesScreen },
 		data() {
 			return {
 				_tick: Date.now(),
