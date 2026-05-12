@@ -82,7 +82,16 @@
       "Bash(xargs grep -l \"storage\\\\.\\\\|getStorageSync\\\\|setStorageSync\")",
       "Bash(rm -f pages/index/screens/*.vue)",
       "Bash(ls pages/index/screens/)",
-      "Bash(echo \"Exit: $?\")"
+      "Bash(echo \"Exit: $?\")",
+      "Bash(sed -i '114s/^t//' pages/index/index.vue)",
+      "Bash(sed -i '114s/^/\\\\t\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '115s/^/\\\\t\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '116s/^/\\\\t\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '117s/^/\\\\t\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '114s/^\\\\t*/\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '115s/^\\\\t*/\\\\t\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '116s/^\\\\t*/\\\\t\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)",
+      "Bash(sed -i '117s/^\\\\t*/\\\\t\\\\t\\\\t\\\\t/' pages/index/index.vue)"
     ]
   }
 }
