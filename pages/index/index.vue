@@ -817,8 +817,7 @@
 	import { buildSystemPrompt, callDeepSeek, trimMessages, formatAiText as _formatAiText } from '@/utils/ai/ai.js'
 	import { persistImageFile, previewImages } from '@/utils/file.js'
 	import { checkForUpdate, downloadAndInstallApk, getUpdateRuntimeInfo } from '@/utils/app/updater.js'
-import { getOcrConfig, testOcrApiKey, recognizeImage, extractQuestionNumber } from '@/utils/ai/ocr.js'
-import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/sync.js'
+import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/ocr.js'
 
 	function createDefaultPreferences() {
 		return {
@@ -880,7 +879,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				preferences: createDefaultPreferences(),
 				quotesData: getQuotes(),
 				quoteSettingsForm: getQuotes(),
-				settingsForm: createDefaultPreferences(),
 				activeReview: createEmptyMistake(),
 				activeDetail: createEmptyMistake(),
 				hasActiveReview: false,
@@ -932,19 +930,9 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				ocrApiKey: '',
 				ocrModel: 'qwen-vl-plus',
 				githubToken: '',
-				showOcrKey: false,
-				ocrTesting: false,
-				ocrTestResult: '',
-				ocrTestOk: false,
 				detailQTab: 'text',
 				detailATab: 'text',
 				detailOcrLoading: '',
-				showGithubToken: false,
-				githubTesting: false,
-				githubTestResult: '',
-				githubTestOk: false,
-				lastBackupTime: '',
-				syncLoading: '',
 				_aiScrollTop: 0,
 				_aiAbort: null,
 				_aiRequestTime: 0
@@ -1080,15 +1068,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			aiHasMoreMessages() {
 				return this.aiMessages.length > this.aiVisibleCount
 			},
-			previewHomeTitle() {
-				return this.settingsForm.homeTitle || '复习达人'
-			},
-			previewGreetingTitle() {
-				return this.settingsForm.greetingTitle || '早上好，小明'
-			},
-			previewStatsName() {
-				return this.settingsForm.statsName || '小明'
-			},
 			updateSourceText() {
 				return this.updateConfigured ? 'GitHub Releases' : '未配置 GitHub 仓库'
 			},
@@ -1187,7 +1166,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 				this.ocrApiKey = prefs.ocrApiKey || ''
 				this.ocrModel = prefs.ocrModel || 'qwen-vl-plus'
 				this.githubToken = prefs.githubToken || ''
-				this.lastBackupTime = uni.getStorageSync('mistake_scheduler_last_backup') || ''
 				this.refreshTodayCompletedCount()
 			},
 			refreshTodayCompletedCount() {
@@ -1320,91 +1298,39 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 			},
 			showSettings() {
 				this.preferences = getPreferences()
-				this.settingsForm = {
-					homeTitle: this.preferences.homeTitle,
-					greetingTitle: this.preferences.greetingTitle,
-					homeAvatar: this.preferences.homeAvatar,
-					statsName: this.preferences.statsName
-				}
 				this.navigateTo('settings')
 			},
-			saveHomeSettings() {
-				const homeTitle = this.settingsForm.homeTitle.trim()
-				const greetingTitle = this.settingsForm.greetingTitle.trim()
-				const statsName = this.settingsForm.statsName.trim()
-				if (!homeTitle || !greetingTitle || !statsName) {
-					this.toast('标题、问候语和统计页姓名不能为空')
-					return
+			handleSettingsNavigate(target) {
+				if (target === 'back') {
+					this.handleBackPress()
+				} else {
+					this.navigateTo(target)
 				}
-				const defaults = createDefaultPreferences()
-				this.preferences = savePreferences({
-					homeTitle,
-					greetingTitle,
-					homeAvatar: this.settingsForm.homeAvatar || defaults.homeAvatar,
-					statsName,
-					dailyGoalMode: this.dailyGoalMode,
-					dailyGoalFixed: parseInt(this.dailyGoalFixed) || 10,
-					ocrApiKey: this.ocrApiKey,
-					ocrModel: this.ocrModel,
-					githubToken: this.githubToken
-				})
+			},
+			handleSaveSettings(form) {
+				this.preferences = savePreferences(form)
+				this.dailyGoalMode = form.dailyGoalMode
+				this.dailyGoalFixed = form.dailyGoalFixed
+				this.ocrApiKey = form.ocrApiKey
+				this.ocrModel = form.ocrModel
+				this.githubToken = form.githubToken
 				this.toast('首页文案已保存')
 				this.handleBackPress()
 			},
-			async testOcrKey() {
-				this.ocrTesting = true
-				this.ocrTestResult = ''
-				var result = await testOcrApiKey(this.ocrApiKey)
-				this.ocrTesting = false
-				this.ocrTestOk = result.success
-				this.ocrTestResult = result.success ? '连接成功！' : result.error
+			handleSaveCountdown(target, label) {
+				this.countdownTarget = target
+				this.countdownLabel = label
+				uni.setStorageSync('mistake_scheduler_countdown_v1', { target, label })
+				this.toast('倒计时已保存')
 			},
-			async testGithub() {
-				this.githubTesting = true
-				this.githubTestResult = ''
-				var result = await testGitHubToken(this.githubToken)
-				this.githubTesting = false
-				this.githubTestOk = result.success
-				this.githubTestResult = result.success ? '连接成功！' : result.error
-			},
-			async doBackup() {
-				this.syncLoading = 'backup'
-				var result = await backupToGist()
-				this.syncLoading = ''
-				if (result.success) {
-					this.lastBackupTime = result.time
-					uni.showToast({ title: '备份成功', icon: 'success' })
-				} else {
-					uni.showToast({ title: '备份失败：' + result.error, icon: 'none' })
-				}
-			},
-			doRestore() {
-				var self = this
-				uni.showModal({
-					title: '确认恢复',
-					content: '将从 GitHub 恢复数据，覆盖本地数据。建议先备份当前数据。确定继续？',
-					success: async function(res) {
-						if (!res.confirm) return
-						self.syncLoading = 'restore'
-						var result = await restoreFromGist()
-						self.syncLoading = ''
-						if (result.success) {
-							var { saveMistakes, saveReviewRecords, savePreferences, saveQuotes } = require('@/utils/storage.js')
-							saveMistakes(result.data.mistakes || [])
-							saveReviewRecords(result.data.records || [])
-							savePreferences(result.data.preferences || {})
-							saveQuotes(result.data.quotes || {})
-							self.refreshData()
-							uni.showToast({ title: '恢复成功', icon: 'success' })
-						} else {
-							uni.showToast({ title: '恢复失败：' + result.error, icon: 'none' })
-						}
-					}
-				})
+			handleSaveProgressRings(rings) {
+				this.progressRings = rings
+				uni.setStorageSync('mistake_scheduler_progress_rings_v1', rings)
+				this.toast('学习进度已保存')
 			},
 			resetHomeSettings() {
-				this.settingsForm = createDefaultPreferences()
-				this.preferences = savePreferences(this.settingsForm)
+				var defaults = createDefaultPreferences()
+				this.preferences = savePreferences(defaults)
 				this.toast('已恢复默认')
 				this.handleBackPress()
 			},
@@ -1566,33 +1492,6 @@ import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/syn
 						self.toast('图片已更换')
 					}
 				})
-			},
-			chooseHomeAvatar() {
-				this.chooseImage('homeAvatar')
-			},
-			chooseImage(field) {
-				uni.chooseImage({
-					count: 1,
-					sizeType: ['compressed'],
-					sourceType: ['album', 'camera'],
-					success: async (res) => {
-						if (!res.tempFilePaths || res.tempFilePaths.length === 0) return
-						const tempFilePath = res.tempFilePaths[0]
-						this.imageSaving = true
-						const output = await persistImageFile(tempFilePath)
-						this.setImageField(field, output.path)
-						this.imageSaving = false
-						if (!output.persisted && field !== 'homeAvatar') {
-							this.toast('图片已选中；保存失败时会保留原路径')
-						}
-					},
-					fail: () => {
-						this.imageSaving = false
-					}
-				})
-			},
-			setImageField(field, filePath) {
-				if (field === 'homeAvatar') this.settingsForm.homeAvatar = filePath
 			},
 			addCustomOption(type) {
 				const self = this
