@@ -121,7 +121,17 @@
 				</view>
 
 				<text class="field-label field-space">题目来源</text>
-				<input class="settings-input" v-model="form.source" placeholder="例如：1000题 第3章 第15题" />
+				<view class="chip-row">
+					<view
+						v-for="source in sourceOptionsAll"
+						:key="source"
+						:class="form.source === source ? 'subject-chip subject-active' : 'subject-chip'"
+						@click="selectFormSource(source)"
+					>
+						<text>{{ source }}</text>
+					</view>
+					<view class="subject-chip chip-add" @click="addCustomOption('source')"><text>+ 自定义</text></view>
+				</view>
 
 				<text class="field-label field-space">备注</text>
 				<textarea class="note-field" v-model="form.note" placeholder="例如：换元后忘记乘内函数导数"></textarea>
@@ -162,7 +172,9 @@
 			customChapters: { type: Object, default: () => ({}) },
 			customErrorTypes: { type: Array, default: () => [] },
 			errorTypeOptions: { type: Array, default: () => ['思路错', '计算错', '公式忘记', '审题失误'] },
-			difficultyOptions: { type: Array, default: () => ['简单', '中等', '偏难'] }
+			difficultyOptions: { type: Array, default: () => ['简单', '中等', '偏难'] },
+			sourceOptions: { type: Array, default: () => ['1000题A', '1000题B', '880', '大观', '真题', '模拟题'] },
+			customSources: { type: Array, default: () => [] }
 		},
 		emits: ['navigate', 'show-detail', 'data-changed'],
 		data() {
@@ -173,13 +185,15 @@
 				imageSaving: false,
 				_localCustomSubjects: [],
 				_localCustomChapters: {},
-				_localCustomErrorTypes: []
+				_localCustomErrorTypes: [],
+				_localCustomSources: []
 			}
 		},
 		created() {
 			this._localCustomSubjects = (this.customSubjects || []).slice()
 			this._localCustomChapters = JSON.parse(JSON.stringify(this.customChapters || {}))
 			this._localCustomErrorTypes = (this.customErrorTypes || []).slice()
+			this._localCustomSources = (this.customSources || []).slice()
 		},
 		computed: {
 			subjectOptionsAll() {
@@ -192,6 +206,9 @@
 			},
 			errorTypeOptionsAll() {
 				return this.errorTypeOptions.concat(this._localCustomErrorTypes)
+			},
+			sourceOptionsAll() {
+				return this.sourceOptions.concat(this._localCustomSources)
 			}
 		},
 		methods: {
@@ -291,9 +308,12 @@
 			setFormDifficulty(difficulty) {
 				this.form.difficulty = difficulty
 			},
+			selectFormSource(source) {
+				this.form.source = source
+			},
 			addCustomOption(type) {
 				var self = this
-				var titles = { subject: '自定义科目', chapter: '自定义章节', errorType: '自定义错因' }
+				var titles = { subject: '自定义科目', chapter: '自定义章节', errorType: '自定义错因', source: '自定义来源' }
 				uni.showModal({
 					title: titles[type] || '自定义',
 					editable: true,
@@ -301,22 +321,28 @@
 					success(res) {
 						if (!res.confirm || !res.content || !res.content.trim()) return
 						var val = res.content.trim()
+						var saveData = { subjects: self._localCustomSubjects, chapters: self._localCustomChapters, errorTypes: self._localCustomErrorTypes, sources: self._localCustomSources }
 						if (type === 'subject') {
 							if (self.subjectOptionsAll.indexOf(val) >= 0) { self.toast('已存在'); return }
 							self._localCustomSubjects.push(val)
-							saveCustomOptions({ subjects: self._localCustomSubjects, chapters: self._localCustomChapters, errorTypes: self._localCustomErrorTypes })
+							saveCustomOptions(saveData)
 							self.form.subject = val
 						} else if (type === 'chapter') {
 							if (self.chaptersForForm.indexOf(val) >= 0) { self.toast('已存在'); return }
 							if (!self._localCustomChapters[self.form.subject]) self._localCustomChapters[self.form.subject] = []
 							self._localCustomChapters[self.form.subject].push(val)
-							saveCustomOptions({ subjects: self._localCustomSubjects, chapters: self._localCustomChapters, errorTypes: self._localCustomErrorTypes })
+							saveCustomOptions(saveData)
 							self.form.chapter = val
 						} else if (type === 'errorType') {
 							if (self.errorTypeOptionsAll.indexOf(val) >= 0) { self.toast('已存在'); return }
 							self._localCustomErrorTypes.push(val)
-							saveCustomOptions({ subjects: self._localCustomSubjects, chapters: self._localCustomChapters, errorTypes: self._localCustomErrorTypes })
+							saveCustomOptions(saveData)
 							self.form.errorType = val
+						} else if (type === 'source') {
+							if (self.sourceOptionsAll.indexOf(val) >= 0) { self.toast('已存在'); return }
+							self._localCustomSources.push(val)
+							saveCustomOptions(saveData)
+							self.form.source = val
 						}
 						self.$emit('data-changed')
 						self.toast('已添加')

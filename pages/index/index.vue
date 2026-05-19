@@ -26,6 +26,8 @@
 				:custom-error-types="customErrorTypes"
 				:error-type-options="errorTypeOptions"
 				:difficulty-options="difficultyOptions"
+				:source-options="sourceOptions"
+				:custom-sources="customSources"
 				@navigate="handleAddScreenNavigate"
 				@show-detail="showDetail"
 				@data-changed="refreshData"
@@ -61,6 +63,9 @@
 				:custom-subjects="customSubjects"
 				:error-type-options="errorTypeOptions"
 				:custom-error-types="customErrorTypes"
+				:source-options="sourceOptions"
+				:custom-sources="customSources"
+				:custom-chapters="customChapters"
 				@navigate="navigateTo"
 				@show-detail="showDetail"
 				@add-mistake="showAdd"
@@ -193,6 +198,8 @@
 				:custom-error-types="customErrorTypes"
 				:error-type-options="errorTypeOptions"
 				:difficulty-options="difficultyOptions"
+				:source-options="sourceOptions"
+				:custom-sources="customSources"
 				@navigate="handleEditNavigate"
 				@data-changed="handleEditDataChanged"
 			/>
@@ -364,9 +371,11 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				subjectOptions: ['高数', '线代', '概率'],
 				errorTypeOptions: ['思路错', '计算错', '公式忘记', '审题失误'],
 				difficultyOptions: ['简单', '中等', '偏难'],
+				sourceOptions: ['1000题A', '1000题B', '880', '大观', '真题', '模拟题'],
 				customSubjects: [],
 				customChapters: {},
 				customErrorTypes: [],
+				customSources: [],
 				editingMistakeId: null,
 				progressRings: [
 					{ name: '高数', current: 0, target: 10 },
@@ -603,6 +612,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				const co = getCustomOptions()
 				this.customSubjects = co.subjects || []
 				this.customChapters = co.chapters || {}
+				this.customSources = co.sources || []
 				this.customErrorTypes = co.errorTypes || []
 				const runtimeInfo = getUpdateRuntimeInfo()
 				this.appVersion = runtimeInfo.current

@@ -35,6 +35,26 @@
 					<text>{{ errorType }}</text>
 				</view>
 			</view>
+			<view class="tabs-row">
+				<view
+					v-for="source in filterSources"
+					:key="source"
+					:class="librarySource === source ? 'tab-chip tab-active' : 'tab-chip'"
+					@click="setLibrarySource(source)"
+				>
+					<text>{{ source }}</text>
+				</view>
+			</view>
+			<view class="tabs-row">
+				<view
+					v-for="chapter in filterChapters"
+					:key="chapter"
+					:class="libraryChapter === chapter ? 'tab-chip tab-active' : 'tab-chip'"
+					@click="setLibraryChapter(chapter)"
+				>
+					<text>{{ chapter }}</text>
+				</view>
+			</view>
 
 			<view v-if="libraryList.length === 0" class="empty-card soft-card">
 				<text class="empty-title">错题库还是空的</text>
@@ -77,13 +97,18 @@ export default {
 		subjectOptions: { type: Array, default: () => [] },
 		customSubjects: { type: Array, default: () => [] },
 		errorTypeOptions: { type: Array, default: () => [] },
-		customErrorTypes: { type: Array, default: () => [] }
+		customErrorTypes: { type: Array, default: () => [] },
+		sourceOptions: { type: Array, default: () => [] },
+		customSources: { type: Array, default: () => [] },
+		customChapters: { type: Object, default: () => ({}) }
 	},
 	emits: ['navigate', 'show-detail', 'add-mistake'],
 	data() {
 		return {
 			librarySubject: '全部',
 			libraryError: '全部',
+			librarySource: '全部',
+			libraryChapter: '全部',
 			libraryKeyword: ''
 		}
 	},
@@ -103,18 +128,47 @@ export default {
 		filterErrors() {
 			return ['全部'].concat(this.errorTypeOptionsAll)
 		},
+		sourceOptionsAll() {
+			return this.sourceOptions.concat(this.customSources)
+		},
+		filterSources() {
+			return ['全部'].concat(this.sourceOptionsAll)
+		},
+		filterChapters() {
+			var self = this
+			var chapters = ['全部']
+			if (self.librarySubject === '全部') {
+				self.activeMistakes.forEach(function(item) {
+					if (item.chapter && chapters.indexOf(item.chapter) < 0) chapters.push(item.chapter)
+				})
+			} else {
+				var base = self.getChaptersForSubject(self.librarySubject)
+				base.forEach(function(ch) {
+					if (chapters.indexOf(ch) < 0) chapters.push(ch)
+				})
+				var custom = self.customChapters[self.librarySubject] || []
+				custom.forEach(function(ch) {
+					if (chapters.indexOf(ch) < 0) chapters.push(ch)
+				})
+			}
+			return chapters
+		},
 		libraryList() {
 			const keyword = this.libraryKeyword.trim()
 			const filtered = this.activeMistakes.filter((item) => {
 				const subjectMatch = this.librarySubject === '全部' || item.subject === this.librarySubject
 				const errorMatch = this.libraryError === '全部' || item.errorType === this.libraryError
+				const sourceMatch = this.librarySource === '全部' || item.source === this.librarySource
+				const chapterMatch = this.libraryChapter === '全部' || item.chapter === this.libraryChapter
 				const note = item.note || ''
+				const source = item.source || ''
 				const keywordMatch =
 					keyword.length === 0 ||
 					item.chapter.indexOf(keyword) >= 0 ||
 					item.errorType.indexOf(keyword) >= 0 ||
-					note.indexOf(keyword) >= 0
-				return subjectMatch && errorMatch && keywordMatch
+					note.indexOf(keyword) >= 0 ||
+					source.indexOf(keyword) >= 0
+				return subjectMatch && errorMatch && sourceMatch && chapterMatch && keywordMatch
 			})
 			return sortMistakesByPriority(filtered, todayKey())
 		}
@@ -125,6 +179,18 @@ export default {
 		},
 		setLibraryError(errorType) {
 			this.libraryError = errorType
+		},
+		setLibrarySource(source) {
+			this.librarySource = source
+		},
+		setLibraryChapter(chapter) {
+			this.libraryChapter = chapter
+		},
+		getChaptersForSubject(subject) {
+			if (subject === '线代') return ['行列式', '矩阵', '向量', '线性方程组', '特征值']
+			if (subject === '概率') return ['随机事件', '随机变量', '数字特征', '大数定律', '参数估计']
+			if (subject === '高数') return ['极限', '导数', '积分', '级数', '多元函数']
+			return this.customChapters[subject] || []
 		},
 		formatDueText(item) {
 			const overdue = getOverdueDays(item, todayKey())

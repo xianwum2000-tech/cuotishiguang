@@ -211,7 +211,8 @@ export function saveQuotes(data) {
 const DEFAULT_CUSTOM_OPTIONS = {
 	subjects: [],
 	chapters: {},
-	errorTypes: []
+	errorTypes: [],
+	sources: []
 }
 
 export function getCustomOptions() {
