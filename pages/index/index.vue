@@ -569,6 +569,10 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 			},
 			methods: {
 			navigateTo(newScreen) {
+				if (newScreen === 'back') {
+					this.handleBackPress()
+					return
+				}
 				if (this.screen && this.screen !== newScreen) {
 					this.screenHistory.push(this.screen)
 				}
