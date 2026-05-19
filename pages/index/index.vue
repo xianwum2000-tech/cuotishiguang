@@ -1112,8 +1112,6 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 </script>
 
 <style>
-	@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap");
-
 	@import "../styles/global.css";
 
 
