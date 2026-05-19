@@ -1,9 +1,9 @@
 {
-  "versionName": "1.5.1",
-  "versionCode": 151,
+  "versionName": "1.5.2",
+  "versionCode": 152,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.1/cuotishiguang-1.5.1.apk",
-  "changelog": "1. 架构重构：index.vue 从 6261 行精简至 3645 行\n2. 提取 21 个屏幕组件，代码更易维护\n3. CSS 外置到 global.css\n4. 修复 CSS 引入路径问题",
+  "apkUrl": "https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.2/cuotishiguang-1.5.2.apk",
+  "changelog": "1. 完全移除 Google Fonts，修复国内网络下 UI 消失问题\n2. 修复新增错题后返回空白页问题\n3. 修复复习完成后返回空白页问题\n4. 新增错题来源标签选择（1000题A/880/大观/真题等）\n5. 错题库新增来源和章节快速筛选",
   "force": false,
-  "publishedAt": "2026-05-12"
+  "publishedAt": "2026-05-19"
 }
