@@ -958,10 +958,7 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				} else {
 					this.activeReview = createEmptyMistake()
 					this.hasActiveReview = false
-					if (this.screenHistory.length > 0 && this.screenHistory[this.screenHistory.length - 1] === 'today') {
-						this.screenHistory.pop()
-					}
-					this.screen = 'today'
+					this.navigateTo('today')
 				}
 			},
 			handleReviewNavigate(payload) {
