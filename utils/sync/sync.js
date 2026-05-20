@@ -78,7 +78,8 @@ function base64Encode(str) {
 
 function base64Decode(str) {
   try {
-    return decodeURIComponent(escape(atob(str)))
+    var clean = str.replace(/[\r\n\s]/g, '')
+    return decodeURIComponent(escape(atob(clean)))
   } catch (e) {
     return ''
   }
