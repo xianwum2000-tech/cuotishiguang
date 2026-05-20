@@ -107,7 +107,7 @@
 
 			<view class="settings-card soft-card" style="margin-top: 20px;">
 				<text class="field-label">云同步</text>
-				<text class="page-subtitle" style="margin-bottom: 14px;">通过 GitHub Gist 备份和恢复数据。</text>
+				<text class="page-subtitle" style="margin-bottom: 14px;">通过 GitHub 仓库备份和恢复数据（Data/backup.json）。</text>
 				<text class="field-label">GitHub Token</text>
 				<input class="settings-input" v-model="githubTokenLocal" placeholder="ghp_..." :password="!showGithubToken" />
 				<view class="ocr-key-toggle" @click="showGithubToken = !showGithubToken">
@@ -174,7 +174,7 @@
 	import { persistImageFile } from '@/utils/file.js'
 	import { getUpdateRuntimeInfo } from '@/utils/app/updater.js'
 	import { testOcrApiKey } from '@/utils/ai/ocr.js'
-	import { testGitHubToken, backupToGist, restoreFromGist } from '@/utils/sync/sync.js'
+	import { testGitHubToken, backupToRepo, restoreFromRepo } from '@/utils/sync/sync.js'
 
 	function createDefaultPreferences() {
 		return {
@@ -382,7 +382,7 @@
 			},
 			async doBackup() {
 				this.syncLoading = 'backup'
-				var result = await backupToGist()
+				var result = await backupToRepo()
 				this.syncLoading = ''
 				if (result.success) {
 					this.lastBackupTime = result.time
@@ -400,14 +400,17 @@
 					success: async function(res) {
 						if (!res.confirm) return
 						self.syncLoading = 'restore'
-						var result = await restoreFromGist()
+						var result = await restoreFromRepo()
 						self.syncLoading = ''
 						if (result.success) {
-							var { saveMistakes, saveReviewRecords, savePreferences: savePrefs, saveQuotes: saveQ } = require('@/utils/storage/storage.js')
-							saveMistakes(result.data.mistakes || [])
-							saveReviewRecords(result.data.records || [])
-							savePrefs(result.data.preferences || {})
-							saveQ(result.data.quotes || {})
+							var storage = require('@/utils/storage/storage.js')
+							storage.saveMistakes(result.data.mistakes || [])
+							storage.saveReviewRecords(result.data.records || [])
+							storage.savePreferences(result.data.preferences || {})
+							storage.saveQuotes(result.data.quotes || {})
+							if (result.data.customOptions) {
+								storage.saveCustomOptions(result.data.customOptions)
+							}
 							uni.showToast({ title: '恢复成功', icon: 'success' })
 						} else {
 							uni.showToast({ title: '恢复失败：' + result.error, icon: 'none' })
