@@ -947,6 +947,14 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 				if (updated) {
 					this.activeDetail = updated
 				}
+				if (this._editFromReview) {
+					this._editFromReview = false
+					if (updated) {
+						this.activeReview = updated
+					} else if (this.editingMistakeId) {
+						this.activeReview = getMistakeById(this.editingMistakeId) || this.activeReview
+					}
+				}
 			},
 			startFirstReview() {
 				if (this.filteredTodayList.length === 0) {
@@ -981,6 +989,10 @@ import { getOcrConfig, recognizeImage, extractQuestionNumber } from '@/utils/ai/
 					}
 				} else if (payload && payload.screen === 'detail' && payload.item) {
 					this.showDetail(payload.item)
+				} else if (payload && payload.screen === 'edit-review' && payload.item) {
+					this.editingMistakeId = payload.item.id
+					this._editFromReview = true
+					this.navigateTo('edit')
 				}
 			},
 			showDetail(item) {

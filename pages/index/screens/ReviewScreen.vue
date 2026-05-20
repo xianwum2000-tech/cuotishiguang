@@ -7,7 +7,10 @@
 				</view>
 				<text class="brand-title">复习进行中</text>
 			</view>
-			<text class="gear" @click="$emit('navigate', 'today')">×</text>
+			<view style="display: flex; gap: 16px;">
+				<text class="gear" @click="editCurrent">编辑</text>
+				<text class="gear" @click="$emit('navigate', 'today')">×</text>
+			</view>
 		</view>
 
 		<view v-if="hasActiveReview" class="page-content review-content">
@@ -109,6 +112,10 @@
 			}
 		},
 		methods: {
+			editCurrent() {
+				if (!this.hasActiveReview) return
+				this.$emit('navigate', { screen: 'edit-review', item: this.activeReview })
+			},
 			revealAnswer() {
 				this.answerVisible = true
 			},
