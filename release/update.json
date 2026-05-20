@@ -1,9 +1,9 @@
 {
-  "versionName": "1.5.3",
-  "versionCode": 153,
+  "versionName": "1.5.4",
+  "versionCode": 154,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.3/cuotishiguang-1.5.3.apk",
-  "changelog": "1. GitHub 仓库备份：一键备份/恢复数据到 Data/backup.json\n2. 修复 UI 消失、空白页等问题\n3. 新增错题来源标签和章节筛选",
+  "apkUrl": "https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.4/cuotishiguang-1.5.4.apk",
+  "changelog": "1. 复习页面支持编辑错题标签和内容\n2. GitHub 仓库备份/恢复\n3. 错题来源标签和章节筛选",
   "force": false,
   "publishedAt": "2026-05-20"
 }
