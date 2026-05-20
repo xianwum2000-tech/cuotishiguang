@@ -8,6 +8,20 @@ function getApiUrl() {
   return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + BACKUP_PATH
 }
 
+var SENSITIVE_KEYS = ['deepseekApiKey', 'ocrApiKey', 'githubToken', 'githubGistId']
+
+function sanitizePreferences(prefs) {
+  var clean = {}
+  for (var key in prefs) {
+    if (SENSITIVE_KEYS.indexOf(key) >= 0) {
+      clean[key] = ''
+    } else {
+      clean[key] = prefs[key]
+    }
+  }
+  return clean
+}
+
 export function getSyncConfig() {
   var prefs = getPreferences()
   return {
@@ -106,7 +120,7 @@ export function backupToRepo() {
       exportedAt: new Date().toISOString(),
       mistakes: getMistakes(),
       records: getReviewRecords(),
-      preferences: getPreferences(),
+      preferences: sanitizePreferences(getPreferences()),
       quotes: getQuotes(),
       customOptions: getCustomOptions()
     }
