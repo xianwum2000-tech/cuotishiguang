@@ -1,9 +1,9 @@
 {
-  "versionName": "1.5.2",
-  "versionCode": 152,
+  "versionName": "1.5.3",
+  "versionCode": 153,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.2/cuotishiguang-1.5.2.apk",
-  "changelog": "1. 完全移除 Google Fonts，修复国内网络下 UI 消失问题\n2. 修复新增错题后返回空白页问题\n3. 修复复习完成后返回空白页问题\n4. 新增错题来源标签选择（1000题A/880/大观/真题等）\n5. 错题库新增来源和章节快速筛选",
+  "apkUrl": "https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.3/cuotishiguang-1.5.3.apk",
+  "changelog": "1. GitHub 仓库备份：一键备份/恢复数据到 Data/backup.json\n2. 修复 UI 消失、空白页等问题\n3. 新增错题来源标签和章节筛选",
   "force": false,
-  "publishedAt": "2026-05-19"
+  "publishedAt": "2026-05-20"
 }
