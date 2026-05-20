@@ -6,7 +6,7 @@ export const APP_VERSION = {
 }
 
 export const UPDATE_CONFIG = {
-	manifestUrl: 'https://github.com/xianwum2000-tech/cuotishiguang/releases/latest/download/update.json'
+	manifestUrl: 'https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/latest/download/update.json'
 }
 
 export function isUpdateConfigured() {
