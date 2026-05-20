@@ -1,9 +1,9 @@
 {
-  "versionName": "1.5.4",
-  "versionCode": 154,
+  "versionName": "1.5.5",
+  "versionCode": 155,
   "packageName": "com.cuotishiguang.app",
-  "apkUrl": "https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.4/cuotishiguang-1.5.4.apk",
-  "changelog": "1. 复习页面支持编辑错题标签和内容\n2. GitHub 仓库备份/恢复\n3. 错题来源标签和章节筛选",
+  "apkUrl": "https://ghfast.top/https://github.com/xianwum2000-tech/cuotishiguang/releases/download/v1.5.5/cuotishiguang-1.5.5.apk",
+  "changelog": "1. 修复备份失败：剔除敏感字段避免 GitHub secret scanning 拦截\n2. 复习中编辑错题\n3. GitHub 仓库备份/恢复",
   "force": false,
   "publishedAt": "2026-05-20"
 }
