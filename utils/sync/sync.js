@@ -55,40 +55,19 @@ export function testGitHubToken(token) {
 }
 
 function base64Encode(str) {
-  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
-  var output = ''
-  var i = 0
-  while (i < str.length) {
-    var c1 = str.charCodeAt(i++)
-    var c2 = str.charCodeAt(i++)
-    var c3 = str.charCodeAt(i++)
-    var e1 = c1 >> 2
-    var e2 = ((c1 & 3) << 4) | (c2 >> 4)
-    var e3 = isNaN(c2) ? 64 : (((c2 & 15) << 2) | (c3 >> 6))
-    var e4 = isNaN(c3) ? 64 : (c3 & 63)
-    output += chars.charAt(e1) + chars.charAt(e2) + chars.charAt(e3) + chars.charAt(e4)
+  try {
+    return btoa(unescape(encodeURIComponent(str)))
+  } catch (e) {
+    return ''
   }
-  return output
 }
 
 function base64Decode(str) {
-  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
-  var output = ''
-  var i = 0
-  str = str.replace(/[^A-Za-z0-9\+\/\=]/g, '')
-  while (i < str.length) {
-    var e1 = chars.indexOf(str.charAt(i++))
-    var e2 = chars.indexOf(str.charAt(i++))
-    var e3 = chars.indexOf(str.charAt(i++))
-    var e4 = chars.indexOf(str.charAt(i++))
-    var c1 = (e1 << 2) | (e2 >> 4)
-    var c2 = ((e2 & 15) << 4) | (e3 >> 2)
-    var c3 = ((e3 & 3) << 6) | e4
-    output += String.fromCharCode(c1)
-    if (e3 !== 64) output += String.fromCharCode(c2)
-    if (e4 !== 64) output += String.fromCharCode(c3)
+  try {
+    return decodeURIComponent(escape(atob(str)))
+  } catch (e) {
+    return ''
   }
-  return output
 }
 
 function fetchCurrentSha(token) {
